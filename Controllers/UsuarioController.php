@@ -2,8 +2,12 @@
 include_once '../modelo/Usuario.php';
 $usuario = new Usuario();
 session_start();
-$id_usuario= $_SESSION['usuario'];
-$tipo_usuario=$_SESSION['us_tipo'];
+if($_POST['funcion']=='login'){
+	$dni  = $_POST['dni'];
+	$pass = $_POST['pass'];
+	echo $dni.' '.$pass;
+}
+/*****************************************/
 if($_POST['funcion']=='buscar_usuario'){
 	$json=array();
 	$fecha_actual = new DateTime();
