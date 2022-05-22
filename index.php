@@ -8,6 +8,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/login.css">
 	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/sweetalert2.min.css">
 </head>
 <body>
 	<img class="wave" src="/farmaciav2/Util/img/login/wave.png" alt="">
@@ -46,6 +47,8 @@
 </body>
 <!-- jQuery -->
 <script src="/farmaciav2/Util/js/jquery.min.js"></script>
+<!-- Sweetalert2 -->
+<script src="/farmaciav2/Util/js/sweetalert2.min.js"></script>
 <!-- JS -->
 <script src="/farmaciav2/Util/js/login.js"></script>
 <script src="/farmaciav2/index.js"></script>
