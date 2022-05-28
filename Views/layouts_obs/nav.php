@@ -61,7 +61,7 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-		<a href="../controlador/Logout.php">Cerrar Sesion</a>
+		<a href="../Controllers/Logout.php">Cerrar Sesion</a>
     </ul>
   </nav>
   <!-- /.navbar -->

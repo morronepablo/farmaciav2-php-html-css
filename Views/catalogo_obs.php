@@ -1,8 +1,6 @@
 <?php 
-session_start();
-if($_SESSION['us_tipo']==1||$_SESSION['us_tipo']==3||$_SESSION['us_tipo']==2){
 	include_once 'layouts/header.php';
- ?>
+?>
 
   <title>Adm | Catálogo</title>
   <!-- Tell the browser to be responsive to screen width -->
@@ -98,10 +96,6 @@ if($_SESSION['us_tipo']==1||$_SESSION['us_tipo']==3||$_SESSION['us_tipo']==2){
 
 <?php 
 	include_once 'layouts/footer.php';
-}
-else{
-	header('location: ../index.php');
-}
 
  ?>
  <script src="../js/Catalogo.js"></script>

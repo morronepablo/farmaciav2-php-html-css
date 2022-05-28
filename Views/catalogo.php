@@ -1,5 +1,5 @@
 <?php
-    include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/layouts/header.php';
+    include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Views/layouts/header.php';
 ?>
 <div class="content-wrapper" style="min-height: 678.917px;">
     <section class="content-header">
@@ -40,5 +40,6 @@
     </section>
 </div>
 <?php
-    include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/layouts/footer.php';
+    include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Views/layouts/footer.php';
 ?>
+<script src="/farmaciav2/Views/catalogo.js"></script>

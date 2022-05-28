@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/login.css">
 	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/css/all.min.css">
 	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/sweetalert2.min.css">
+	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/toastr.min.css">
 </head>
 <body>
 	<img class="wave" src="/farmaciav2/Util/img/login/wave.png" alt="">
@@ -49,6 +50,8 @@
 <script src="/farmaciav2/Util/js/jquery.min.js"></script>
 <!-- Sweetalert2 -->
 <script src="/farmaciav2/Util/js/sweetalert2.min.js"></script>
+<!-- Toastr -->
+<script src="/farmaciav2/Util/js/toastr.min.js"></script>
 <!-- JS -->
 <script src="/farmaciav2/Util/js/login.js"></script>
 <script src="/farmaciav2/index.js"></script>
