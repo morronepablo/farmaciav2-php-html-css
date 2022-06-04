@@ -13,7 +13,12 @@
 <script src="/farmaciav2/Util/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="/farmaciav2/Util/js/adminlte.min.js"></script>
-
+<!-- Sweetalert2 -->
+<script src="/farmaciav2/Util/js/sweetalert2.min.js"></script>
+<!-- Toastr -->
+<script src="/farmaciav2/Util/js/toastr.min.js"></script>
+<!-- Datatables -->
+<script src="/farmaciav2/Util/js/datatables.min.js"></script>
 
 </body>
 
