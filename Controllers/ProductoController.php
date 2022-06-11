@@ -1,5 +1,5 @@
 <?php
-include '../modelo/Producto.php';
+include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Producto.php';
 require_once('../vendor/autoload.php');
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -7,6 +7,34 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 $producto=new Producto();
+if($_POST['funcion']=='obtener_productos'){
+	$producto->obtener_productos();
+	$json=array();
+	foreach ($producto->objetos as $objeto) {
+		$producto->obtener_stock($objeto->id);
+		$stock = $producto->objetos[0]->total;
+		$json[]=array(
+			'id'=>$objeto->id,
+			'nombre'=>$objeto->nombre,
+			'concentracion'=>$objeto->concentracion,
+			'adicional'=>$objeto->adicional,
+			'precio'=>$objeto->precio,
+			'stock'=>$stock,
+			'laboratorio'=>$objeto->laboratorio,
+			'tipo'=>$objeto->tipo,
+			'presentacion'=>$objeto->presentacion,
+			'avatar'=>$objeto->avatar,
+			'fracciones'=>$objeto->fracciones,
+			'codigo'=>$objeto->codigo,
+			'registro_sanitario'=>$objeto->registro_sanitario,
+			'fecha_creacion'=>$objeto->fecha_creacion,
+			'fecha_edicion'=>$objeto->fecha_edicion
+		);
+	}
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
+}
+/******************************************************/
 if($_POST['funcion']=='crear'){
 	$nombre = $_POST['nombre'];
 	$concentracion = $_POST['concentracion'];
@@ -29,33 +57,7 @@ if($_POST['funcion']=='editar'){
 	$presentacion = $_POST['presentacion'];
 	$producto->editar($id,$nombre,$concentracion,$adicional,$precio,$laboratorio,$tipo,$presentacion);
 }
-if($_POST['funcion']=='buscar'){
-	$producto->buscar();
-	$json=array();
-	foreach ($producto->objetos as $objeto) {
-		$producto->obtener_stock($objeto->id_producto);
-		foreach ($producto->objetos as $obj) {
-			$total = $obj->total;
-		}
-		$json[]=array(
-			'id'=>$objeto->id_producto,
-			'nombre'=>$objeto->nombre,
-			'concentracion'=>$objeto->concentracion,
-			'adicional'=>$objeto->adicional,
-			'precio'=>$objeto->precio,
-			'stock'=>$total,
-			'laboratorio'=>$objeto->laboratorio,
-			'tipo'=>$objeto->tipo,
-			'presentacion'=>$objeto->presentacion,
-			'laboratorio_id'=>$objeto->prod_lab,
-			'tipo_id'=>$objeto->prod_tip_prod,
-			'presentacion_id'=>$objeto->prod_present,
-			'avatar'=>'../img/prod/'.$objeto->avatar
-		);
-	}
-	$jsonstring = json_encode($json);
-	echo $jsonstring;
-}
+
 if($_POST['funcion']=='cambiar_avatar'){
 	$id=$_POST['id_logo_prod'];
 	$avatar=$_POST['avatar'];

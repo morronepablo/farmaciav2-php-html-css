@@ -1,4 +1,5 @@
 <?php
+    session_start();
     include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Views/layouts/header.php';
 ?>
 <title>Catalogo | Morrone</title>
