@@ -16,6 +16,30 @@ $(document).ready(function() {
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="#" class="nav-link">Contact</a>
             </li>
+            <li class="nav-item dropdown" id="carrito" style="display:none">
+                <img src="/farmaciav2/Util/img/carrito.png" class="imagen-carrito nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span id="contador" class="contador badge badge-danger">10</span>
+                </img>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <table class="carro table table-hover text-nowrap p-0">
+                    <thead class="table-success">
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Concentración</th>
+                        <th>Adicional</th>
+                        <th>Precio</th>
+                        <th>Eliminar</th>
+                    </tr>
+                    </thead>
+                    <tbody id="lista">
+
+                    </tbody>
+                </table>
+                <a href="#" id="procesar-pedido" class="btn btn-danger btn-block">Procesar compra</a>
+                <a href="#" id="vaciar-carrito" class="btn btn-primary btn-block">Vaciar carrito</a>
+                </div>
+            </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
@@ -225,6 +249,7 @@ $(document).ready(function() {
                 if(respuesta.length != 0) {
                     llenar_menu_superior(respuesta);
                     llenar_menu_lateral(respuesta);
+                    $('#carrito').show();
                     obtener_productos();
                     CloseLoader();
                 } else {
@@ -267,7 +292,59 @@ $(document).ready(function() {
                     columns: [
                         {
                             "render": function(data, type, datos, meta) {
-                                return `<h4>${datos.nombre}</h4>`
+                                let stock = '';
+                                if(datos.stock == null || datos.stock == '') {
+                                    stock = 'Sin Stock';
+                                } else {
+                                    stock = datos.stock;
+                                }
+                                let reg_sanitario = '';
+                                if(datos.registro_sanitario == null || datos.registro_sanitario == '') {
+                                    reg_sanitario = 'Sin Registro Sanitario';
+                                } else {
+                                    reg_sanitario = datos.registro_sanitario;
+                                }
+                                return `
+                                <div class="">
+                                    <div class="card bg-light">
+                                        <div class="h5 card-header text-muted border-bottom-0">
+                                            <i class="fas fa-lg fa-cubes mr-1"></i>${stock}
+                                        </div>
+                                        <div class="card-body pt-0">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <h4 class=""><b>${datos.nombre}</b></h4>
+                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Código: ${datos.codigo}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-coins"></i></span> Precio: ${datos.precio}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Fracciones: ${datos.fracciones}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Reg. Sanitario: ${reg_sanitario}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-4 text-center">
+                                                    <img src="/farmaciav2/Util/img/productos/${datos.avatar}" width="150px" alt="" class="img-circle img-fluid">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="text-right">
+                                                <button  class="agregar-carrito btn btn-sm bg-gradient-primary" >
+                                                    <i class="fas fa-plus mr-1"></i>Agregar al carrito
+                                                </button>   
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `
                             }
                         }
                     ],
