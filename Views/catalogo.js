@@ -16,29 +16,10 @@ $(document).ready(function() {
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="#" class="nav-link">Contact</a>
             </li>
-            <li class="nav-item dropdown" id="carrito" style="display:none">
-                <img src="/farmaciav2/Util/img/carrito.png" class="imagen-carrito nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span id="contador" class="contador badge badge-danger">10</span>
+            <li class="nav-item dropdown" id="carrito" style="display:none" role="button">
+                <img src="/farmaciav2/Util/img/carrito.png" class="imagen-carrito nav-link">
+                    <span id="contador" class="contador badge badge-danger"></span>
                 </img>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <table class="carro table table-hover text-nowrap p-0">
-                    <thead class="table-success">
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Concentración</th>
-                        <th>Adicional</th>
-                        <th>Precio</th>
-                        <th>Eliminar</th>
-                    </tr>
-                    </thead>
-                    <tbody id="lista">
-
-                    </tbody>
-                </table>
-                <a href="#" id="procesar-pedido" class="btn btn-danger btn-block">Procesar compra</a>
-                <a href="#" id="vaciar-carrito" class="btn btn-primary btn-block">Vaciar carrito</a>
-                </div>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -250,6 +231,7 @@ $(document).ready(function() {
                     llenar_menu_superior(respuesta);
                     llenar_menu_lateral(respuesta);
                     $('#carrito').show();
+                    Contar_productos();
                     obtener_productos();
                     CloseLoader();
                 } else {
@@ -337,7 +319,18 @@ $(document).ready(function() {
                                         </div>
                                         <div class="card-footer">
                                             <div class="text-right">
-                                                <button  class="agregar-carrito btn btn-sm bg-gradient-primary" >
+                                                <button id="${datos.id}" 
+                                                        codigo="${datos.codigo}"
+                                                        nombre="${datos.nombre}"
+                                                        concentracion="${datos.concentracion}"
+                                                        adicional="${datos.adicional}"
+                                                        laboratorio="${datos.laboratorio}"
+                                                        presentacion="${datos.presentacion}"
+                                                        tipo="${datos.tipo}"
+                                                        stock="${datos.stock}"
+                                                        precio="${datos.precio}"
+                                                        class="agregar-carrito btn btn-sm bg-gradient-primary"
+                                                >
                                                     <i class="fas fa-plus mr-1"></i>Agregar al carrito
                                                 </button>   
                                             </div>
@@ -369,6 +362,90 @@ $(document).ready(function() {
         }
     }
 
+    $(document).on('click', '.agregar-carrito', (e) => {
+        let elemento = $(this)[0].activeElement;
+        let id            = $(elemento).attr('id');
+        let codigo        = $(elemento).attr('codigo');
+        let nombre        = $(elemento).attr('nombre');
+        let concentracion = $(elemento).attr('concentracion');
+        let adicional     = $(elemento).attr('adicional');
+        let laboratorio   = $(elemento).attr('laboratorio');
+        let presentacion  = $(elemento).attr('presentacion');
+        let tipo          = $(elemento).attr('tipo');
+        let stock         = $(elemento).attr('stock');
+        let precio        = $(elemento).attr('precio');
+        if(stock != "null") {
+            let producto = {
+                id: id,
+                nombre: nombre,
+                concentracion: concentracion,
+                adicional: adicional,
+                precio: precio,
+                laboratorio: laboratorio,
+                tipo: tipo,
+                presentacion: presentacion,
+                stock: stock,
+                cantidad: 1
+            }
+            let bandera = false;
+            let productos = RecuperarLS();
+            productos.forEach(prod =>{
+                if(prod.id===producto.id){
+                    bandera = true;
+                }
+            });
+            if(bandera){
+                toastr.error('El producto ' + nombre + ' # ' + codigo + ' ya fué agregado', 'Error!', {timeOut: 2000})
+            }
+            else{
+                AgregarLS(producto);
+                Contar_productos();
+                toastr.success('Producto ' + nombre + ' # ' + codigo + ' agregado', 'Exito!', {timeOut: 2000})
+            }
+        } else {
+            toastr.warning('El producto ' + nombre + ' # ' + codigo + ' no tiene stock', 'No se pudo agregar!', {timeOut: 2000})
+        }
+    });
+
+    $(document).on('click', '#carrito', (e) => {
+        let productos = RecuperarLS();
+        if(productos.length != 0) {
+            $('#abrir_carrito').modal('show');
+        } else {
+            toastr.warning('El carrito está vacio', 'No se pudo abrir!', {timeOut: 2000})
+        }
+    });
+
+    function RecuperarLS(){
+		let productos;
+		if(localStorage.getItem('productos') === null){
+			productos=[];
+		}
+		else{
+			productos = JSON.parse(localStorage.getItem('productos'))
+		}
+		return productos
+	}
+
+	function AgregarLS(producto){
+		let productos;
+		productos = RecuperarLS();
+		productos.push(producto);
+		localStorage.setItem('productos',JSON.stringify(productos))
+	}
+
+    function Contar_productos(){
+		let productos;
+		let contador = 0;
+		productos = RecuperarLS();
+		productos.forEach(producto =>{
+			contador++;
+		});
+        if(contador != 0) {
+            $('#contador').html(contador);
+        }
+	}
+
     function Loader(mensaje) {
         if(mensaje == '' || mensaje == null) {
             mensaje = "Cargando datos..."
@@ -394,6 +471,7 @@ $(document).ready(function() {
         }
     }
 });
+
 let espanol = {
     "processing": "Procesando...",
     "lengthMenu": "Mostrar _MENU_ registros",
