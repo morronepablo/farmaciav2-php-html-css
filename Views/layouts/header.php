@@ -13,10 +13,39 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="/farmaciav2/Util/css/adminlte.min.css">
     <link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/sweetalert2.min.css">
-	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/toastr.min.css">
-	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/datatables.min.css">
-	<link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/carrito.css">
+    <link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/toastr.min.css">
+    <link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/datatables.min.css">
+    <link rel="stylesheet" type="text/css" href="/farmaciav2/Util/css/carrito.css">
 </head>
+<style>
+    .btn-circle {
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        padding: 6px 0;
+        font-size: 12px;
+        line-height: 1.428571429;
+        border-radius: 15px;
+    }
+
+    .btn-circle.btn-lg {
+        width: 50px;
+        height: 50px;
+        padding: 10px 16px;
+        font-size: 18px;
+        line-height: 1.33;
+        border-radius: 25px;
+    }
+
+    .btn-circle.btn-xl {
+        width: 70px;
+        height: 70px;
+        padding: 10px 16px;
+        font-size: 24px;
+        line-height: 1.33;
+        border-radius: 35px;
+    }
+</style>
 
 <body class="sidebar-mini layout-navbar-fixed layout-fixed layout-footer-fixed accent-success" style="height: auto;">
     <div class="wrapper">

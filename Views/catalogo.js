@@ -4,6 +4,10 @@ $(document).ready(function() {
     
     verificar_sesion();
 
+    toastr.options = {
+        "preventDuplicates": true
+    }
+
     function llenar_menu_superior(usuario) {
         let template= `
         <ul class="navbar-nav">
@@ -407,13 +411,85 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('click', '#carrito', (e) => {
+    function abrir_carrito() {
         let productos = RecuperarLS();
         if(productos.length != 0) {
             $('#abrir_carrito').modal('show');
+            $('#carrito_compras').DataTable({
+                data: productos,
+                "aaSorting": [],
+                "searching": true,
+                "scrollX": false,
+                "autoWidth": false,
+                paging: false,
+                "bInfo": false,
+                columns: [
+                    {
+                        "render": function(data, type, datos, meta) {
+                            let template = `
+                            <div class="card bg-secondary">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <ul class="ml-4 mb-0 fa-ul">
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-heading"></i></span> Nombre: ${datos.nombre}</li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-5 mt-1">
+                                            <ul class="ml-4 mb-0 fa-ul">
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-2 mt-1 text-center">
+                                            <button 
+                                                id="${datos.id}" 
+                                                nombre="${datos.nombre}"
+                                                type="button" 
+                                                class="borrar_producto btn btn-outline-danger btn-circle btn-lg mt-3"
+                                            >
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                            return template;
+                        }
+                    }
+                ],
+                "language": espanol,
+                "destroy": true
+            })
         } else {
             toastr.warning('El carrito está vacio', 'No se pudo abrir!', {timeOut: 2000})
+            $('#abrir_carrito').modal('hide');
         }
+    }
+
+    $(document).on('click', '#carrito', (e) => {
+        abrir_carrito();
+    });
+
+    $(document).on('click', '.vaciar_carrito', (e) => {
+        EliminarLS();
+        toastr.success('El carrito fué vaciado', 'Éxito!', {timeOut: 2000})
+		Contar_productos();
+        $('#abrir_carrito').modal('hide');
+    });
+
+    $(document).on('click', '.borrar_producto', (e) => {
+        let elemento = $(this)[0].activeElement;
+        let id       = $(elemento).attr('id');
+        let nombre   = $(elemento).attr('nombre');
+        toastr.success('El producto ' + nombre + ' fué eliminado del carrito!', 'Éxito!', {timeOut: 2000})
+		Eliminar_producto_LS(id);
+        Contar_productos();
+        abrir_carrito();
     });
 
     function RecuperarLS(){
@@ -441,9 +517,26 @@ $(document).ready(function() {
 		productos.forEach(producto =>{
 			contador++;
 		});
-        if(contador != 0) {
+        if(contador == 0) {
+            $('#contador').html('');
+        } else {
             $('#contador').html(contador);
         }
+	}
+
+    function EliminarLS(){
+		localStorage.clear();
+	}
+
+    function Eliminar_producto_LS(id){
+		let productos;
+		productos = RecuperarLS();
+		productos.forEach(function(producto,indice){
+			if(producto.id===id){
+				productos.splice(indice,1);
+			}
+		});
+		localStorage.setItem('productos',JSON.stringify(productos));
 	}
 
     function Loader(mensaje) {
@@ -470,6 +563,7 @@ $(document).ready(function() {
             })
         }
     }
+    
 });
 
 let espanol = {
