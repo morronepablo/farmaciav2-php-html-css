@@ -1,11 +1,9 @@
 <?php 
-session_start();
-if($_SESSION['us_tipo']==1||$_SESSION['us_tipo']==3||$_SESSION['us_tipo']==2){
-	include_once 'layouts/header.php';
-    include_once 'layouts/nav.php';
- ?>
+	session_start();
+	include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Views/layouts/header.php';
+?>
 
-<!-- Modal -->
+<!-- Modales -->
 
 <div class="animate__animated animate__zoomInDown modal fade" id="cambiocontra" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -57,8 +55,6 @@ if($_SESSION['us_tipo']==1||$_SESSION['us_tipo']==3||$_SESSION['us_tipo']==2){
   </div>
 </div>
 
-<!-------------------------------------------------------------------------->
-
 <div class="animate__animated animate__slideInLeft modal fade" id="cambiophoto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -100,19 +96,11 @@ if($_SESSION['us_tipo']==1||$_SESSION['us_tipo']==3||$_SESSION['us_tipo']==2){
   </div>
 </div>
 
-
-
-
 <!-------------------------------------------------------------------------->
 
-  <title>Adm | Editar Datos</title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <?php 
-  	include_once 'layouts/nav.php';
-   ?>
-  <!-- Content Wrapper. Contains page content -->
+  <title>My Perfil | Morrone</title>
+
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -121,12 +109,12 @@ if($_SESSION['us_tipo']==1||$_SESSION['us_tipo']==3||$_SESSION['us_tipo']==2){
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="../vista/adm_catalogo.php">Home</a></li>
+              <li class="breadcrumb-item"><a href="/farmaciav2/Views/catalogo.php">Inicio</a></li>
               <li class="breadcrumb-item active">Datos personales</li>
             </ol>
           </div>
         </div>
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
     <section>
     	<div class="content">
@@ -251,18 +239,11 @@ if($_SESSION['us_tipo']==1||$_SESSION['us_tipo']==3||$_SESSION['us_tipo']==2){
     	</div>
     </section>
   </div>
-  <!-- /.content-wrapper -->
-
 
 
 <!------------------------------------------------------------------>
 
 <?php 
-	include_once 'layouts/footer.php';
-}
-else{
-	header('location: ../index.php');
-}
-
- ?>
- <script src="../js/Usuario.js"></script>
+	include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Views/layouts/footer.php';
+?>
+ <script src="/farmaciav2/Views/mi_perfil.js"></script>

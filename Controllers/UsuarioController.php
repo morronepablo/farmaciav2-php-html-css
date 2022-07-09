@@ -47,12 +47,14 @@ if($_POST['funcion']=='login'){
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
-/*****************************************/
-if($_POST['funcion']=='buscar_usuario'){
+
+if($_POST['funcion']=='obtener_usuario'){
 	$json=array();
+	$id_usuario = $_SESSION['id'];
 	$fecha_actual = new DateTime();
-	$usuario->obtener_datos($_POST['dato']);
-	foreach ($usuario->objetos as $objeto) {
+	$usuario->obtener_datos($id_usuario);
+	var_dump($usuario->objetos);
+	/*foreach ($usuario->objetos as $objeto) {
 		$nacimiento = new DateTime($objeto->edad);
 		$edad = $nacimiento->diff($fecha_actual);
 		$edad_years = $edad->y;
@@ -71,8 +73,10 @@ if($_POST['funcion']=='buscar_usuario'){
 		);
 	}
 	$jsonstring = json_encode($json[0]);
-	echo $jsonstring;
+	echo $jsonstring;*/
 }
+/*****************************************/
+
 if($_POST['funcion']=='capturar_datos'){
 	$json=array();
 	$id_usuario=$_POST['id_usuario'];

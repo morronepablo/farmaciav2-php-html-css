@@ -1,5 +1,6 @@
 <?php
 include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Producto.php';
+include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/Config/config.php';
 require_once('../vendor/autoload.php');
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -14,21 +15,21 @@ if($_POST['funcion']=='obtener_productos'){
 		$producto->obtener_stock($objeto->id);
 		$stock = $producto->objetos[0]->total;
 		$json[]=array(
-			'id'=>$objeto->id,
-			'nombre'=>$objeto->nombre,
-			'concentracion'=>$objeto->concentracion,
-			'adicional'=>$objeto->adicional,
-			'precio'=>$objeto->precio,
-			'stock'=>$stock,
-			'laboratorio'=>$objeto->laboratorio,
-			'tipo'=>$objeto->tipo,
-			'presentacion'=>$objeto->presentacion,
-			'avatar'=>$objeto->avatar,
-			'fracciones'=>$objeto->fracciones,
-			'codigo'=>$objeto->codigo,
-			'registro_sanitario'=>$objeto->registro_sanitario,
-			'fecha_creacion'=>$objeto->fecha_creacion,
-			'fecha_edicion'=>$objeto->fecha_edicion
+			'id'				 => openssl_encrypt($objeto->id, CODE, KEY),
+			'nombre'			 => $objeto->nombre,
+			'concentracion'		 => $objeto->concentracion,
+			'adicional'			 => $objeto->adicional,
+			'precio'			 => $objeto->precio,
+			'stock'				 => $stock,
+			'laboratorio'		 => $objeto->laboratorio,
+			'tipo'				 => $objeto->tipo,
+			'presentacion'		 => $objeto->presentacion,
+			'avatar'			 => $objeto->avatar,
+			'fracciones'		 => $objeto->fracciones,
+			'codigo'			 => $objeto->codigo,
+			'registro_sanitario' => $objeto->registro_sanitario,
+			'fecha_creacion'	 => $objeto->fecha_creacion,
+			'fecha_edicion'		 => $objeto->fecha_edicion
 		);
 	}
 	$jsonstring = json_encode($json);

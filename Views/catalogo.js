@@ -140,10 +140,10 @@ $(document).ready(function() {
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-header">Usuario</li>
                 <li class="nav-item">
-                    <a href="editar_datos_personales.php" class="nav-link">
+                    <a href="/farmaciav2/Views/mi_perfil.php" class="nav-link">
                         <i class="nav-icon fas fa-user-cog"></i>
                         <p>
-                            Datos personales
+                            Mi perfil
                         </p>
                     </a>
                 </li>
@@ -317,7 +317,7 @@ $(document).ready(function() {
                                                     </ul>
                                                 </div>
                                                 <div class="col-md-4 text-center">
-                                                    <img src="/farmaciav2/Util/img/productos/${datos.avatar}" width="150px" alt="" class="img-circle img-fluid">
+                                                    <img src="/farmaciav2/Util/img/productos/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
                                                 </div>
                                             </div>
                                         </div>

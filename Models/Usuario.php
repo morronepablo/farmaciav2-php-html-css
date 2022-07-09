@@ -28,19 +28,38 @@ class Usuario{
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+	function obtener_datos($id_usuario){
+		$sql="SELECT 
+			  u.id, 
+			  u.nombre,
+			  u.apellido,
+			  u.edad,
+			  u.dni,
+			  u.telefono,
+			  u.residencia,
+			  u.correo,
+			  u.sexo,
+			  u.adicional,
+			  u.avatar,
+			  u.id_tipo,
+			  t.nombre as tipo
+			  FROM usuario u
+			  JOIN tipo t ON u.id_tipo = t.id
+			  WHERE u.id=:id_usuario";
+		$variables = array(
+			':id_usuario' => $id_usuario
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
+	}
 	/******************************/
 	
 	function obtener_dato_logueo($dni){
 		$sql="SELECT * FROM usuario join tipo_us on us_tipo=id_tipo_us and dni_us=:dni";
 		$query = $this->acceso->prepare($sql);
 		$query->execute(array(':dni'=>$dni));
-		$this->objetos= $query->fetchall();
-		return $this->objetos;
-	}
-	function obtener_datos($id){
-		$sql="SELECT * FROM usuario join tipo_us on us_tipo=id_tipo_us and id_usuario=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id));
 		$this->objetos= $query->fetchall();
 		return $this->objetos;
 	}
