@@ -1,7 +1,10 @@
 <?php 
 include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Usuario.php';
+include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/Config/config.php';
 $usuario = new Usuario();
 session_start();
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+$fecha_actual = date('d-m-Y');
 if($_POST['funcion']=='login'){
 	$dni  = $_POST['dni'];
 	$pass = $_POST['pass'];
@@ -53,27 +56,30 @@ if($_POST['funcion']=='obtener_usuario'){
 	$id_usuario = $_SESSION['id'];
 	$fecha_actual = new DateTime();
 	$usuario->obtener_datos($id_usuario);
-	var_dump($usuario->objetos);
-	/*foreach ($usuario->objetos as $objeto) {
-		$nacimiento = new DateTime($objeto->edad);
+	if(!empty($usuario->objetos)) {
+		$nacimiento = new DateTime($usuario->objetos[0]->edad);
 		$edad = $nacimiento->diff($fecha_actual);
 		$edad_years = $edad->y;
-		$json[]=array(
-			'nombre'=>$objeto->nombre_us,
-			'apellidos'=>$objeto->apellidos_us,
-			'edad'=>$edad_years,
-			'dni'=>$objeto->dni_us,
-			'tipo'=>$objeto->nombre_tipo,
-			'telefono'=>$objeto->telefono_us,
-			'residencia'=>$objeto->residencia_us,
-			'correo'=>$objeto->correo_us,
-			'sexo'=>$objeto->sexo_us,
-			'adicional'=>$objeto->adicional_us,
-			'avatar'=>'../img/'.$objeto->avatar
+		$json = array(
+			'id'		 => openssl_encrypt($usuario->objetos[0]->id, CODE, KEY),
+			'nombre'	 =>$usuario->objetos[0]->nombre,
+			'apellido'	 =>$usuario->objetos[0]->apellido,
+			'edad'		 =>$edad_years,
+			'dni'		 =>$usuario->objetos[0]->dni,
+			'id_tipo'	 =>$usuario->objetos[0]->id_tipo,
+			'tipo'		 =>$usuario->objetos[0]->tipo,
+			'telefono'   =>$usuario->objetos[0]->telefono,
+			'residencia' =>$usuario->objetos[0]->residencia,
+			'correo'	 =>$usuario->objetos[0]->correo,
+			'sexo'		 =>$usuario->objetos[0]->sexo,
+			'adicional'	 =>$usuario->objetos[0]->adicional,
+			'avatar'	 =>$usuario->objetos[0]->avatar
 		);
+		$jsonstring = json_encode($json);
+		echo $jsonstring;
+	} else {
+		echo 'error';
 	}
-	$jsonstring = json_encode($json[0]);
-	echo $jsonstring;*/
 }
 /*****************************************/
 

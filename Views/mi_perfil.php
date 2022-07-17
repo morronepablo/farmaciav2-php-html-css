@@ -96,6 +96,46 @@
   </div>
 </div>
 
+<!-- Modal Editar Datos Personales -->
+<div class="modal fade" id="editar_datos_personales" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar datos personales</h5>
+      </div>
+      <div class="modal-body">
+        <form id="form-editar_datos_personales" enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="">Teléfono</label>
+				<input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese teléfono">
+			</div>
+			<div class="form-group">
+				<label for="">Residencia</label>
+				<input type="text" class="form-control" id="residencia" name="residencia" placeholder="Ingrese residencia">
+			</div>
+			<div class="form-group">
+				<label for="">Correo</label>
+				<input type="text" class="form-control" id="correo" name="correo" placeholder="Ingrese correo">
+			</div>
+			<div class="form-group">
+				<label for="">Sexo</label>
+				<input type="text" class="form-control" id="sexo" name="sexo" placeholder="Ingrese sexo">
+			</div>
+			<div class="form-group">
+				<label for="">Información Adicional</label>
+				<textarea type="text" style="height: 100px;" class="form-control" id="adicional" name="adicional" placeholder="Ingrese adicional"></textarea>
+			</div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+        <button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Modal Editar Datos Personales -->
+
 <!-------------------------------------------------------------------------->
 
   <title>My Perfil | Morrone</title>
@@ -122,61 +162,12 @@
     			<div class="row">
     				<div class="col-md-3">
     					<div class="card card-success card-outline">
-    						<div class="card-body box-profile">
-    							<div class="text-center">
-    								<img id='avatar2' src="../img/avatar.png" class="profile-user-img img-fluid img-circle">
-    							</div>
-    							<div class="text-center mt-1">
-    								<button type="button" data-toggle="modal" data-target="#cambiophoto" class="btn btn-primary btn-sm">Cambiar avatar</button>
-    							</div>
-    							<input id="id_usuario" type="hidden" value="<?php echo $_SESSION['usuario'] ?>">
-    							<h3 id="nombre_us" class="profile-username text-center text-success">Nombre</h3>
-    							<p id="apellidos_us" class="text-muted text-center">Apellidos</p>
-    							<ul class="list-group list-group-unbordered mb-3">
-    								<li class="list-group-item">
-    									<b style="color: #0B7300">Edad</b><a id="edad" class="float-right">12</a>
-    								</li>
-    								<li class="list-group-item">
-    									<b style="color: #0B7300">DNI</b><a id="dni_us" class="float-right">12</a>
-    								</li>
-    								<li class="list-group-item">
-    									<b style="color: #0B7300">Tipo Usuario</b>
-    									<span id="us_tipo" class="float-right">Administrador</span>
-    									<button data-toggle="modal" data-target="#cambiocontra" type="button" class="btn btn-block btn-outline-warning btn-sm">Cambiar Password</button>
-    								</li>
-    							</ul>
+    						<div id="card_1" class="card-body box-profile">
+    							
     						</div>
     					</div>
-    					<div class="card card-success">
-    						<div class="card-header">
-    							<h3 class="card-title">Sobre mi</h3>
-    						</div>
-    						<div class="card-body">
-    							<strong style="color: #0B7300">
-    								<i class="fas fa-phone mr-1"></i>Teléfono
-    							</strong>
-    							<p id="telefono_us" class="text-muted">99999999</p>
-    							<strong style="color: #0B7300">
-    								<i class="fas fa-map-marker-alt mr-1"></i>Domicilio
-    							</strong>
-    							<p id="residencia_us" class="text-muted">1138669097</p>
-    							<strong style="color: #0B7300">
-    								<i class="fas fa-at mr-1"></i>Correo
-    							</strong>
-    							<p id="correo_us" class="text-muted">1138669097</p>
-    							<strong style="color: #0B7300">
-    								<i class="fas fa-smile-wink mr-1"></i>Sexo
-    							</strong>
-    							<p id="sexo_us" class="text-muted">1138669097</p>
-    							<strong style="color: #0B7300">
-    								<i class="fas fa-pencil-alt mr-1"></i>Información adicional
-    							</strong>
-    							<p id="adicional_us" class="text-muted">1138669097</p>
-    							<button class="edit btn btn-block bg-gradient-danger">Editar</button>
-    						</div>
-    						<div class="card-footer">
-    							<p class="text-muted">Click en boton si desea editar</p>
-    						</div>
+    					<div id="card_2" class="card card-success">
+    						
     					</div>
     				</div>
     				<div class="col-md-9">
@@ -185,49 +176,7 @@
     							<h3 class="card-title">Editar datos personales</h3>
     						</div>
     						<div class="card-body">
-    							<div class="alert alert-success text-center" id="editado" style='display:none;'>
-    								<span><i class="fas fa-check m-1"></i>Editado</span>
-    							</div>
-    							<div class="alert alert-danger text-center" id="noeditado" style='display:none;'>
-    								<span><i class="fas fa-times m-1"></i>Edición Deshabilitada</span>
-    							</div>
-    							<form id='form-usuario' class="form-horizontal">
-    								<div class="form-group row">
-    									<label for="telefono" class="col-sm-2 col-form-label">Teléfono</label>
-    									<div class="col-sm-10">
-    										<input type="number" id="telefono" class="form-control">
-    									</div>
-    								</div>
-    								<div class="form-group row">
-    									<label for="residencia" class="col-sm-2 col-form-label">Domicilio</label>
-    									<div class="col-sm-10">
-    										<input type="text" id="residencia" class="form-control">
-    									</div>
-    								</div>
-    								<div class="form-group row">
-    									<label for="correo" class="col-sm-2 col-form-label">Correo</label>
-    									<div class="col-sm-10">
-    										<input type="text" id="correo" class="form-control">
-    									</div>
-    								</div>
-    								<div class="form-group row">
-    									<label for="sexo" class="col-sm-2 col-form-label">Sexo</label>
-    									<div class="col-sm-10">
-    										<input type="text" id="sexo" class="form-control">
-    									</div>
-    								</div>
-    								<div class="form-group row">
-    									<label for="adicional" class="col-sm-2 col-form-label">Información adicional</label>
-    									<div class="col-sm-10">
-    										<textarea class="form-control" id="adicional" cols="30" rows="10"></textarea>
-    									</div>
-    								</div>
-    								<div class="form-group row">
-    									<div class="offset-sm-2 col-sm-10 float-right">
-    										<button class="btn btn-block btn-outline-success">Guardar</button>
-    									</div>
-    								</div>
-    							</form>
+    							
     						</div>
     						<div class="card-footer">
     							<p class="text-muted">Cuidado con ingresar datos erroneos</p>

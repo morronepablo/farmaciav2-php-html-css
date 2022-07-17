@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	Loader();
-	setTimeout(verificar_sesion, 2000);
-	//verificar_sesion();
+	//setTimeout(verificar_sesion, 2000);
+	verificar_sesion();
     toastr.options = {
         "preventDuplicates": true
     }
@@ -267,7 +267,70 @@ $(document).ready(function(){
             try {
                 let usuario = JSON.parse(response);
 				console.log(usuario);
-                
+                let template = `
+                <div class="text-center">
+    				<img role="button" src="/farmaciav2/Util/img/user/${usuario.avatar}" class="profile-user-img img-fluid img-circle" data-toggle="modal" data-target="#cambiophoto">
+    			</div>
+                <h3 class="profile-username text-center text-success">${usuario.nombre}</h3>
+                <p class="text-muted text-center">${usuario.apellido}</p>
+                <ul class="list-group list-group-unbordered mb-3">
+                    <li class="list-group-item">
+                        <b style="color: #0B7300">Edad</b><a class="float-right">${usuario.edad}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b style="color: #0B7300">DNI</b><a class="float-right">${usuario.dni}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b style="color: #0B7300">Tipo Usuario</b>
+                        <span class="float-right">`;
+                        if(usuario.id_tipo=='1'){
+                            template+=`<h1 class="badge badge-danger">${usuario.tipo}</h1>`;
+                        }
+                        else if(usuario.id_tipo=='2'){
+                            template+=`<h1 class="badge badge-warning">${usuario.tipo}</h1>`;
+                        }
+                        else if(usuario.id_tipo=='3'){
+                            template+=`<h1 class="badge badge-info">${usuario.tipo}</h1>`;
+                        }
+            template+= `</span>
+                        <button data-toggle="modal" data-target="#cambiocontra" type="button" class="btn btn-block btn-outline-warning btn-sm">Cambiar Password</button>
+                    </li>
+                </ul>
+                `;
+                $('#card_1').html(template);
+                let template_1 = `
+                <div class="card-header">
+                    <h3 class="card-title">Sobre mi</h3>
+                    <div class="card-tools">
+                        <button class="btn btn-tool" data-toggle="modal" data-target="#editar_datos_personales">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <strong style="color: #0B7300">
+                        <i class="fas fa-phone mr-1"></i>Teléfono
+                    </strong>
+                    <p class="text-muted">${usuario.telefono}</p>
+                    <strong style="color: #0B7300">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Domicilio
+                    </strong>
+                    <p class="text-muted">${usuario.residencia}</p>
+                    <strong style="color: #0B7300">
+                        <i class="fas fa-at mr-1"></i>Correo
+                    </strong>
+                    <p class="text-muted">${usuario.correo}</p>
+                    <strong style="color: #0B7300">
+                        <i class="fas fa-smile-wink mr-1"></i>Sexo
+                    </strong>
+                    <p class="text-muted">${usuario.sexo}</p>
+                    <strong style="color: #0B7300">
+                        <i class="fas fa-pencil-alt mr-1"></i>Información adicional
+                    </strong>
+                    <p class="text-muted">${usuario.adicional}</p>
+                </div>
+                `;
+                $('#card_2').html(template_1);
             } catch (error) {
                 console.error(error);
                 console.log(response);
