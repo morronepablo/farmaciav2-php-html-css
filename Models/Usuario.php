@@ -36,15 +36,18 @@ class Usuario{
 			  u.edad,
 			  u.dni,
 			  u.telefono,
-			  u.residencia,
+			  u.direccion,
 			  u.correo,
 			  u.sexo,
 			  u.adicional,
 			  u.avatar,
 			  u.id_tipo,
-			  t.nombre as tipo
+			  t.nombre as tipo,
+			  CONCAT(l.nombre,' - ', p.nombre) as residencia
 			  FROM usuario u
 			  JOIN tipo t ON u.id_tipo = t.id
+			  JOIN localidad l ON l.id = u.id_localidad
+			  JOIN provincia p ON p.id = l.id_provincia
 			  WHERE u.id=:id_usuario";
 		$variables = array(
 			':id_usuario' => $id_usuario

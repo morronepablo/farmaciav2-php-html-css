@@ -6,6 +6,55 @@ $(document).ready(function(){
         "preventDuplicates": true
     }
 
+    $('#residencia').select2({
+        placeholder: 'Seleccione una residencia',
+        language: {
+            noResult: function() {
+                return "No hay resultados."
+            },
+            searching: function() {
+                return "Buscando..."
+            }
+        }
+    })
+
+    async function obtener_residencias() {
+        let funcion = "obtener_residencias";
+        let data = await fetch('/farmaciav2/Controllers/LocalidadController.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'funcion=' + funcion
+        })
+        if(data.ok) {
+            let response = await data.text();
+            try {
+                let residencias = JSON.parse(response);
+                let template = ``;
+                residencias.forEach(residencia => {
+                    template += `
+                    <option value="${residencia.id}">${residencia.residencia}</option>
+                    `;
+                });
+                $('#residencia').html(template);
+                // $('#residencia').val('').trigger('change');
+            } catch (error) {
+                console.error(error);
+                console.log(response);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo confilcto en el sistema, póngase en contacto con el administrador'
+                })
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: data.statusText,
+                text: 'Hubo confilcto de código: ' + data.status
+            })
+        }
+    }
+
     function llenar_menu_superior(usuario) {
         let template= `
         <ul class="navbar-nav">
@@ -232,6 +281,7 @@ $(document).ready(function(){
                 if(respuesta.length != 0) {
                     llenar_menu_superior(respuesta);
                     llenar_menu_lateral(respuesta);
+                    obtener_residencias();
 					obtener_usuario();
                     CloseLoader();
                 } else {
@@ -313,9 +363,13 @@ $(document).ready(function(){
                     </strong>
                     <p class="text-muted">${usuario.telefono}</p>
                     <strong style="color: #0B7300">
-                        <i class="fas fa-map-marker-alt mr-1"></i>Domicilio
+                        <i class="fas fa-map-marker-alt mr-1"></i>Residencia
                     </strong>
                     <p class="text-muted">${usuario.residencia}</p>
+                    <strong style="color: #0B7300">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Dirección
+                    </strong>
+                    <p class="text-muted">${usuario.direccion}</p>
                     <strong style="color: #0B7300">
                         <i class="fas fa-at mr-1"></i>Correo
                     </strong>

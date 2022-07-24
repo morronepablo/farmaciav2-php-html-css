@@ -70,6 +70,7 @@ if($_POST['funcion']=='obtener_usuario'){
 			'tipo'		 =>$usuario->objetos[0]->tipo,
 			'telefono'   =>$usuario->objetos[0]->telefono,
 			'residencia' =>$usuario->objetos[0]->residencia,
+			'direccion'  =>$usuario->objetos[0]->direccion,
 			'correo'	 =>$usuario->objetos[0]->correo,
 			'sexo'		 =>$usuario->objetos[0]->sexo,
 			'adicional'	 =>$usuario->objetos[0]->adicional,

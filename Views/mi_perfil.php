@@ -97,7 +97,7 @@
 </div>
 
 <!-- Modal Editar Datos Personales -->
-<div class="modal fade" id="editar_datos_personales" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editar_datos_personales" >
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -111,7 +111,11 @@
 			</div>
 			<div class="form-group">
 				<label for="">Residencia</label>
-				<input type="text" class="form-control" id="residencia" name="residencia" placeholder="Ingrese residencia">
+				<select name="residencia" id="residencia" class="form-control select2-success" data-dropdown-css-class="select2-success" style="width: 100%;"></select>
+			</div>
+			<div class="form-group">
+				<label for="">Dirección</label>
+				<input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese dirección">
 			</div>
 			<div class="form-group">
 				<label for="">Correo</label>

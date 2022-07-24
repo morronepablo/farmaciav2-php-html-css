@@ -19,6 +19,8 @@
 <script src="/farmaciav2/Util/js/toastr.min.js"></script>
 <!-- Datatables -->
 <script src="/farmaciav2/Util/js/datatables.min.js"></script>
+<!-- Select2 -->
+<script src="/farmaciav2/Util/js/select2.full.min.js"></script>
 
 </body>
 
