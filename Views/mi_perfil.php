@@ -105,6 +105,7 @@
       </div>
       <div class="modal-body">
         <form id="form-editar_datos_personales" enctype="multipart/form-data">
+			<input type="hidden" id="id_usuario" name="id_usuario">
 			<div class="form-group">
 				<label for="">Teléfono</label>
 				<input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese teléfono">
@@ -129,12 +130,12 @@
 				<label for="">Información Adicional</label>
 				<textarea type="text" style="height: 100px;" class="form-control" id="adicional" name="adicional" placeholder="Ingrese adicional"></textarea>
 			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+			<button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
 		</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
-        <button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
-      </div>
+		</div>
     </div>
   </div>
 </div>

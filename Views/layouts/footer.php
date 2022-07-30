@@ -21,6 +21,9 @@
 <script src="/farmaciav2/Util/js/datatables.min.js"></script>
 <!-- Select2 -->
 <script src="/farmaciav2/Util/js/select2.full.min.js"></script>
+<!-- jQuery Validate-->
+<script src="/farmaciav2/Util/js/jquery.validate.min.js"></script>
+<script src="/farmaciav2/Util/js/additional-methods.min.js"></script>
 
 </body>
 

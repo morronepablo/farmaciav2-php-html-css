@@ -61,20 +61,21 @@ if($_POST['funcion']=='obtener_usuario'){
 		$edad = $nacimiento->diff($fecha_actual);
 		$edad_years = $edad->y;
 		$json = array(
-			'id'		 => openssl_encrypt($usuario->objetos[0]->id, CODE, KEY),
-			'nombre'	 =>$usuario->objetos[0]->nombre,
-			'apellido'	 =>$usuario->objetos[0]->apellido,
-			'edad'		 =>$edad_years,
-			'dni'		 =>$usuario->objetos[0]->dni,
-			'id_tipo'	 =>$usuario->objetos[0]->id_tipo,
-			'tipo'		 =>$usuario->objetos[0]->tipo,
-			'telefono'   =>$usuario->objetos[0]->telefono,
-			'residencia' =>$usuario->objetos[0]->residencia,
-			'direccion'  =>$usuario->objetos[0]->direccion,
-			'correo'	 =>$usuario->objetos[0]->correo,
-			'sexo'		 =>$usuario->objetos[0]->sexo,
-			'adicional'	 =>$usuario->objetos[0]->adicional,
-			'avatar'	 =>$usuario->objetos[0]->avatar
+			'id'		 	=> openssl_encrypt($usuario->objetos[0]->id, CODE, KEY),
+			'nombre'	 	=>$usuario->objetos[0]->nombre,
+			'apellido'	 	=>$usuario->objetos[0]->apellido,
+			'edad'		 	=>$edad_years,
+			'dni'		 	=>$usuario->objetos[0]->dni,
+			'id_tipo'	 	=>$usuario->objetos[0]->id_tipo,
+			'tipo'		 	=>$usuario->objetos[0]->tipo,
+			'telefono'   	=>$usuario->objetos[0]->telefono,
+			'residencia' 	=>$usuario->objetos[0]->residencia,
+			'id_residencia' =>$usuario->objetos[0]->id_residencia,
+			'direccion'  	=>$usuario->objetos[0]->direccion,
+			'correo'	 	=>$usuario->objetos[0]->correo,
+			'sexo'		 	=>$usuario->objetos[0]->sexo,
+			'adicional'	 	=>$usuario->objetos[0]->adicional,
+			'avatar'	 	=>$usuario->objetos[0]->avatar
 		);
 		$jsonstring = json_encode($json);
 		echo $jsonstring;

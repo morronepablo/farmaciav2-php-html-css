@@ -36,7 +36,7 @@ $(document).ready(function(){
                     `;
                 });
                 $('#residencia').html(template);
-                // $('#residencia').val('').trigger('change');
+                $('#residencia').val('').trigger('change');
             } catch (error) {
                 console.error(error);
                 console.log(response);
@@ -352,7 +352,17 @@ $(document).ready(function(){
                 <div class="card-header">
                     <h3 class="card-title">Sobre mi</h3>
                     <div class="card-tools">
-                        <button class="btn btn-tool" data-toggle="modal" data-target="#editar_datos_personales">
+                        <button id="${usuario.id}" 
+                                telefono="${usuario.telefono}"
+                                id_residencia="${usuario.id_residencia}"
+                                direccion="${usuario.direccion}"
+                                correo="${usuario.correo}"
+                                sexo="${usuario.sexo}"
+                                adicional="${usuario.adicional}"
+                                class="editar_datos btn btn-tool" 
+                                data-toggle="modal" 
+                                data-target="#editar_datos_personales"
+                        >
                             <i class="fas fa-pencil-alt"></i>
                         </button>
                     </div>
@@ -402,6 +412,98 @@ $(document).ready(function(){
             })
         }
     }
+
+    $(document).on('click','.editar_datos', (e) => {
+        let elemento        = $(this)[0].activeElement;
+        let id              = $(elemento).attr('id');
+        let telefono        = $(elemento).attr('telefono');
+        let id_residencia   = $(elemento).attr('id_residencia');
+        let direccion       = $(elemento).attr('direccion');
+        let correo          = $(elemento).attr('correo');
+        let sexo            = $(elemento).attr('sexo');
+        let adiciional      = $(elemento).attr('adiciional');
+        $('#id_usuario').val(id);
+        $('#telefono').val(telefono);
+        $('#residencia').val(id_residencia).trigger('change');
+        $('#direccion').val(direccion);
+        $('#correo').val(correo);
+        $('#sexo').val(sexo);
+        $('#adiciional').val(adiciional);
+    });
+
+    $.validator.setDefaults({
+        submitHandler: function () {
+            alert( "Validado" );
+        }
+    });
+    $('#form-editar_datos_personales').validate({
+        rules: {
+            telefono: {
+                required: true,
+                number: true,
+                minlength: 10,
+                maxlength: 10
+            },
+            residencia: {
+                required: true
+            },
+            direccion: {
+                required: true,
+                minlength: 2,
+                maxlength: 100
+            },
+            sexo: {
+                required: true
+            },
+            correo: {
+                required: true,
+                email: true
+            },
+            adicional: {
+                maxlength: 100
+            },
+        },
+        messages: {
+            telefono: {
+                required: "* Dato requerido",
+                number: "* El dato debe ser numérico",
+                minlength: "* Se permite mínimo 10 caracteres",
+                maxlength: "* Se permite máximo 10 caracteres"
+            },
+            residencia: {
+                required: "* Dato requerido"
+            },
+            direccion: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo 2 caracteres",
+                maxlength: "* Se permite máximo 100 caracteres"
+            },
+            sexo: {
+                required: "* Dato requerido"
+            },
+            correo: {
+                required: "* Dato requerido",
+                email: "* Ingrese un correo de formato válido"
+            },
+            adicional: {
+                maxlength: "* Se permite máximo 100 caracteres"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+            $(element).removeClass('is-valid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+            $(element).addClass('is-valid');
+        }
+    });
+  
 
 	function Loader(mensaje) {
         if(mensaje == '' || mensaje == null) {
