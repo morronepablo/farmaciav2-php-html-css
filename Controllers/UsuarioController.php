@@ -5,6 +5,7 @@ $usuario = new Usuario();
 session_start();
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 $fecha_actual = date('d-m-Y');
+
 if($_POST['funcion']=='login'){
 	$dni  = $_POST['dni'];
 	$pass = $_POST['pass'];
@@ -61,27 +62,55 @@ if($_POST['funcion']=='obtener_usuario'){
 		$edad = $nacimiento->diff($fecha_actual);
 		$edad_years = $edad->y;
 		$json = array(
-			'id'		 	=> openssl_encrypt($usuario->objetos[0]->id, CODE, KEY),
-			'nombre'	 	=>$usuario->objetos[0]->nombre,
-			'apellido'	 	=>$usuario->objetos[0]->apellido,
-			'edad'		 	=>$edad_years,
-			'dni'		 	=>$usuario->objetos[0]->dni,
-			'id_tipo'	 	=>$usuario->objetos[0]->id_tipo,
-			'tipo'		 	=>$usuario->objetos[0]->tipo,
-			'telefono'   	=>$usuario->objetos[0]->telefono,
-			'residencia' 	=>$usuario->objetos[0]->residencia,
-			'id_residencia' =>$usuario->objetos[0]->id_residencia,
-			'direccion'  	=>$usuario->objetos[0]->direccion,
-			'correo'	 	=>$usuario->objetos[0]->correo,
-			'sexo'		 	=>$usuario->objetos[0]->sexo,
-			'adicional'	 	=>$usuario->objetos[0]->adicional,
-			'avatar'	 	=>$usuario->objetos[0]->avatar
+			'id'		 	=>	openssl_encrypt($usuario->objetos[0]->id, CODE, KEY),
+			'nombre'	 	=>	$usuario->objetos[0]->nombre,
+			'apellido'	 	=>	$usuario->objetos[0]->apellido,
+			'edad'		 	=>	$edad_years,
+			'dni'		 	=>	$usuario->objetos[0]->dni,
+			'id_tipo'	 	=>	$usuario->objetos[0]->id_tipo,
+			'tipo'		 	=>	$usuario->objetos[0]->tipo,
+			'telefono'   	=>	$usuario->objetos[0]->telefono,
+			'residencia' 	=>	$usuario->objetos[0]->residencia,
+			'id_residencia' =>	openssl_encrypt($usuario->objetos[0]->id_residencia, CODE, KEY),
+			'direccion'  	=>	$usuario->objetos[0]->direccion,
+			'correo'	 	=>	$usuario->objetos[0]->correo,
+			'sexo'		 	=>	$usuario->objetos[0]->sexo,
+			'adicional'	 	=>	$usuario->objetos[0]->adicional,
+			'avatar'	 	=>	$usuario->objetos[0]->avatar
 		);
 		$jsonstring = json_encode($json);
 		echo $jsonstring;
 	} else {
 		echo 'error';
 	}
+}
+
+if($_POST['funcion']=='editar_datos'){
+	$mensaje		= '';
+	if(!empty($_SESSION['id'])) {
+		$id_usuario 	= $_SESSION['id'];
+		$telefono 		= $_POST['telefono'];
+		$residencia 	= $_POST['residencia'];
+		$direccion 		= $_POST['direccion'];
+		$correo 		= $_POST['correo'];
+		$sexo 			= $_POST['sexo'];
+		$adicional 		= $_POST['adicional'];
+		$formateado		= str_replace(' ', '+', $residencia);
+		$id_residencia	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_residencia)) {
+			$usuario->editar_datos($id_usuario,$telefono,$id_residencia,$direccion,$correo,$sexo,$adicional);
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
 }
 /*****************************************/
 
@@ -100,16 +129,6 @@ if($_POST['funcion']=='capturar_datos'){
 	}
 	$jsonstring = json_encode($json[0]);
 	echo $jsonstring;
-}
-if($_POST['funcion']=='editar_usuario'){
-	$id_usuario=$_POST['id_usuario'];
-	$telefono=$_POST['telefono'];
-	$residencia=$_POST['residencia'];
-	$correo=$_POST['correo'];
-	$sexo=$_POST['sexo'];
-	$adicional=$_POST['adicional'];
-	$usuario->editar($id_usuario,$telefono,$residencia,$correo,$sexo,$adicional);
-	echo 'editado';
 }
 if($_POST['funcion']=='cambiar_contra'){
 	$id_usuario=$_POST['id_usuario'];

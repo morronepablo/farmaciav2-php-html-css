@@ -10,7 +10,10 @@ if($_POST['funcion']=='obtener_residencias'){
 	$localidad->obtener_residencias();
 	$json = array();
 	foreach ($localidad->objetos as $objeto) {
-		$json[] = $objeto;
+		$json[] = array(
+			'id' 			=> openssl_encrypt($objeto->id, CODE, KEY),
+			'residencia' 	=> $objeto->residencia
+		);
 	}
 	$jsonstring = json_encode($json);
 	echo $jsonstring;

@@ -105,7 +105,6 @@
       </div>
       <div class="modal-body">
         <form id="form-editar_datos_personales" enctype="multipart/form-data">
-			<input type="hidden" id="id_usuario" name="id_usuario">
 			<div class="form-group">
 				<label for="">Teléfono</label>
 				<input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese teléfono">

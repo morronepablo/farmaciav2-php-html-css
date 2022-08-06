@@ -1,62 +1,62 @@
-$(document).ready(function(){
-	Loader();
-	//setTimeout(verificar_sesion, 2000);
-	verificar_sesion();
-    toastr.options = {
-        "preventDuplicates": true
-    }
+$(document).ready(function () {
+  Loader();
+  //setTimeout(verificar_sesion, 2000);
+  verificar_sesion();
+  toastr.options = {
+    preventDuplicates: true,
+  };
 
-    $('#residencia').select2({
-        placeholder: 'Seleccione una residencia',
-        language: {
-            noResult: function() {
-                return "No hay resultados."
-            },
-            searching: function() {
-                return "Buscando..."
-            }
-        }
-    })
+  $("#residencia").select2({
+    placeholder: "Seleccione una residencia",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
 
-    async function obtener_residencias() {
-        let funcion = "obtener_residencias";
-        let data = await fetch('/farmaciav2/Controllers/LocalidadController.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'funcion=' + funcion
-        })
-        if(data.ok) {
-            let response = await data.text();
-            try {
-                let residencias = JSON.parse(response);
-                let template = ``;
-                residencias.forEach(residencia => {
-                    template += `
+  async function obtener_residencias() {
+    let funcion = "obtener_residencias";
+    let data = await fetch("/farmaciav2/Controllers/LocalidadController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let residencias = JSON.parse(response);
+        let template = ``;
+        residencias.forEach((residencia) => {
+          template += `
                     <option value="${residencia.id}">${residencia.residencia}</option>
                     `;
-                });
-                $('#residencia').html(template);
-                $('#residencia').val('').trigger('change');
-            } catch (error) {
-                console.error(error);
-                console.log(response);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo confilcto en el sistema, póngase en contacto con el administrador'
-                })
-            }
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: data.statusText,
-                text: 'Hubo confilcto de código: ' + data.status
-            })
-        }
+        });
+        $("#residencia").html(template);
+        $("#residencia").val("").trigger("change");
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
     }
+  }
 
-    function llenar_menu_superior(usuario) {
-        let template= `
+  function llenar_menu_superior(usuario) {
+    let template = `
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -159,8 +159,10 @@ $(document).ready(function(){
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    <img src="/farmaciav2/Util/img/user/${usuario.avatar}" class="img-circle elevation-2" width="30" height="30">
-                    <span>${usuario.nombre + ' ' + usuario.apellido}</span>
+                    <img src="/farmaciav2/Util/img/user/${
+                      usuario.avatar
+                    }" class="img-circle elevation-2" width="30" height="30">
+                    <span>${usuario.nombre + " " + usuario.apellido}</span>
                 </a>
                 <ul class="dropdown-menu">
                     <li>
@@ -170,17 +172,21 @@ $(document).ready(function(){
             </li>
         </ul>
         `;
-        $('#menu_superior').html(template);
-    }
+    $("#menu_superior").html(template);
+  }
 
-    function llenar_menu_lateral(usuario) {
-        let template = `
+  function llenar_menu_lateral(usuario) {
+    let template = `
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="/farmaciav2/Util/img/user/${usuario.avatar}" class="img-circle elevation-2" alt="User Image">
+                <img src="/farmaciav2/Util/img/user/${
+                  usuario.avatar
+                }" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">${usuario.nombre + ' ' + usuario.apellido}</a>
+                <a href="#" class="d-block">${
+                  usuario.nombre + " " + usuario.apellido
+                }</a>
             </div>
         </div>
         <nav class="mt-2">
@@ -264,60 +270,60 @@ $(document).ready(function(){
             </ul>
         </nav>
         `;
-        $('#menu_lateral').html(template);
-    }
+    $("#menu_lateral").html(template);
+  }
 
-    async function verificar_sesion() {
-        let funcion = "verificar_sesion";
-        let data = await fetch('/farmaciav2/Controllers/UsuarioController.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'funcion=' + funcion
-        })
-        if(data.ok) {
-            let response = await data.text();
-            try {
-                let respuesta = JSON.parse(response);
-                if(respuesta.length != 0) {
-                    llenar_menu_superior(respuesta);
-                    llenar_menu_lateral(respuesta);
-                    obtener_residencias();
-					obtener_usuario();
-                    CloseLoader();
-                } else {
-                    location.href = "/farmaciav2/";
-                }
-            } catch (error) {
-                console.error(error);
-                console.log(response);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo confilcto en el sistema, póngase en contacto con el administrador'
-                })
-            }
+  async function verificar_sesion() {
+    let funcion = "verificar_sesion";
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        if (respuesta.length != 0) {
+          llenar_menu_superior(respuesta);
+          llenar_menu_lateral(respuesta);
+          obtener_residencias();
+          obtener_usuario();
+          CloseLoader();
         } else {
-            Swal.fire({
-                icon: 'error',
-                title: data.statusText,
-                text: 'Hubo confilcto de código: ' + data.status
-            })
+          location.href = "/farmaciav2/";
         }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
     }
+  }
 
-	async function obtener_usuario() {
-        let funcion = "obtener_usuario";
-        let data = await fetch('/farmaciav2/Controllers/UsuarioController.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'funcion=' + funcion
-        })
-        if(data.ok) {
-            let response = await data.text();
-            try {
-                let usuario = JSON.parse(response);
-				console.log(usuario);
-                let template = `
+  async function obtener_usuario() {
+    let funcion = "obtener_usuario";
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let usuario = JSON.parse(response);
+        console.log(usuario);
+        let template = `
                 <div class="text-center">
     				<img role="button" src="/farmaciav2/Util/img/user/${usuario.avatar}" class="profile-user-img img-fluid img-circle" data-toggle="modal" data-target="#cambiophoto">
     			</div>
@@ -333,22 +339,20 @@ $(document).ready(function(){
                     <li class="list-group-item">
                         <b style="color: #0B7300">Tipo Usuario</b>
                         <span class="float-right">`;
-                        if(usuario.id_tipo=='1'){
-                            template+=`<h1 class="badge badge-danger">${usuario.tipo}</h1>`;
-                        }
-                        else if(usuario.id_tipo=='2'){
-                            template+=`<h1 class="badge badge-warning">${usuario.tipo}</h1>`;
-                        }
-                        else if(usuario.id_tipo=='3'){
-                            template+=`<h1 class="badge badge-info">${usuario.tipo}</h1>`;
-                        }
-            template+= `</span>
+        if (usuario.id_tipo == "1") {
+          template += `<h1 class="badge badge-danger">${usuario.tipo}</h1>`;
+        } else if (usuario.id_tipo == "2") {
+          template += `<h1 class="badge badge-warning">${usuario.tipo}</h1>`;
+        } else if (usuario.id_tipo == "3") {
+          template += `<h1 class="badge badge-info">${usuario.tipo}</h1>`;
+        }
+        template += `</span>
                         <button data-toggle="modal" data-target="#cambiocontra" type="button" class="btn btn-block btn-outline-warning btn-sm">Cambiar Password</button>
                     </li>
                 </ul>
                 `;
-                $('#card_1').html(template);
-                let template_1 = `
+        $("#card_1").html(template);
+        let template_1 = `
                 <div class="card-header">
                     <h3 class="card-title">Sobre mi</h3>
                     <div class="card-tools">
@@ -394,143 +398,201 @@ $(document).ready(function(){
                     <p class="text-muted">${usuario.adicional}</p>
                 </div>
                 `;
-                $('#card_2').html(template_1);
-            } catch (error) {
-                console.error(error);
-                console.log(response);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo confilcto en el sistema, póngase en contacto con el administrador'
-                })
-            }
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: data.statusText,
-                text: 'Hubo confilcto de código: ' + data.status
-            })
-        }
-    }
-
-    $(document).on('click','.editar_datos', (e) => {
-        let elemento        = $(this)[0].activeElement;
-        let id              = $(elemento).attr('id');
-        let telefono        = $(elemento).attr('telefono');
-        let id_residencia   = $(elemento).attr('id_residencia');
-        let direccion       = $(elemento).attr('direccion');
-        let correo          = $(elemento).attr('correo');
-        let sexo            = $(elemento).attr('sexo');
-        let adiciional      = $(elemento).attr('adiciional');
-        $('#id_usuario').val(id);
-        $('#telefono').val(telefono);
-        $('#residencia').val(id_residencia).trigger('change');
-        $('#direccion').val(direccion);
-        $('#correo').val(correo);
-        $('#sexo').val(sexo);
-        $('#adiciional').val(adiciional);
-    });
-
-    $.validator.setDefaults({
-        submitHandler: function () {
-            alert( "Validado" );
-        }
-    });
-    $('#form-editar_datos_personales').validate({
-        rules: {
-            telefono: {
-                required: true,
-                number: true,
-                minlength: 10,
-                maxlength: 10
-            },
-            residencia: {
-                required: true
-            },
-            direccion: {
-                required: true,
-                minlength: 2,
-                maxlength: 100
-            },
-            sexo: {
-                required: true
-            },
-            correo: {
-                required: true,
-                email: true
-            },
-            adicional: {
-                maxlength: 100
-            },
-        },
-        messages: {
-            telefono: {
-                required: "* Dato requerido",
-                number: "* El dato debe ser numérico",
-                minlength: "* Se permite mínimo 10 caracteres",
-                maxlength: "* Se permite máximo 10 caracteres"
-            },
-            residencia: {
-                required: "* Dato requerido"
-            },
-            direccion: {
-                required: "* Dato requerido",
-                minlength: "* Se permite mínimo 2 caracteres",
-                maxlength: "* Se permite máximo 100 caracteres"
-            },
-            sexo: {
-                required: "* Dato requerido"
-            },
-            correo: {
-                required: "* Dato requerido",
-                email: "* Ingrese un correo de formato válido"
-            },
-            adicional: {
-                maxlength: "* Se permite máximo 100 caracteres"
-            },
-        },
-        errorElement: 'span',
-        errorPlacement: function (error, element) {
-            error.addClass('invalid-feedback');
-            element.closest('.form-group').append(error);
-        },
-        highlight: function (element, errorClass, validClass) {
-            $(element).addClass('is-invalid');
-            $(element).removeClass('is-valid');
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $(element).removeClass('is-invalid');
-            $(element).addClass('is-valid');
-        }
-    });
-  
-
-	function Loader(mensaje) {
-        if(mensaje == '' || mensaje == null) {
-            mensaje = "Cargando datos..."
-        }
+        $("#card_2").html(template_1);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
         Swal.fire({
-            position: 'center',
-            html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
-            title: mensaje,
-            showConfirmButton: false
-        })
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
     }
+  }
 
-    function CloseLoader(mensaje, tipo) {
-        if(mensaje == '' || mensaje == null) {
-            Swal.close();
-        } else {
+  $(document).on("click", ".editar_datos", (e) => {
+    let elemento = $(this)[0].activeElement;
+
+    let telefono = $(elemento).attr("telefono");
+    let id_residencia = $(elemento).attr("id_residencia");
+    let direccion = $(elemento).attr("direccion");
+    let correo = $(elemento).attr("correo");
+    let sexo = $(elemento).attr("sexo");
+    let adiciional = $(elemento).attr("adiciional");
+
+    $("#telefono").val(telefono);
+    $("#residencia").val(id_residencia).trigger("change");
+    $("#direccion").val(direccion);
+    $("#correo").val(correo);
+    $("#sexo").val(sexo);
+    $("#adiciional").val(adiciional);
+  });
+
+  async function editar_datos(datos) {
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      body: datos
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        if(respuesta.mensaje == 'success') {
+            toastr.success('Sus datos fueron actualizados', 'Exito!', {timeOut: 2000});
+            obtener_usuario();
+            $('#editar_datos_personales').modal('hide');
+        } else if(respuesta.mensaje == 'error_decrypt') {
             Swal.fire({
-                position: 'center',
-                icon: tipo,
-                title: mensaje,
-                showConfirmButton: false
-            })
+                position: "center",
+                icon: 'error',
+                title: 'No vulnere los datos...',
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function() {
+                //refresca la pagina (F5)
+                location.reload();
+              });
+        } else if(respuesta.mensaje == 'error_session') {
+            Swal.fire({
+                position: "center",
+                icon: 'error',
+                title: 'Sesión finalizada...',
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function() {
+                //refresca la pagina (F5)
+                location.href='/farmaciav2/index.php';
+              });
         }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
     }
+  }
 
-	/*var funcion='';
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($('#form-editar_datos_personales')[0]);
+      let funcion = "editar_datos";
+      datos.append('funcion', funcion);
+      editar_datos(datos);
+    },
+  });
+
+  $("#form-editar_datos_personales").validate({
+    rules: {
+      telefono: {
+        required: true,
+        number: true,
+        minlength: 10,
+        maxlength: 10,
+      },
+      residencia: {
+        required: true,
+      },
+      direccion: {
+        required: true,
+        minlength: 2,
+        maxlength: 100,
+      },
+      sexo: {
+        required: true,
+      },
+      correo: {
+        required: true,
+        email: true,
+      },
+      adicional: {
+        maxlength: 100,
+      },
+    },
+    messages: {
+      telefono: {
+        required: "* Dato requerido",
+        number: "* El dato debe ser numérico",
+        minlength: "* Se permite mínimo 10 caracteres",
+        maxlength: "* Se permite máximo 10 caracteres",
+      },
+      residencia: {
+        required: "* Dato requerido",
+      },
+      direccion: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+        maxlength: "* Se permite máximo 100 caracteres",
+      },
+      sexo: {
+        required: "* Dato requerido",
+      },
+      correo: {
+        required: "* Dato requerido",
+        email: "* Ingrese un correo de formato válido",
+      },
+      adicional: {
+        maxlength: "* Se permite máximo 100 caracteres",
+      },
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
+  function Loader(mensaje) {
+    if (mensaje == "" || mensaje == null) {
+      mensaje = "Cargando datos...";
+    }
+    Swal.fire({
+      position: "center",
+      html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
+      title: mensaje,
+      showConfirmButton: false,
+    });
+  }
+
+  function CloseLoader(mensaje, tipo) {
+    if (mensaje == "" || mensaje == null) {
+      Swal.close();
+    } else {
+      Swal.fire({
+        position: "center",
+        icon: tipo,
+        title: mensaje,
+        showConfirmButton: false,
+      });
+    }
+  }
+
+  /*var funcion='';
 	var id_usuario = $('#id_usuario').val();
 	var edit=false;
 	buscar_usuario(id_usuario);
@@ -673,5 +735,4 @@ $(document).ready(function(){
 		});
 		e.preventDefault();
 	})*/
-
-})
+});
