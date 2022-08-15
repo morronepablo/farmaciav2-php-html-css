@@ -79,6 +79,17 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+	function editar_avatar($id_usuario,$nombre){
+		$sql = "UPDATE usuario 
+				SET avatar=:nombre 
+				WHERE id=:id_usuario";
+		$variables = array(
+			':id_usuario' 	=> $id_usuario,
+			':nombre'		=> $nombre
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 	/******************************/
 	
 	function obtener_dato_logueo($dni){
@@ -138,17 +149,7 @@ class Usuario{
 	// 		echo 'noupdate';
 	// 	}
 	// }
-	function cambiar_photo($id_usuario,$nombre){
-		$sql="SELECT avatar FROM usuario where id_usuario=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id_usuario));
-		$this->objetos = $query->fetchall();
-
-			$sql="UPDATE usuario SET avatar=:nombre where id_usuario=:id";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':id'=>$id_usuario,':nombre'=>$nombre));
-		return $this->objetos;	
-	}
+	
 	function buscar(){
 		if(!empty($_POST['consulta'])){
 			$consulta=$_POST['consulta'];

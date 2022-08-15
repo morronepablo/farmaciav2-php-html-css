@@ -24,6 +24,8 @@
 <!-- jQuery Validate-->
 <script src="/farmaciav2/Util/js/jquery.validate.min.js"></script>
 <script src="/farmaciav2/Util/js/additional-methods.min.js"></script>
+<!-- Custom File Input-->
+<script src="/farmaciav2/Util/js/bs-custom-file-input.min.js"></script>
 
 </body>
 

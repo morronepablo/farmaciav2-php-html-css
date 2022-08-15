@@ -86,7 +86,7 @@ if($_POST['funcion']=='obtener_usuario'){
 }
 
 if($_POST['funcion']=='editar_datos'){
-	$mensaje		= '';
+	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$id_usuario 	= $_SESSION['id'];
 		$telefono 		= $_POST['telefono'];
@@ -112,56 +112,39 @@ if($_POST['funcion']=='editar_datos'){
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
-/*****************************************/
 
-if($_POST['funcion']=='capturar_datos'){
-	$json=array();
-	$id_usuario=$_POST['id_usuario'];
-	$usuario->obtener_datos($id_usuario);
-	foreach ($usuario->objetos as $objeto) {
-		$json[]=array(
-			'telefono'=>$objeto->telefono_us,
-			'residencia'=>$objeto->residencia_us,
-			'correo'=>$objeto->correo_us,
-			'sexo'=>$objeto->sexo_us,
-			'adicional'=>$objeto->adicional_us
-		);
+if($_POST['funcion']=='editar_avatar'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$id_usuario = $_SESSION['id'];
+		$nombre		= uniqid().'-'.$_FILES['avatar_mod']['name'];
+		$ruta		= $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/img/user/'.$nombre;
+		move_uploaded_file($_FILES['avatar_mod']['tmp_name'],$ruta);
+		$avatar 	= $_SESSION['avatar'];
+		if($avatar != 'default.png') {
+			unlink($_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/img/user/'.$avatar);
+		}
+		$_SESSION['avatar'] = $nombre;
+		$usuario->editar_avatar($id_usuario,$nombre);
+		$mensaje = 'success';
+	} else {
+		$mensaje = 'error_session';
 	}
-	$jsonstring = json_encode($json[0]);
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
+/*****************************************/
+
 if($_POST['funcion']=='cambiar_contra'){
 	$id_usuario=$_POST['id_usuario'];
 	$oldpass=$_POST['oldpass'];
 	$newpass=$_POST['newpass'];
 	$usuario->cambiar_contra($id_usuario,$oldpass,$newpass);
 }
-if($_POST['funcion']=='cambiar_foto'){
-	if(($_FILES['photo']['type']=='image/jpeg')||($_FILES['photo']['type']=='image/png')||($_FILES['photo']['type']=='image/gif')){
-		$nombre=uniqid().'-'.$_FILES['photo']['name'];
-		$ruta='../img/'.$nombre;
-		move_uploaded_file($_FILES['photo']['tmp_name'],$ruta);
-		$usuario->cambiar_photo($id_usuario,$nombre);
-		foreach ($usuario->objetos as $objeto) {
-			unlink('../img/'.$objeto->avatar);
-		}
-		$json= array();
-		$json[]=array(
-			'ruta'=>$ruta,
-			'alert'=>'edit'
-		);
-		$jsonstring = json_encode($json[0]);
-		echo $jsonstring;
-	}
-	else{
-		$json= array();
-		$json[]=array(
-			'alert'=>'noedit'
-		);
-		$jsonstring = json_encode($json[0]);
-		echo $jsonstring;
-	}
-}
+
 if($_POST['funcion']=='buscar_usuarios_adm'){
 	$json=array();
 	$fecha_actual = new DateTime();

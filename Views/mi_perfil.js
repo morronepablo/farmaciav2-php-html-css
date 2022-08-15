@@ -1,6 +1,7 @@
 $(document).ready(function () {
   Loader();
   //setTimeout(verificar_sesion, 2000);
+  bsCustomFileInput.init();
   verificar_sesion();
   toastr.options = {
     preventDuplicates: true,
@@ -325,8 +326,8 @@ $(document).ready(function () {
         console.log(usuario);
         let template = `
                 <div class="text-center">
-    				<img role="button" src="/farmaciav2/Util/img/user/${usuario.avatar}" class="profile-user-img img-fluid img-circle" data-toggle="modal" data-target="#cambiophoto">
-    			</div>
+    				      <img data-nombre="${usuario.nombre}" data-apellido="${usuario.apellido}" data-avatar="${usuario.avatar}" role="button" src="/farmaciav2/Util/img/user/${usuario.avatar}" class="editar_avatar profile-user-img img-fluid img-circle" data-toggle="modal" data-target="#editar_avatar">
+    			      </div>
                 <h3 class="profile-username text-center text-success">${usuario.nombre}</h3>
                 <p class="text-muted text-center">${usuario.apellido}</p>
                 <ul class="list-group list-group-unbordered mb-3">
@@ -551,6 +552,97 @@ $(document).ready(function () {
       adicional: {
         maxlength: "* Se permite máximo 100 caracteres",
       },
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
+  $(document).on("click", ".editar_avatar", function() {
+    let elemento  = $(this) ;
+    let nombre    = $(elemento).data("nombre");
+    let apellido  = $(elemento).data("apellido");
+    let avatar    = $(elemento).data("avatar");
+    $("#nombre_avatar").text(nombre);
+    $("#apellido_avatar").text(apellido);
+    $("#avatar").attr('src', '/farmaciav2/Util/img/user/' + avatar);
+  });
+
+  async function editar_avatar(datos) {
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      body: datos
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        if(respuesta.mensaje == 'success') {
+            toastr.success('Su avatar fué actializado', 'Exito!', {timeOut: 2000});
+            obtener_usuario();
+            $('#editar_avatar').modal('hide');
+            $('#form-editar_avatar').trigger('reset');
+        } else if(respuesta.mensaje == 'error_session') {
+            Swal.fire({
+                position: "center",
+                icon: 'error',
+                title: 'Sesión finalizada...',
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function() {
+                //refresca la pagina (F5)
+                location.href='/farmaciav2/index.php';
+              });
+        }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($('#form-editar_avatar')[0]);
+      let funcion = "editar_avatar";
+      datos.append('funcion', funcion);
+      editar_avatar(datos);
+    },
+  });
+
+  $("#form-editar_avatar").validate({
+    rules: {
+      avatar_mod: {
+        required: true,
+        extension: "png|jpg|jpeg|webp"
+      }
+    },
+    messages: {
+      avatar_mod: {
+        required: "* Dato requerido",
+        extension: "* Solo se permite formato (png|jpg|jpeg|webp)"
+      }
     },
     errorElement: "span",
     errorPlacement: function (error, element) {
