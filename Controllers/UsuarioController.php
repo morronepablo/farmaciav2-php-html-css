@@ -52,7 +52,7 @@ if($_POST['funcion']=='login'){
 	echo $jsonstring;
 }
 
-if($_POST['funcion']=='obtener_usuario'){
+else if($_POST['funcion']=='obtener_usuario'){
 	$json=array();
 	$id_usuario = $_SESSION['id'];
 	$fecha_actual = new DateTime();
@@ -85,7 +85,7 @@ if($_POST['funcion']=='obtener_usuario'){
 	}
 }
 
-if($_POST['funcion']=='editar_datos'){
+else if($_POST['funcion']=='editar_datos'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$id_usuario 	= $_SESSION['id'];
@@ -113,7 +113,7 @@ if($_POST['funcion']=='editar_datos'){
 	echo $jsonstring;
 }
 
-if($_POST['funcion']=='editar_avatar'){
+else if($_POST['funcion']=='editar_avatar'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$id_usuario = $_SESSION['id'];
@@ -131,19 +131,48 @@ if($_POST['funcion']=='editar_avatar'){
 		$mensaje = 'error_session';
 	}
 	$json = array(
+		'mensaje'	=>	$mensaje,
+		'img' 		=>	$nombre
+	);
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
+}
+
+else if($_POST['funcion']=='editar_password'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$id_usuario = $_SESSION['id'];
+		$oldpass	= $_POST['oldpass'];
+		$newpass	= $_POST['newpass'];
+		$usuario->obtener_datos($id_usuario);
+		$pass_base	= openssl_decrypt($usuario->objetos[0]->contrasena, CODE, KEY);
+		if($pass_base != '') {
+			// password de la base encriptado
+			if($oldpass == $pass_base) {
+				// cambio de password
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_pass';
+			}
+		} else {
+			// password de la base no encriptado
+			if($oldpass == $usuario->objetos[0]->contrasena) {
+				// cambio de password
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_pass';
+			}
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
 		'mensaje'	=>	$mensaje
 	);
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
 /*****************************************/
-
-if($_POST['funcion']=='cambiar_contra'){
-	$id_usuario=$_POST['id_usuario'];
-	$oldpass=$_POST['oldpass'];
-	$newpass=$_POST['newpass'];
-	$usuario->cambiar_contra($id_usuario,$oldpass,$newpass);
-}
 
 if($_POST['funcion']=='buscar_usuarios_adm'){
 	$json=array();

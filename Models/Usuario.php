@@ -44,7 +44,8 @@ class Usuario{
 			  u.id_tipo,
 			  t.nombre as tipo,
 			  CONCAT(l.nombre,' - ', p.nombre) as residencia,
-			  l.id as id_residencia
+			  l.id as id_residencia,
+			  u.contrasena
 			  FROM usuario u
 			  JOIN tipo t ON u.id_tipo = t.id
 			  JOIN localidad l ON l.id = u.id_localidad

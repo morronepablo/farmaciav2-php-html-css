@@ -5,57 +5,52 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
 
 <!-- Modales -->
 
-<div class="animate__animated animate__zoomInDown modal fade" id="cambiocontra" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Cambiar Contraseña -->
+<div class="modal fade" id="editar_password">
 	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Cambiar password</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+		<div class="modal-content card card-success">
+			<div class="modal-header card-header">
+				<h5 class="modal-title" id="exampleModalLabel">Cambiar contraseña</h5>
 			</div>
-			<div class="modal-body">
-				<div class="text-center">
-					<img id="avatar3" src="../img/avatar.png" class="profile-user-img img-fluid img-circle">
-				</div>
-				<div class="text-center">
-					<b>
-						<?php
-						echo $_SESSION['apellidos_us'];
-						echo ' ';
-						echo $_SESSION['nombre_us'];
-						?>
-					</b>
-				</div>
-				<div class="alert alert-success text-center" id="update" style='display:none;'>
-					<span><i class="fas fa-check m-1"></i>Se cambio password correctamente.</span>
-				</div>
-				<div class="alert alert-danger text-center" id="noupdate" style='display:none;'>
-					<span><i class="fas fa-times m-1"></i>El password anterior no es correcto.</span>
-				</div>
-				<form id="form-pass">
-					<div class="input-group mb-3">
-						<div class="input-group-prepend">
-							<span class="input-group-text"><i class="fas fa-unlock-alt"></i></span>
-						</div>
-						<input id="oldpass" type="password" class="form-control" placeholder="Ingrese password actual">
+			<div class="modal-body p-0">
+				<div class="card card-widget widget-user">
+					<div class="widget-user-header bg-success">
+						<h3 id="nombre_password" class="widget-user-username"></h3>
+						<h5 id="apellido_password" class="widget-user-desc"></h5>
 					</div>
-					<div class="input-group mb-3">
-						<div class="input-group-prepend">
-							<span class="input-group-text"><i class="fas fa-lock"></i></span>
-						</div>
-						<input id="newpass" type="text" class="form-control" placeholder="Ingrese password nueva">
+					<div class="widget-user-image">
+						<img id="avatar_password" class="img-circle elevation-2" src="" alt="User Avatar">
 					</div>
-
+					<div class="card-footer">
+						<div class="row">
+							<div class="col-md-12">
+								<form id="form-editar_password" enctype="multipart/form-data">
+									<div class="input-group mt-2 mb-3">
+										<div class="input-group-prepend">
+											<span class="input-group-text"><i class="fas fa-unlock-alt"></i></span>
+										</div>
+										<input type="password" id="oldpass" name="oldpass" class="form-control" placeholder="Ingrese contraseña actual">
+									</div>
+									<div class="input-group mb-3">
+										<div class="input-group-prepend">
+											<span class="input-group-text"><i class="fas fa-lock"></i></span>
+										</div>
+										<input type="password" id="newpass" name="newpass" class="form-control" placeholder="Ingrese la nueva contraseña">
+									</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="submit" class="btn bg-gradient-primary">Guardar</button>
+				<button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+				<button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
+<!-- Fin Modal Cambiar Contraseña -->
 
 <!-- Modal Cambiar Avatar -->
 <div class="modal fade" id="editar_avatar">

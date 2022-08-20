@@ -160,9 +160,7 @@ $(document).ready(function () {
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    <img src="/farmaciav2/Util/img/user/${
-                      usuario.avatar
-                    }" class="img-circle elevation-2" width="30" height="30">
+                    <img id="avatar_1" src="/farmaciav2/Util/img/user/${usuario.avatar}" class="img-circle elevation-2" width="30" height="30">
                     <span>${usuario.nombre + " " + usuario.apellido}</span>
                 </a>
                 <ul class="dropdown-menu">
@@ -180,7 +178,7 @@ $(document).ready(function () {
     let template = `
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="/farmaciav2/Util/img/user/${
+                <img id="avatar_2" src="/farmaciav2/Util/img/user/${
                   usuario.avatar
                 }" class="img-circle elevation-2" alt="User Image">
             </div>
@@ -348,7 +346,7 @@ $(document).ready(function () {
           template += `<h1 class="badge badge-info">${usuario.tipo}</h1>`;
         }
         template += `</span>
-                        <button data-toggle="modal" data-target="#cambiocontra" type="button" class="btn btn-block btn-outline-warning btn-sm">Cambiar Password</button>
+                        <button data-nombre="${usuario.nombre}" data-apellido="${usuario.apellido}" data-avatar="${usuario.avatar}" data-toggle="modal" data-target="#editar_password" type="button" class="editar_password btn btn-block btn-outline-warning btn-sm">Cambiar Password</button>
                     </li>
                 </ul>
                 `;
@@ -490,7 +488,6 @@ $(document).ready(function () {
     }
   }
 
-
   $.validator.setDefaults({
     submitHandler: function () {
       let datos = new FormData($('#form-editar_datos_personales')[0]);
@@ -588,8 +585,10 @@ $(document).ready(function () {
       try {
         let respuesta = JSON.parse(response);
         if(respuesta.mensaje == 'success') {
-            toastr.success('Su avatar fué actializado', 'Exito!', {timeOut: 2000});
+            toastr.success('Su avatar fué actualizado', 'Exito!', {timeOut: 2000});
             obtener_usuario();
+            $('#avatar_1').attr('src', '/farmaciav2/Util/img/user/' + respuesta.img);
+            $('#avatar_2').attr('src', '/farmaciav2/Util/img/user/' + respuesta.img);
             $('#editar_avatar').modal('hide');
             $('#form-editar_avatar').trigger('reset');
         } else if(respuesta.mensaje == 'error_session') {
@@ -642,6 +641,103 @@ $(document).ready(function () {
       avatar_mod: {
         required: "* Dato requerido",
         extension: "* Solo se permite formato (png|jpg|jpeg|webp)"
+      }
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
+  $(document).on("click", ".editar_password", function() {
+    let elemento  = $(this) ;
+    let nombre    = $(elemento).data("nombre");
+    let apellido  = $(elemento).data("apellido");
+    let avatar    = $(elemento).data("avatar");
+    $("#nombre_password").text(nombre);
+    $("#apellido_password").text(apellido);
+    $("#avatar_password").attr('src', '/farmaciav2/Util/img/user/' + avatar);
+  });
+
+  async function editar_password(datos) {
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      body: datos
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        console.log(respuesta);
+        if(respuesta.mensaje == 'success') {
+            toastr.success('Su contraseña fué actualizada', 'Exito!', {timeOut: 2000});
+            $('#editar_password').modal('hide');
+            $('#form-editar_password').trigger('reset');
+        } else if(respuesta.mensaje == 'error_pass') {
+          toastr.error('Su contraseña actual no coincide con nuestros registros, intente de nuevo', 'Error!', {timeOut: 2000});;
+        } else if(respuesta.mensaje == 'error_session') {
+            Swal.fire({
+                position: "center",
+                icon: 'error',
+                title: 'Sesión finalizada...',
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function() {
+                //refresca la pagina (F5)
+                location.href='/farmaciav2/index.php';
+              });
+        }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($('#form-editar_password')[0]);
+      let funcion = "editar_password";
+      datos.append('funcion', funcion);
+      editar_password(datos);
+    },
+  });
+
+  $("#form-editar_password").validate({
+    rules: {
+      oldpass: {
+        required: true
+      },
+      newpass: {
+        required: true
+      }
+    },
+    messages: {
+      oldpass: {
+        required: "* Dato requerido"
+      },
+      newpass: {
+        required: "* Dato requerido"
       }
     },
     errorElement: "span",
