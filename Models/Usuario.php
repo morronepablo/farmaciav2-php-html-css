@@ -91,6 +91,17 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+	function editar_password($id_usuario,$newpass){
+		$sql = "UPDATE usuario 
+				SET contrasena=:newpass 
+				WHERE id=:id_usuario";
+		$variables = array(
+			':id_usuario' 	=> $id_usuario,
+			':newpass'		=> $newpass
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 	/******************************/
 	
 	function obtener_dato_logueo($dni){
@@ -101,40 +112,7 @@ class Usuario{
 		return $this->objetos;
 	}
 	
-	function cambiar_contra($id_usuario,$oldpass,$newpass){
-		$sql="SELECT * FROM usuario where id_usuario=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id_usuario));
-		$this->objetos = $query->fetchall();
-		foreach ($this->objetos as $objeto) {
-			$contrasena_actual = $objeto->contrasena_us;
-		}
-		if(strpos($contrasena_actual,'$2y$10$')===0){
-			if(password_verify($oldpass, $contrasena_actual)){
-				$pass = password_hash($newpass,PASSWORD_BCRYPT,['cost'=>10]);
-				$sql="UPDATE usuario SET contrasena_us=:newpass where id_usuario=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id_usuario,':newpass'=>$pass));
-				echo 'update';
-			}
-			else{
-				echo 'noupdate';
-			}
-		}
-		else{
-			if($oldpass==$contrasena_actual){
-				$pass = password_hash($newpass,PASSWORD_BCRYPT,['cost'=>10]);
-				$sql="UPDATE usuario SET contrasena_us=:newpass where id_usuario=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id_usuario,':newpass'=>$pass));
-				echo 'update';
-			}
-			else{
-				echo 'noupdate';
-			}
-		}
-		
-	}
+	
 	// function cambiar_contra($id_usuario,$oldpass,$newpass){
 	// 	$sql="SELECT * FROM usuario where id_usuario=:id and contrasena_us=:oldpass";
 	// 	$query = $this->acceso->prepare($sql);

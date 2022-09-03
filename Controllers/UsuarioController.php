@@ -12,18 +12,37 @@ if($_POST['funcion']=='login'){
 	$usuario->login($dni);
 	$mensaje = '';
 	if(!empty($usuario->objetos)) {
-		$contrasena = $usuario->objetos[0]->contrasena;
-		if($pass == $contrasena) {
-			$_SESSION['id'] = $usuario->objetos[0]->id;
-			$_SESSION['nombre'] = $usuario->objetos[0]->nombre;
-			$_SESSION['apellido'] = $usuario->objetos[0]->apellido;
-			$_SESSION['dni'] = $usuario->objetos[0]->dni;
-			$_SESSION['avatar'] = $usuario->objetos[0]->avatar;
-			$_SESSION['id_tipo'] = $usuario->objetos[0]->id_tipo;
-			$_SESSION['tipo'] = $usuario->objetos[0]->tipo;
-			$mensaje = 'success';
+		$pass_base	= openssl_decrypt($usuario->objetos[0]->contrasena, CODE, KEY);
+		if($pass_base != '') {
+			// password de la base encriptado
+			if($pass == $pass_base) {
+				// cambio de password
+				$_SESSION['id'] = $usuario->objetos[0]->id;
+				$_SESSION['nombre'] = $usuario->objetos[0]->nombre;
+				$_SESSION['apellido'] = $usuario->objetos[0]->apellido;
+				$_SESSION['dni'] = $usuario->objetos[0]->dni;
+				$_SESSION['avatar'] = $usuario->objetos[0]->avatar;
+				$_SESSION['id_tipo'] = $usuario->objetos[0]->id_tipo;
+				$_SESSION['tipo'] = $usuario->objetos[0]->tipo;
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_pass';
+			}
 		} else {
-			$mensaje = 'error';
+			// password de la base no encriptado
+			if($pass == $usuario->objetos[0]->contrasena) {
+				// cambio de password
+				$_SESSION['id'] = $usuario->objetos[0]->id;
+				$_SESSION['nombre'] = $usuario->objetos[0]->nombre;
+				$_SESSION['apellido'] = $usuario->objetos[0]->apellido;
+				$_SESSION['dni'] = $usuario->objetos[0]->dni;
+				$_SESSION['avatar'] = $usuario->objetos[0]->avatar;
+				$_SESSION['id_tipo'] = $usuario->objetos[0]->id_tipo;
+				$_SESSION['tipo'] = $usuario->objetos[0]->tipo;
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_pass';
+			}
 		}
 	} else {
 		$mensaje = 'error';
@@ -150,6 +169,8 @@ else if($_POST['funcion']=='editar_password'){
 			// password de la base encriptado
 			if($oldpass == $pass_base) {
 				// cambio de password
+				$nueva_pass = openssl_encrypt($newpass, CODE, KEY);
+				$usuario->editar_password($id_usuario, $nueva_pass);
 				$mensaje = 'success';
 			} else {
 				$mensaje = 'error_pass';
@@ -158,6 +179,8 @@ else if($_POST['funcion']=='editar_password'){
 			// password de la base no encriptado
 			if($oldpass == $usuario->objetos[0]->contrasena) {
 				// cambio de password
+				$nueva_pass = openssl_encrypt($newpass, CODE, KEY);
+				$usuario->editar_password($id_usuario, $nueva_pass);
 				$mensaje = 'success';
 			} else {
 				$mensaje = 'error_pass';

@@ -17,6 +17,7 @@ $(document).ready(function() {
             let response = await data.text();
             try {
                 let respuesta = JSON.parse(response);
+                console.log(respuesta);
                 if(respuesta.mensaje == "success") {
                     location.href = "/farmaciav2/Views/catalogo.php";
                 } else if(respuesta.mensaje == "error") {
