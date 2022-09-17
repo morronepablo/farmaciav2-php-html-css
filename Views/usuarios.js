@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    Loader();
+$(document).ready(function(){
+	Loader();
     //setTimeout(verificar_sesion, 2000);
     
     verificar_sesion();
@@ -234,9 +234,7 @@ $(document).ready(function() {
                 if(respuesta.length != 0) {
                     llenar_menu_superior(respuesta);
                     llenar_menu_lateral(respuesta);
-                    $('#carrito').show();
-                    Contar_productos();
-                    obtener_productos();
+                    obtener_usuarios();
                     CloseLoader();
                 } else {
                     location.href = "/farmaciav2/";
@@ -258,10 +256,10 @@ $(document).ready(function() {
             })
         }
     }
-    
-    async function obtener_productos() {
-        let funcion = "obtener_productos";
-        let data = await fetch('/farmaciav2/Controllers/ProductoController.php', {
+
+	async function obtener_usuarios() {
+        let funcion = "obtener_usuarios";
+        let data = await fetch('/farmaciav2/Controllers/UsuarioController.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion
@@ -269,8 +267,9 @@ $(document).ready(function() {
         if(data.ok) {
             let response = await data.text();
             try {
-                let productos = JSON.parse(response);
-                $('#productos').DataTable({
+                let usuarios = JSON.parse(response);
+				console.log(usuarios);
+                /*$('#productos').DataTable({
                     data: productos,
                     "aaSorting": [],
                     "searching": true,
@@ -348,7 +347,7 @@ $(document).ready(function() {
                     ],
                     "language": espanol,
                     "destroy": true
-                })
+                })*/
             } catch (error) {
                 console.error(error);
                 console.log(response);
@@ -367,180 +366,7 @@ $(document).ready(function() {
         }
     }
 
-    $(document).on('click', '.agregar-carrito', (e) => {
-        let elemento = $(this)[0].activeElement;
-        let id            = $(elemento).attr('id');
-        let codigo        = $(elemento).attr('codigo');
-        let nombre        = $(elemento).attr('nombre');
-        let concentracion = $(elemento).attr('concentracion');
-        let adicional     = $(elemento).attr('adicional');
-        let laboratorio   = $(elemento).attr('laboratorio');
-        let presentacion  = $(elemento).attr('presentacion');
-        let tipo          = $(elemento).attr('tipo');
-        let stock         = $(elemento).attr('stock');
-        let precio        = $(elemento).attr('precio');
-        if(stock != "null") {
-            let producto = {
-                id: id,
-                nombre: nombre,
-                concentracion: concentracion,
-                adicional: adicional,
-                precio: precio,
-                laboratorio: laboratorio,
-                tipo: tipo,
-                presentacion: presentacion,
-                stock: stock,
-                cantidad: 1
-            }
-            let bandera = false;
-            let productos = RecuperarLS();
-            productos.forEach(prod =>{
-                if(prod.id===producto.id){
-                    bandera = true;
-                }
-            });
-            if(bandera){
-                toastr.error('El producto ' + nombre + ' # ' + codigo + ' ya fué agregado', 'Error!', {timeOut: 2000})
-            }
-            else{
-                AgregarLS(producto);
-                Contar_productos();
-                toastr.success('Producto ' + nombre + ' # ' + codigo + ' agregado', 'Exito!', {timeOut: 2000})
-            }
-        } else {
-            toastr.warning('El producto ' + nombre + ' # ' + codigo + ' no tiene stock', 'No se pudo agregar!', {timeOut: 2000})
-        }
-    });
-
-    function abrir_carrito() {
-        let productos = RecuperarLS();
-        if(productos.length != 0) {
-            $('#abrir_carrito').modal('show');
-            $('#carrito_compras').DataTable({
-                data: productos,
-                "aaSorting": [],
-                "searching": true,
-                "scrollX": false,
-                "autoWidth": false,
-                paging: false,
-                "bInfo": false,
-                columns: [
-                    {
-                        "render": function(data, type, datos, meta) {
-                            let template = `
-                            <div class="card bg-secondary">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <ul class="ml-4 mb-0 fa-ul">
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-heading"></i></span> Nombre: ${datos.nombre}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-5 mt-1">
-                                            <ul class="ml-4 mb-0 fa-ul">
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-2 mt-1 text-center">
-                                            <button 
-                                                id="${datos.id}" 
-                                                nombre="${datos.nombre}"
-                                                type="button" 
-                                                class="borrar_producto btn btn-outline-danger btn-circle btn-lg mt-3"
-                                            >
-                                                <i class="far fa-trash-alt"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-                            return template;
-                        }
-                    }
-                ],
-                "language": espanol,
-                "destroy": true
-            })
-        } else {
-            toastr.warning('El carrito está vacio', 'No se pudo abrir!', {timeOut: 2000})
-            $('#abrir_carrito').modal('hide');
-        }
-    }
-
-    $(document).on('click', '#carrito', (e) => {
-        abrir_carrito();
-    });
-
-    $(document).on('click', '.vaciar_carrito', (e) => {
-        EliminarLS();
-        toastr.success('El carrito fué vaciado', 'Éxito!', {timeOut: 2000})
-		Contar_productos();
-        $('#abrir_carrito').modal('hide');
-    });
-
-    $(document).on('click', '.borrar_producto', (e) => {
-        let elemento = $(this)[0].activeElement;
-        let id       = $(elemento).attr('id');
-        let nombre   = $(elemento).attr('nombre');
-        toastr.success('El producto ' + nombre + ' fué eliminado del carrito!', 'Éxito!', {timeOut: 2000})
-		Eliminar_producto_LS(id);
-        Contar_productos();
-        abrir_carrito();
-    });
-
-    function RecuperarLS(){
-		let productos;
-		if(localStorage.getItem('productos') === null){
-			productos=[];
-		}
-		else{
-			productos = JSON.parse(localStorage.getItem('productos'))
-		}
-		return productos
-	}
-
-	function AgregarLS(producto){
-		let productos;
-		productos = RecuperarLS();
-		productos.push(producto);
-		localStorage.setItem('productos',JSON.stringify(productos))
-	}
-
-    function Contar_productos(){
-		let productos;
-		let contador = 0;
-		productos = RecuperarLS();
-		productos.forEach(producto =>{
-			contador++;
-		});
-        if(contador == 0) {
-            $('#contador').html('');
-        } else {
-            $('#contador').html(contador);
-        }
-	}
-
-    function EliminarLS(){
-		localStorage.clear();
-	}
-
-    function Eliminar_producto_LS(id){
-		let productos;
-		productos = RecuperarLS();
-		productos.forEach(function(producto,indice){
-			if(producto.id===id){
-				productos.splice(indice,1);
-			}
-		});
-		localStorage.setItem('productos',JSON.stringify(productos));
-	}
-
-    function Loader(mensaje) {
+	function Loader(mensaje) {
         if(mensaje == '' || mensaje == null) {
             mensaje = "Cargando datos..."
         }
@@ -564,8 +390,173 @@ $(document).ready(function() {
             })
         }
     }
-    
-});
+
+	/*var tipo_usuario = $('#tipo_usuario').val();
+	if(tipo_usuario==2){
+		$('#button-crear').hide();
+	}
+	buscar_datos();
+	var funcion;
+	function buscar_datos(consulta){
+		funcion='buscar_usuarios_adm';
+		$.post('../controlador/UsuarioController.php',{consulta,funcion},(response)=>{
+			const usuarios = JSON.parse(response);
+			let template='';
+			usuarios.forEach(usuario=>{
+				template+=`
+				<div usuarioId="${usuario.id}" class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+              <div class="card bg-light">
+                <div class="card-header text-muted border-bottom-0">`;
+                if(usuario.tipo_usuario==3){
+                	template+=`<h1 class="badge badge-danger">${usuario.tipo}</h1>`;
+                }
+                if(usuario.tipo_usuario==1){
+                	template+=`<h1 class="badge badge-warning">${usuario.tipo}</h1>`;
+                }
+                if(usuario.tipo_usuario==2){
+                	template+=`<h1 class="badge badge-info">${usuario.tipo}</h1>`;
+                }
+                template+=`</div>
+                <div class="card-body pt-0">
+                  <div class="row">
+                    <div class="col-7">
+                      <h2 class="lead"><b>${usuario.nombre} ${usuario.apellidos}</b></h2>
+                      <p class="text-muted text-sm"><b>Sobre mi: </b>${usuario.adicional}</p>
+                      <ul class="ml-4 mb-0 fa-ul text-muted">
+                      	<li class="small"><span class="fa-li"><i class="fas fa-lg fa-id-card"></i></span> DNI. : ${usuario.dni}</li>
+                      	<li class="small"><span class="fa-li"><i class="fas fa-lg fa-birthday-cake"></i></span> Edad : ${usuario.edad}</li>
+                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Dirección : ${usuario.residencia}</li>
+                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Teléfono : ${usuario.telefono}</li>
+                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-at"></i></span> Correo : ${usuario.correo}</li>
+                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-smile-wink	"></i></span> Sexo : ${usuario.sexo}</li>
+                      </ul>
+                    </div>
+                    <div class="col-5 text-center">
+                      <img src="${usuario.avatar}" alt="" class="img-circle img-fluid">
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="text-right">`;
+                if(tipo_usuario==3){
+                	if(usuario.tipo_usuario!=3){
+                		template+=`
+                		<button class="borrar-usuario btn btn-danger mr-1" type="button" data-toggle="modal" data-target="#confirmar">
+                    		<i class="fas fa-user-times mr-2"></i>Eliminar
+                    	</button>
+                		`;
+                	}
+                	if(usuario.tipo_usuario==2){
+                		template+=`
+                		<button class="ascender btn btn-primary ml-1" type="button" data-toggle="modal" data-target="#confirmar">
+                    		<i class="fas fa-sort-amount-up mr-2"></i>Ascender
+                    	</button>
+                		`;
+                	}
+                	if(usuario.tipo_usuario==1){
+                		template+=`
+                		<button class="descender btn btn-secondary ml-1" type="button" data-toggle="modal" data-target="#confirmar">
+                    		<i class="fas fa-sort-amount-down mr-2"></i>Descender
+                    	</button>
+                		`;
+                	}
+                }
+                else{
+                	if(tipo_usuario==1 && usuario.tipo_usuario!=1 && usuario.tipo_usuario!=3){
+                		template+=`
+                		<button class="borrar-usuario btn btn-danger" type="button" data-toggle="modal" data-target="#confirmar">
+                    		<i class="fas fa-user-times mr-2"></i>Eliminar
+                    	</button>
+                		`;
+                	}
+                }
+
+                template+=`
+                  </div>
+                </div>
+              </div>
+            </div>
+				`;
+			})
+			$('#usuarios').html(template);
+		});
+	}
+	$(document).on('keyup','#buscar',function(){
+		let valor = $(this).val();
+		if(valor!=""){
+			buscar_datos(valor);
+		}
+		else{
+			buscar_datos();
+		}
+	});
+	$('#form-crear').submit(e=>{
+		let nombre = $('#nombre').val();
+		let apellido = $('#apellido').val();
+		let edad = $('#edad').val();
+		let dni = $('#dni').val();
+		let pass = $('#pass').val();
+		funcion ='crear_usuario';
+		$.post('../controlador/UsuarioController.php',{nombre,apellido,edad,dni,pass,funcion},(response)=>{
+			if(response=='add'){
+				$('#add').hide('slow');
+				$('#add').show(1000);
+				$('#add').hide(2000);
+				$('#form-crear').trigger('reset');
+				buscar_datos();
+			}
+			else{
+				$('#noadd').hide('slow');
+				$('#noadd').show(1000);
+				$('#noadd').hide(2000);
+				$('#form-crear').trigger('reset');
+			}
+		});
+		e.preventDefault();
+	});
+	$(document).on('click','.ascender',(e)=>{
+		const elemento= $(this)[0].activeElement.parentElement.parentElement.parentElement.parentElement;
+		const id=$(elemento).attr('usuarioId');
+		funcion='ascender';
+		$('#id_user').val(id);
+		$('#funcion').val(funcion);
+	});
+	$(document).on('click','.descender',(e)=>{
+		const elemento= $(this)[0].activeElement.parentElement.parentElement.parentElement.parentElement;
+		const id=$(elemento).attr('usuarioId');
+		funcion='descender';
+		$('#id_user').val(id);
+		$('#funcion').val(funcion);
+	});
+	$(document).on('click','.borrar-usuario',(e)=>{
+		const elemento= $(this)[0].activeElement.parentElement.parentElement.parentElement.parentElement;
+		const id=$(elemento).attr('usuarioId');
+		funcion='borrar_usuario';
+		$('#id_user').val(id);
+		$('#funcion').val(funcion);
+	});
+	$('#form-confirmar').submit(e=>{
+		let pass=$('#oldpass').val();
+		let id_usuario=$('#id_user').val();
+		funcion=$('#funcion').val();
+		$.post('../controlador/UsuarioController.php',{pass,id_usuario,funcion},(response)=>{
+			if(response=='ascendido'|| response=='descendido'|| response=='borrado'){
+				$('#confirmado').hide('slow');
+				$('#confirmado').show(1000);
+				$('#confirmado').hide(2000);
+				$('#form-confirmar').trigger('reset');
+			}
+			else{
+				$('#rechazado').hide('slow');
+				$('#rechazado').show(1000);
+				$('#rechazado').hide(2000);
+				$('#form-confirmar').trigger('reset');
+			}
+			buscar_datos();
+		});
+		e.preventDefault();
+	});*/
+})
 
 let espanol = {
     "processing": "Procesando...",

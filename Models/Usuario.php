@@ -102,51 +102,40 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	/******************************/
-	
-	function obtener_dato_logueo($dni){
-		$sql="SELECT * FROM usuario join tipo_us on us_tipo=id_tipo_us and dni_us=:dni";
+	function obtener_usuarios(){
+		$sql="SELECT 
+			  u.id, 
+			  u.nombre,
+			  u.apellido,
+			  u.edad,
+			  u.dni,
+			  u.telefono,
+			  u.direccion,
+			  u.correo,
+			  u.sexo,
+			  u.adicional,
+			  u.avatar,
+			  u.id_tipo,
+			  t.nombre as tipo,
+			  CONCAT(l.nombre,' - ', p.nombre) as residencia,
+			  l.id as id_residencia,
+			  u.contrasena
+			  FROM usuario u
+			  JOIN tipo t ON u.id_tipo = t.id
+			  JOIN localidad l ON l.id = u.id_localidad
+			  JOIN provincia p ON p.id = l.id_provincia
+			  ORDER BY u.id
+		";
 		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':dni'=>$dni));
+		$query->execute();
 		$this->objetos= $query->fetchall();
 		return $this->objetos;
 	}
+	/******************************/
 	
 	
-	// function cambiar_contra($id_usuario,$oldpass,$newpass){
-	// 	$sql="SELECT * FROM usuario where id_usuario=:id and contrasena_us=:oldpass";
-	// 	$query = $this->acceso->prepare($sql);
-	// 	$query->execute(array(':id'=>$id_usuario,':oldpass'=>$oldpass));
-	// 	$this->objetos = $query->fetchall();
-	// 	if(!empty($this->objetos)){
-	// 		$sql="UPDATE usuario SET contrasena_us=:newpass where id_usuario=:id";
-	// 		$query = $this->acceso->prepare($sql);
-	// 		$query->execute(array(':id'=>$id_usuario,':newpass'=>$newpass));
-	// 		echo 'update';
-	// 	}
-	// 	else{
-	// 		echo 'noupdate';
-	// 	}
-	// }
 	
-	function buscar(){
-		if(!empty($_POST['consulta'])){
-			$consulta=$_POST['consulta'];
-			$sql="SELECT * FROM usuario join tipo_us on us_tipo=id_tipo_us where nombre_us LIKE :consulta";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':consulta'=>"%$consulta%"));
-			$this->objetos=$query->fetchall();
-			return $this->objetos;
-		}
-		else{
 
-			$sql="SELECT * FROM usuario join tipo_us on us_tipo=id_tipo_us where nombre_us NOT LIKE '' ORDER BY id_usuario LIMIT 25";
-			$query = $this->acceso->prepare($sql);
-			$query->execute();
-			$this->objetos=$query->fetchall();
-			return $this->objetos;
-		}
-	}
 	function crear($nombre,$apellido,$edad,$dni,$pass,$tipo,$avatar){
 		$sql="SELECT id_usuario FROM usuario where dni_us=:dni";
 		$query = $this->acceso->prepare($sql);

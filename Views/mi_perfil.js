@@ -176,100 +176,96 @@ $(document).ready(function () {
 
   function llenar_menu_lateral(usuario) {
     let template = `
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-                <img id="avatar_2" src="/farmaciav2/Util/img/user/${
-                  usuario.avatar
-                }" class="img-circle elevation-2" alt="User Image">
-            </div>
-            <div class="info">
-                <a href="#" class="d-block">${
-                  usuario.nombre + " " + usuario.apellido
-                }</a>
-            </div>
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            <img src="/farmaciav2/Util/img/user/${usuario.avatar}" class="img-circle elevation-2" alt="User Image">
         </div>
-        <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-header">Usuario</li>
-                <li class="nav-item">
-                    <a href="/farmaciav2/Views/mi_perfil.php" class="nav-link">
-                        <i class="nav-icon fas fa-user-cog"></i>
-                        <p>
-                            Mi perfil
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_usuario" class="nav-item">
-                    <a href="adm_usuario.php" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            Gestión usuarios
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_cliente" class="nav-item">
-                    <a href="adm_cliente.php" class="nav-link">
-                        <i class="nav-icon fas fa-user-friends"></i>
-                        <p>
-                            Gestión cliente
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_ventas" class="nav-header">Ventas</li>
-                <li id="gestion_listar_ventas" class="nav-item">
-                    <a href="adm_venta.php" class="nav-link">
-                        <i class="nav-icon fas fa-notes-medical"></i>
-                        <p>
-                            Listar Ventas
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_almacen" class="nav-header">Almacén</li>
-                <li id="gestion_producto" class="nav-item">
-                    <a href="adm_producto.php" class="nav-link">
-                        <i class="nav-icon fas fa-pills"></i>
-                        <p>
-                            Gestión producto
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_atributo" class="nav-item">
-                    <a href="adm_atributo.php" class="nav-link">
-                        <i class="nav-icon fas fa-vials"></i>
-                        <p>
-                            Gestión atributo
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_lote" class="nav-item">
-                    <a href="adm_lote.php" class="nav-link">
-                        <i class="nav-icon fas fa-cubes"></i>
-                        <p>
-                            Gestión lote
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_compras" class="nav-header">Compras</li>
-                <li id="gestion_proveedor" class="nav-item">
-                    <a href="adm_proveedor.php" class="nav-link">
-                        <i class="nav-icon fas fa-truck"></i>
-                        <p>
-                            Gestión proveedor
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_compra" class="nav-item">
-                    <a href="adm_compras.php" class="nav-link">
-                        <i class="nav-icon fas fa-people-carry"></i>
-                        <p>
-                            Gestión compras
-                        </p>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        `;
-    $("#menu_lateral").html(template);
+        <div class="info">
+            <a href="#" class="d-block">${usuario.nombre + ' ' + usuario.apellido}</a>
+        </div>
+    </div>
+    <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <li class="nav-header">Usuario</li>
+            <li class="nav-item">
+                <a href="/farmaciav2/Views/mi_perfil.php" class="nav-link">
+                    <i class="nav-icon fas fa-user-cog"></i>
+                    <p>
+                        Mi perfil
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/farmaciav2/Views/usuarios.php" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>
+                        Gestión usuarios
+                    </p>
+                </a>
+            </li>
+            <li id="gestion_cliente" class="nav-item">
+                <a href="adm_cliente.php" class="nav-link">
+                    <i class="nav-icon fas fa-user-friends"></i>
+                    <p>
+                        Gestión cliente
+                    </p>
+                </a>
+            </li>
+            <li id="gestion_ventas" class="nav-header">Ventas</li>
+            <li id="gestion_listar_ventas" class="nav-item">
+                <a href="adm_venta.php" class="nav-link">
+                    <i class="nav-icon fas fa-notes-medical"></i>
+                    <p>
+                        Listar Ventas
+                    </p>
+                </a>
+            </li>
+            <li id="gestion_almacen" class="nav-header">Almacén</li>
+            <li id="gestion_producto" class="nav-item">
+                <a href="adm_producto.php" class="nav-link">
+                    <i class="nav-icon fas fa-pills"></i>
+                    <p>
+                        Gestión producto
+                    </p>
+                </a>
+            </li>
+            <li id="gestion_atributo" class="nav-item">
+                <a href="adm_atributo.php" class="nav-link">
+                    <i class="nav-icon fas fa-vials"></i>
+                    <p>
+                        Gestión atributo
+                    </p>
+                </a>
+            </li>
+            <li id="gestion_lote" class="nav-item">
+                <a href="adm_lote.php" class="nav-link">
+                    <i class="nav-icon fas fa-cubes"></i>
+                    <p>
+                        Gestión lote
+                    </p>
+                </a>
+            </li>
+            <li id="gestion_compras" class="nav-header">Compras</li>
+            <li id="gestion_proveedor" class="nav-item">
+                <a href="adm_proveedor.php" class="nav-link">
+                    <i class="nav-icon fas fa-truck"></i>
+                    <p>
+                        Gestión proveedor
+                    </p>
+                </a>
+            </li>
+            <li id="gestion_compra" class="nav-item">
+                <a href="adm_compras.php" class="nav-link">
+                    <i class="nav-icon fas fa-people-carry"></i>
+                    <p>
+                        Gestión compras
+                    </p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    `;
+    $('#menu_lateral').html(template);
   }
 
   async function verificar_sesion() {

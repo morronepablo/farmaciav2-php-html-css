@@ -74,10 +74,10 @@ if($_POST['funcion']=='login'){
 else if($_POST['funcion']=='obtener_usuario'){
 	$json=array();
 	$id_usuario = $_SESSION['id'];
-	$fecha_actual = new DateTime();
 	$usuario->obtener_datos($id_usuario);
 	if(!empty($usuario->objetos)) {
 		$nacimiento = new DateTime($usuario->objetos[0]->edad);
+		$fecha_actual = new DateTime();
 		$edad = $nacimiento->diff($fecha_actual);
 		$edad_years = $edad->y;
 		$json = array(
@@ -195,35 +195,39 @@ else if($_POST['funcion']=='editar_password'){
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
-/*****************************************/
 
-if($_POST['funcion']=='buscar_usuarios_adm'){
-	$json=array();
-	$fecha_actual = new DateTime();
-	$usuario->buscar();
+else if($_POST['funcion']=='obtener_usuarios'){
+	$json = array();
+	$usuario->obtener_usuarios();
 	foreach ($usuario->objetos as $objeto) {
 		$nacimiento = new DateTime($objeto->edad);
+		$fecha_actual = new DateTime();
 		$edad = $nacimiento->diff($fecha_actual);
 		$edad_years = $edad->y;
-		$json[]=array(
-			'id'=>$objeto->id_usuario,
-			'nombre'=>$objeto->nombre_us,
-			'apellidos'=>$objeto->apellidos_us,
-			'edad'=>$edad_years,
-			'dni'=>$objeto->dni_us,
-			'tipo'=>$objeto->nombre_tipo,
-			'telefono'=>$objeto->telefono_us,
-			'residencia'=>$objeto->residencia_us,
-			'correo'=>$objeto->correo_us,
-			'sexo'=>$objeto->sexo_us,
-			'adicional'=>$objeto->adicional_us,
-			'avatar'=>'../img/'.$objeto->avatar,
-			'tipo_usuario'=>$objeto->us_tipo
+		$json[] = array(
+			'id'		 	=>	openssl_encrypt($objeto->id, CODE, KEY),
+			'nombre'	 	=>	$objeto->nombre,
+			'apellido'	 	=>	$objeto->apellido,
+			'edad'		 	=>	$edad_years,
+			'dni'		 	=>	$objeto->dni,
+			'id_tipo'	 	=>	$objeto->id_tipo,
+			'tipo'		 	=>	$objeto->tipo,
+			'telefono'   	=>	$objeto->telefono,
+			'residencia' 	=>	$objeto->residencia,
+			'id_residencia' =>	openssl_encrypt($objeto->id_residencia, CODE, KEY),
+			'direccion'  	=>	$objeto->direccion,
+			'correo'	 	=>	$objeto->correo,
+			'sexo'		 	=>	$objeto->sexo,
+			'adicional'	 	=>	$objeto->adicional,
+			'avatar'	 	=>	$objeto->avatar
 		);
+		$jsonstring = json_encode($json);
+		echo $jsonstring;
 	}
-	$jsonstring = json_encode($json);
-	echo $jsonstring;
 }
+/*****************************************/
+
+
 if($_POST['funcion']=='crear_usuario'){
 	$nombre = $_POST['nombre'];
 	$apellido = $_POST['apellido'];
