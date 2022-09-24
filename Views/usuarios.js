@@ -230,10 +230,10 @@ $(document).ready(function(){
         if(data.ok) {
             let response = await data.text();
             try {
-                let respuesta = JSON.parse(response);
-                if(respuesta.length != 0) {
-                    llenar_menu_superior(respuesta);
-                    llenar_menu_lateral(respuesta);
+                let usuario = JSON.parse(response);
+                if(usuario.length != 0 && usuario.id_tipo != 3) {
+                    llenar_menu_superior(usuario);
+                    llenar_menu_lateral(usuario);
                     obtener_usuarios();
                     CloseLoader();
                 } else {
@@ -268,9 +268,8 @@ $(document).ready(function(){
             let response = await data.text();
             try {
                 let usuarios = JSON.parse(response);
-				console.log(usuarios);
-                /*$('#productos').DataTable({
-                    data: productos,
+                $('#usuarios').DataTable({
+                    data: usuarios,
                     "aaSorting": [],
                     "searching": true,
                     "scrollX": true,
@@ -278,76 +277,72 @@ $(document).ready(function(){
                     columns: [
                         {
                             "render": function(data, type, datos, meta) {
-                                let stock = '';
-                                if(datos.stock == null || datos.stock == '') {
-                                    stock = 'Sin Stock';
-                                } else {
-                                    stock = datos.stock;
-                                }
-                                let reg_sanitario = '';
-                                if(datos.registro_sanitario == null || datos.registro_sanitario == '') {
-                                    reg_sanitario = 'Sin Registro Sanitario';
-                                } else {
-                                    reg_sanitario = datos.registro_sanitario;
-                                }
-                                return `
-                                <div class="">
-                                    <div class="card bg-light">
-                                        <div class="h5 card-header text-muted border-bottom-0">
-                                            <i class="fas fa-lg fa-cubes mr-1"></i>${stock}
-                                        </div>
-                                        <div class="card-body pt-0">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <h4 class=""><b>${datos.nombre}</b></h4>
-                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Código: ${datos.codigo}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-coins"></i></span> Precio: ${datos.precio}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Fracciones: ${datos.fracciones}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Reg. Sanitario: ${reg_sanitario}</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-md-4 text-center">
-                                                    <img src="/farmaciav2/Util/img/productos/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
-                                                </div>
+                                let template = '';
+                                template += `
+                                <div class="card bg-light">
+                                    <div class="h5 card-header text-muted border-bottom-0">`
+                                    if(datos.id_tipo == 1) {
+                                        template += `<span class="badge badge-danger">${datos.tipo}</span>`;
+                                    } 
+                                    if(datos.id_tipo == 2) {
+                                        template += `<span class="badge badge-success">${datos.tipo}</span>`;
+                                    } 
+                                    if(datos.id_tipo == 3) {
+                                        template += `<span class="badge badge-info">${datos.tipo}</span>`;
+                                    } 
+                        template +=`</div>
+                                    <div class="card-body pt-0">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <h4 class=""><b>${datos.nombre} ${datos.apellido}</b></h4>
+                                                <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> DNI: ${datos.dni}</li>
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Edad: ${datos.edad}</li>
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Teléfono: ${datos.telefono}</li>
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Dirección: ${datos.direccion}</li>
+                                                </ul>
                                             </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="text-right">
-                                                <button id="${datos.id}" 
-                                                        codigo="${datos.codigo}"
-                                                        nombre="${datos.nombre}"
-                                                        concentracion="${datos.concentracion}"
-                                                        adicional="${datos.adicional}"
-                                                        laboratorio="${datos.laboratorio}"
-                                                        presentacion="${datos.presentacion}"
-                                                        tipo="${datos.tipo}"
-                                                        stock="${datos.stock}"
-                                                        precio="${datos.precio}"
-                                                        class="agregar-carrito btn btn-sm bg-gradient-primary"
-                                                >
-                                                    <i class="fas fa-plus mr-1"></i>Agregar al carrito
-                                                </button>   
+                                            <div class="col-md-4">
+                                                <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Residencia: ${datos.residencia}</li>
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Correo: ${datos.correo}</li>
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Sexo: ${datos.sexo}</li>
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Adicional: ${datos.adicional}</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <img src="/farmaciav2/Util/img/user/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="card-footer">
+                                        <div class="text-right">`
+                                        if(datos.id_tipo_sesion == 1 && datos.id_tipo != 1) {
+                                            template +=`<button class="btn btn-outline-danger btn-circle btn-lg">
+                                                            <i class="far fa-trash-alt mr-5"></i>
+                                                        </button>   
+                                                        <button class="btn btn-outline-secondary btn-circle btn-lg">
+                                                            <i class="fas fa-sort-amount-down mr-5"></i>
+                                                        </button>   
+                                                        <button class="btn btn-outline-success btn-circle btn-lg">
+                                                            <i class="fas fa-sort-amount-up mr-5"></i>
+                                                        </button>`
+                                        }
+                                        else if(datos.id_tipo_sesion == 2 && datos.id_tipo != 1 && datos.id_tipo != 2) {
+
+                                        }
+                               
+                            template +=`</div>
+                                    </div>
                                 </div>
                                 `
+                                return template;
                             }
                         }
                     ],
                     "language": espanol,
                     "destroy": true
-                })*/
+                })
             } catch (error) {
                 console.error(error);
                 console.log(response);
