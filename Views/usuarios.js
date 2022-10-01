@@ -8,6 +8,55 @@ $(document).ready(function(){
         "preventDuplicates": true
     }
 
+    $("#residencia").select2({
+        placeholder: "Seleccione una residencia",
+        language: {
+          noResult: function () {
+            return "No hay resultados.";
+          },
+          searching: function () {
+            return "Buscando...";
+          },
+        },
+    });
+
+    async function obtener_residencias() {
+        let funcion = "obtener_residencias";
+        let data = await fetch("/farmaciav2/Controllers/LocalidadController.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "funcion=" + funcion,
+        });
+        if (data.ok) {
+          let response = await data.text();
+          try {
+            let residencias = JSON.parse(response);
+            let template = ``;
+            residencias.forEach((residencia) => {
+              template += `
+                        <option value="${residencia.id}">${residencia.residencia}</option>
+                        `;
+            });
+            $("#residencia").html(template);
+            $("#residencia").val("").trigger("change");
+          } catch (error) {
+            console.error(error);
+            console.log(response);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+            });
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: data.statusText,
+            text: "Hubo confilcto de código: " + data.status,
+          });
+        }
+    }
+
     function llenar_menu_superior(usuario) {
         let template= `
         <ul class="navbar-nav">
@@ -234,6 +283,7 @@ $(document).ready(function(){
                 if(usuario.length != 0 && usuario.id_tipo != 3) {
                     llenar_menu_superior(usuario);
                     llenar_menu_lateral(usuario);
+                    obtener_residencias();
                     obtener_usuarios();
                     CloseLoader();
                 } else {
@@ -361,6 +411,182 @@ $(document).ready(function(){
         }
     }
 
+    async function editar_datos(datos) {
+        let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+          method: "POST",
+          body: datos
+        });
+        if (data.ok) {
+          let response = await data.text();
+          try {
+            let respuesta = JSON.parse(response);
+            if(respuesta.mensaje == 'success') {
+                toastr.success('Sus datos fueron actualizados', 'Exito!', {timeOut: 2000});
+                obtener_usuario();
+                $('#editar_datos_personales').modal('hide');
+            } else if(respuesta.mensaje == 'error_decrypt') {
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'No vulnere los datos...',
+                    showConfirmButton: false,
+                    timer: 1500,
+                  }).then(function() {
+                    //refresca la pagina (F5)
+                    location.reload();
+                  });
+            } else if(respuesta.mensaje == 'error_session') {
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'Sesión finalizada...',
+                    showConfirmButton: false,
+                    timer: 1500,
+                  }).then(function() {
+                    //refresca la pagina (F5)
+                    location.href='/farmaciav2/index.php';
+                  });
+            }
+          } catch (error) {
+            console.error(error);
+            console.log(response);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+            });
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: data.statusText,
+            text: "Hubo confilcto de código: " + data.status,
+          });
+        }
+    }
+    
+    $.validator.setDefaults({
+        submitHandler: function () {
+            alert('validado');
+            /*let datos = new FormData($('#form-editar_datos_personales')[0]);
+            let funcion = "editar_datos";
+            datos.append('funcion', funcion);
+            editar_datos(datos);*/
+        },
+    });
+    
+    $("#form-crear_usuario").validate({
+        rules: {
+            nombre: {
+                required: true,
+                minlength: 3
+            },
+            apellido: {
+                required: true,
+                minlength: 3
+            },
+            nacimiento: {
+                required: true
+            },
+            dni: {
+                required: true,
+                minlength: 7,
+                maxlength: 8,
+                number: true
+            },
+            password: {
+                required: true
+            },
+            telefono: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                number: true
+            },
+            residencia: {
+                required: true,
+            },
+            direccion: {
+                required: true,
+                minlength: 2,
+                maxlength: 100,
+            },
+            sexo: {
+                required: true,
+            },
+            correo: {
+                required: true,
+                email: true,
+            },
+            adicional: {
+                maxlength: 100,
+            },
+        },
+        messages: {
+            nombre: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo 3 caracteres"
+            },
+            apellido: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo 3 caracteres"
+            },
+            nacimiento: {
+                required: "* Dato requerido",
+            },
+            dni: {
+                required: "* Dato requerido",
+                number: "* El dato debe ser numérico",
+                minlength: "* Se permite mínimo 7 caracteres",
+                maxlength: "* Se permite máximo 8 caracteres",
+            },
+            password: {
+                required: "* Dato requerido",
+            },
+            telefono: {
+                required: "* Dato requerido",
+                number: "* El dato debe ser numérico",
+                minlength: "* Se permite mínimo 10 caracteres",
+                maxlength: "* Se permite máximo 10 caracteres",
+            },
+            residencia: {
+                required: "* Dato requerido",
+            },
+            direccion: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo 2 caracteres",
+                maxlength: "* Se permite máximo 100 caracteres",
+            },
+            sexo: {
+                required: "* Dato requerido",
+            },
+            correo: {
+                required: "* Dato requerido",
+                email: "* Ingrese un correo de formato válido",
+            },
+            adicional: {
+                maxlength: "* Se permite máximo 100 caracteres",
+            },
+        },
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+            $(element).removeClass("is-valid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+            $(element).addClass("is-valid");
+        },
+    });
+
+    $(document).on('click','#btn-crear_usuario', (e) => {
+        console.log('hola');
+    });
+
 	function Loader(mensaje) {
         if(mensaje == '' || mensaje == null) {
             mensaje = "Cargando datos..."
@@ -385,6 +611,7 @@ $(document).ready(function(){
             })
         }
     }
+
 
 	/*var tipo_usuario = $('#tipo_usuario').val();
 	if(tipo_usuario==2){
