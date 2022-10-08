@@ -202,43 +202,74 @@ else if($_POST['funcion']=='obtener_usuarios'){
 	$usuario->obtener_usuarios();
 	foreach ($usuario->objetos as $objeto) {
 		$nacimiento = new DateTime($objeto->edad);
+		$fecha_actual = date('d-m-Y');
 		$fecha_actual = new DateTime();
 		$edad = $nacimiento->diff($fecha_actual);
 		$edad_years = $edad->y;
 		$json[] = array(
-			'id'		 	=>	openssl_encrypt($objeto->id, CODE, KEY),
-			'nombre'	 	=>	$objeto->nombre,
-			'apellido'	 	=>	$objeto->apellido,
-			'edad'		 	=>	$edad_years,
-			'dni'		 	=>	$objeto->dni,
-			'id_tipo'	 	=>	$objeto->id_tipo,
-			'tipo'		 	=>	$objeto->tipo,
-			'telefono'   	=>	$objeto->telefono,
-			'residencia' 	=>	$objeto->residencia,
-			'id_residencia' =>	openssl_encrypt($objeto->id_residencia, CODE, KEY),
-			'direccion'  	=>	$objeto->direccion,
-			'correo'	 	=>	$objeto->correo,
-			'sexo'		 	=>	$objeto->sexo,
-			'adicional'	 	=>	$objeto->adicional,
-			'avatar'	 	=>	$objeto->avatar
+			'id'		 		=>	openssl_encrypt($objeto->id, CODE, KEY),
+			'nombre'	 		=>	$objeto->nombre,
+			'apellido'	 		=>	$objeto->apellido,
+			'edad'		 		=>	$edad_years,
+			'dni'		 		=>	$objeto->dni,
+			'id_tipo'	 		=>	$objeto->id_tipo,
+			'tipo'		 		=>	$objeto->tipo,
+			'telefono'   		=>	$objeto->telefono,
+			'residencia' 		=>	$objeto->residencia,
+			'id_residencia' 	=>	openssl_encrypt($objeto->id_residencia, CODE, KEY),
+			'direccion'  		=>	$objeto->direccion,
+			'correo'	 		=>	$objeto->correo,
+			'sexo'		 		=>	$objeto->sexo,
+			'adicional'	 		=>	$objeto->adicional,
+			'avatar'	 		=>	$objeto->avatar,
+			'id_tipo_sesion'	=>  $_SESSION['id_tipo']
 		);
-		$jsonstring = json_encode($json);
-		echo $jsonstring;
 	}
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
+}
+else if($_POST['funcion']=='crear_usuario'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$id_usuario = $_SESSION['id'];
+		$nombre		= $_POST['nombre'];
+		$apellido	= $_POST['apellido'];
+		$edad		= $_POST['nacimiento'];
+		$dni		= $_POST['dni'];
+		$contrasena	= $_POST['password'];
+		$telefono	= $_POST['telefono'];
+		$residencia	= $_POST['residencia'];
+		$direccion	= $_POST['direccion'];
+		$correo		= $_POST['correo'];
+		$sexo		= $_POST['sexo'];
+		$adicional	= $_POST['adicional'];
+
+		$formateado		= str_replace(' ', '+', $residencia);
+		$id_localidad	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_localidad)) {
+			$usuario->login($dni);
+			if(empty($usuario->objetos)) {
+				$usuario->crear($nombre, $apellido, $edad, $dni, $contrasena, $telefono, $id_localidad, $direccion, $correo, $sexo, $adicional);
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_usuario';
+			}
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
 }
 /*****************************************/
 
 
-if($_POST['funcion']=='crear_usuario'){
-	$nombre = $_POST['nombre'];
-	$apellido = $_POST['apellido'];
-	$edad = $_POST['edad'];
-	$dni = $_POST['dni'];
-	$pass = $_POST['pass'];
-	$tipo=2;
-	$avatar='default.png';
-	$usuario->crear($nombre,$apellido,$edad,$dni,$pass,$tipo,$avatar);
-}
+
 if($_POST['funcion']=='ascender'){
 	$pass=$_POST['pass'];
 	$id_ascendido=$_POST['id_usuario'];
@@ -266,9 +297,5 @@ if($_POST['funcion']=='devolver_avatar'){
 if($_POST['funcion']=='tipo_usuario'){
 	echo $tipo_usuario;
 }
-
-
-
-
 
  ?>

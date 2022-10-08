@@ -322,7 +322,7 @@ $(document).ready(function(){
                     data: usuarios,
                     "aaSorting": [],
                     "searching": true,
-                    "scrollX": true,
+                    "scrollX": false,
                     "autoWidth": false,
                     columns: [
                         {
@@ -367,7 +367,7 @@ $(document).ready(function(){
                                     </div>
                                     <div class="card-footer">
                                         <div class="text-right">`
-                                        if(datos.id_tipo_sesion == 1 && datos.id_tipo != 1) {
+                                        if(datos.id_tipo_sesion==1&&datos.id_tipo!=1) {
                                             template +=`<button class="btn btn-outline-danger btn-circle btn-lg">
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
@@ -378,7 +378,7 @@ $(document).ready(function(){
                                                             <i class="fas fa-sort-amount-up mr-5"></i>
                                                         </button>`
                                         }
-                                        else if(datos.id_tipo_sesion == 2 && datos.id_tipo != 1 && datos.id_tipo != 2) {
+                                        else if(datos.id_tipo_sesion==2&&datos.id_tipo!=1&&datos.id_tipo!=2) {
 
                                         }
                                
@@ -411,7 +411,7 @@ $(document).ready(function(){
         }
     }
 
-    async function editar_datos(datos) {
+    async function crear_usuario(datos) {
         let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
           method: "POST",
           body: datos
@@ -421,9 +421,11 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                toastr.success('Sus datos fueron actualizados', 'Exito!', {timeOut: 2000});
+                toastr.success('Se ha creado el usuario correctamente', 'Exito!', {timeOut: 2000});
                 obtener_usuario();
-                $('#editar_datos_personales').modal('hide');
+                $('#crear_usuario').modal('hide');
+                $('#form-crear_usuario').trigger('reset');
+                $('#residencia').val('').trigger('change');
             } else if(respuesta.mensaje == 'error_decrypt') {
                 Swal.fire({
                     position: "center",
@@ -435,6 +437,14 @@ $(document).ready(function(){
                     //refresca la pagina (F5)
                     location.reload();
                   });
+            } else if(respuesta.mensaje == 'error_usuario') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'El usuario ya existe...',
+                    text: 'El usuario ya existe, póngase en contacto con el administrador del sistema.'
+                  });
+                  $('#form-crear_usuario').trigger('reset');
+                  $('#residencia').val('').trigger('change');
             } else if(respuesta.mensaje == 'error_session') {
                 Swal.fire({
                     position: "center",
@@ -467,23 +477,30 @@ $(document).ready(function(){
     
     $.validator.setDefaults({
         submitHandler: function () {
-            alert('validado');
-            /*let datos = new FormData($('#form-editar_datos_personales')[0]);
-            let funcion = "editar_datos";
+            let datos = new FormData($('#form-crear_usuario')[0]);
+            let funcion = "crear_usuario";
             datos.append('funcion', funcion);
-            editar_datos(datos);*/
+            crear_usuario(datos);
         },
     });
+
+    jQuery.validator.addMethod("letras", (value) => {
+        let campo = value.replace(/ /g, '');
+        let estado = /^[A-Za-z]+$/.test(campo);
+        return estado;
+    }, "* Este campo solo permite letras");
     
     $("#form-crear_usuario").validate({
         rules: {
             nombre: {
                 required: true,
-                minlength: 3
+                minlength: 3,
+                letras: true
             },
             apellido: {
                 required: true,
-                minlength: 3
+                minlength: 3,
+                letras: true
             },
             nacimiento: {
                 required: true
@@ -513,6 +530,7 @@ $(document).ready(function(){
             },
             sexo: {
                 required: true,
+                letras: true
             },
             correo: {
                 required: true,

@@ -131,26 +131,28 @@ class Usuario{
 		$this->objetos= $query->fetchall();
 		return $this->objetos;
 	}
-	/******************************/
-	
-	
-	
-
-	function crear($nombre,$apellido,$edad,$dni,$pass,$tipo,$avatar){
-		$sql="SELECT id_usuario FROM usuario where dni_us=:dni";
+	function crear($nombre, $apellido, $edad, $dni, $contrasena, $telefono, $id_localidad, $direccion, $correo, $sexo, $adicional) {
+		$sql = "INSERT INTO usuario(nombre, apellido, edad, dni, contrasena, telefono, direccion, correo, sexo, adicional, avatar, id_tipo, id_localidad)
+				VALUES(:nombre, :apellido, :edad, :dni, :contrasena, :telefono, :direccion, :correo, :sexo, :adicional, :avatar, :id_tipo, :id_localidad)";
+		$variables = array(
+			':nombre' 		=> $nombre,
+			':apellido' 	=> $apellido,
+			':edad' 		=> $edad,
+			':dni' 			=> $dni,
+			':contrasena'	=> $contrasena,
+			':telefono' 	=> $telefono,
+			':direccion' 	=> $direccion,
+			':correo' 		=> $correo,
+			':sexo' 		=> $sexo,
+			':adicional' 	=> $adicional,
+			':avatar' 		=> 'default.png',
+			':id_tipo' 		=> 3,
+			':id_localidad' => $id_localidad
+		);
 		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':dni'=>$dni));
-		$this->objetos=$query->fetchall();
-		if(!empty($this->objetos)){
-			echo 'noadd';
-		}
-		else{
-			$sql="INSERT INTO usuario(nombre_us,apellidos_us,edad,dni_us,contrasena_us,us_tipo,avatar) VALUES (:nombre,:apellido,:edad,:dni,:pass,:tipo,:avatar);";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':nombre'=>$nombre,':apellido'=>$apellido,':edad'=>$edad,':dni'=>$dni,':pass'=>$pass,':tipo'=>$tipo,':avatar'=>$avatar));
-			echo 'add';
-		}
+		$query->execute($variables);
 	}
+	/******************************/
 	
 	function ascender($pass,$id_ascendido,$id_usuario){
 		$sql="SELECT * FROM usuario where id_usuario=:id_usuario";
