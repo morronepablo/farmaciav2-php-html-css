@@ -367,19 +367,32 @@ $(document).ready(function(){
                                     </div>
                                     <div class="card-footer">
                                         <div class="text-right">`
-                                        if(datos.id_tipo_sesion==1&&datos.id_tipo!=1) {
-                                            template +=`<button class="btn btn-outline-danger btn-circle btn-lg">
+                                        if(datos.id_tipo_sesion == 1 && datos.id_tipo != 1) {
+                                            if(datos.id_tipo == 2) {
+                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
-                                                        <button class="btn btn-outline-secondary btn-circle btn-lg">
+                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="descender_usuario" class="confirmar btn btn-outline-secondary btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="fas fa-sort-amount-down mr-5"></i>
+                                                        </button>`
+                                            } else if(datos.id_tipo == 3) {
+                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
+                                                            <i class="far fa-trash-alt mr-5"></i>
+                                                        </button>   
+                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="ascender_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
+                                                            <i class="fas fa-sort-amount-up mr-5"></i>
+                                                        </button>`
+                                            }
+                                        }
+                                        else if(datos.id_tipo_sesion==2&&datos.id_tipo!=1&&datos.id_tipo!=2) {
+                                            if(datos.id_tipo == 3) {
+                                                template +=`<button class="btn btn-outline-danger btn-circle btn-lg">
+                                                            <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
                                                         <button class="btn btn-outline-success btn-circle btn-lg">
                                                             <i class="fas fa-sort-amount-up mr-5"></i>
                                                         </button>`
-                                        }
-                                        else if(datos.id_tipo_sesion==2&&datos.id_tipo!=1&&datos.id_tipo!=2) {
-
+                                            }
                                         }
                                
                             template +=`</div>
@@ -422,7 +435,7 @@ $(document).ready(function(){
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
                 toastr.success('Se ha creado el usuario correctamente', 'Exito!', {timeOut: 2000});
-                obtener_usuario();
+                obtener_usuarios();
                 $('#crear_usuario').modal('hide');
                 $('#form-crear_usuario').trigger('reset');
                 $('#residencia').val('').trigger('change');
@@ -601,8 +614,19 @@ $(document).ready(function(){
         },
     });
 
-    $(document).on('click','#btn-crear_usuario', (e) => {
-        console.log('hola');
+    $(document).on('click','.confirmar', (e) => {
+        let elemento    = $(this)[0].activeElement;
+        let id          = $(elemento).attr("id");
+        let avatar      = $(elemento).attr("avatar");
+        let nombre      = $(elemento).attr("nombre");
+        let apellido    = $(elemento).attr("apellido");
+        let funcion     = $(elemento).attr("funcion");
+        console.log(funcion);
+        $('#nombre_confirmar').text(nombre);
+        $('#apellido_confirmar').text(apellido);
+        $('#avatar_confirmar').attr('src', '/farmaciav2/Util/img/user/' + avatar);
+        $('#id_usuario').val(id);
+        $('#funcion').val(funcion);
     });
 
 	function Loader(mensaje) {
