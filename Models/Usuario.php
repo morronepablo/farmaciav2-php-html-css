@@ -152,6 +152,17 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+	function borrar($id){
+		$sql = "UPDATE usuario 
+				SET estado=:estado 
+				WHERE id=:id";
+		$variables = array(
+			':id' 		=> $id,
+			':estado'	=> 'I'
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 	/******************************/
 	
 	function ascender($pass,$id_ascendido,$id_usuario){
@@ -221,37 +232,7 @@ class Usuario{
 			}			
 		}
 	}
-	function borrar($pass,$id_borrado,$id_usuario){
-		$sql="SELECT * FROM usuario where id_usuario=:id_usuario";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id_usuario'=>$id_usuario));
-		$this->objetos=$query->fetchall();
-		foreach ($this->objetos as $objeto) {
-			$contrasena_actual = $objeto->contrasena_us;
-		}
-		if(strpos($contrasena_actual,'$2y$10$')===0){
-			if(password_verify($pass, $contrasena_actual)){
-				$sql="DELETE FROM usuario where id_usuario=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id_borrado));
-				echo 'borrado';	
-			}
-			else{
-				echo 'noborrado';
-			}			
-		}
-		else{
-			if($pass==$contrasena_actual){
-				$sql="DELETE FROM usuario where id_usuario=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id_borrado));
-				echo 'borrado';				
-			}
-			else{
-				echo 'noborrado';
-			}			
-		}
-	}
+
 	function devolver_avatar($id_usuario){
 		$sql="SELECT avatar FROM usuario where id_usuario=:id_usuario";
 		$query = $this->acceso->prepare($sql);

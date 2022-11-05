@@ -629,6 +629,99 @@ $(document).ready(function(){
         $('#funcion').val(funcion);
     });
 
+    async function confirmar(datos) {
+        let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+          method: "POST",
+          body: datos
+        });
+        if (data.ok) {
+          let response = await data.text();
+          try {
+            let respuesta = JSON.parse(response);
+            if(respuesta.mensaje == 'success') {
+                if(respuesta.funcion == 'eliminar usuario') {
+                    toastr.success('Se elimino al usuario correctamente', 'Éxito!', {timeOut: 2000});
+                    obtener_usuarios();
+                    $('#confirmar').modal('hide');
+                    $('#form-confirmar').trigger('reset');
+                }
+                
+            } else if(respuesta.mensaje == 'error_decrypt') {
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'No vulnere los datos...',
+                    showConfirmButton: false,
+                    timer: 1500,
+                  }).then(function() {
+                    //refresca la pagina (F5)
+                    location.reload();
+                  });
+            } else if(respuesta.mensaje == 'error_pass') {
+                toastr.error('No se puedo ' + respuesta.funcion + ' Porque su contraseña actual no coincide con nuestros registros, intente de nuevo', 'Error!', {timeOut: 2500});
+            } else if(respuesta.mensaje == 'error_session') {
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'Sesión finalizada...',
+                    showConfirmButton: false,
+                    timer: 1500,
+                  }).then(function() {
+                    //refresca la pagina (F5)
+                    location.href='/farmaciav2/index.php';
+                  });
+            }
+          } catch (error) {
+            console.error(error);
+            console.log(response);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+            });
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: data.statusText,
+            text: "Hubo confilcto de código: " + data.status,
+          });
+        }
+    }
+
+    $.validator.setDefaults({
+        submitHandler: function () {
+            let datos = new FormData($('#form-confirmar')[0]);
+            confirmar(datos);
+        },
+    });
+    
+    $("#form-confirmar").validate({
+        rules: {
+            pass: {
+                required: true
+            }
+        },
+        messages: {
+            pass: {
+                required: "* Dato requerido"
+            }
+        },
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+            $(element).removeClass("is-valid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+            $(element).addClass("is-valid");
+        },
+    });
+
 	function Loader(mensaje) {
         if(mensaje == '' || mensaje == null) {
             mensaje = "Cargando datos..."

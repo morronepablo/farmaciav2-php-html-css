@@ -679,7 +679,7 @@ $(document).ready(function () {
             $('#editar_password').modal('hide');
             $('#form-editar_password').trigger('reset');
         } else if(respuesta.mensaje == 'error_pass') {
-          toastr.error('Su contraseña actual no coincide con nuestros registros, intente de nuevo', 'Error!', {timeOut: 2000});;
+          toastr.error('Su contraseña actual no coincide con nuestros registros, intente de nuevo', 'Error!', {timeOut: 2000});
         } else if(respuesta.mensaje == 'error_session') {
             Swal.fire({
                 position: "center",

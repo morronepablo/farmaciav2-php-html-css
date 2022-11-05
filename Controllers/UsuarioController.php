@@ -228,6 +228,7 @@ else if($_POST['funcion']=='obtener_usuarios'){
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
+
 else if($_POST['funcion']=='crear_usuario'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
@@ -266,36 +267,47 @@ else if($_POST['funcion']=='crear_usuario'){
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
-/*****************************************/
 
-
-
-if($_POST['funcion']=='ascender'){
-	$pass=$_POST['pass'];
-	$id_ascendido=$_POST['id_usuario'];
-	$usuario->ascender($pass,$id_ascendido,$id_usuario);
-}
-if($_POST['funcion']=='descender'){
-	$pass=$_POST['pass'];
-	$id_descendido=$_POST['id_usuario'];
-	$usuario->descender($pass,$id_descendido,$id_usuario);
-}
-if($_POST['funcion']=='borrar_usuario'){
-	$pass=$_POST['pass'];
-	$id_borrado=$_POST['id_usuario'];
-	$usuario->borrar($pass,$id_borrado,$id_usuario);
-}
-if($_POST['funcion']=='devolver_avatar'){
-	$usuario->devolver_avatar($id_usuario);
-	$json=array();
-	foreach ($usuario->objetos as $objeto) {
-		$json=$objeto;
+else if($_POST['funcion']=='eliminar_usuario'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$id_session = $_SESSION['id'];
+		$id			= $_POST['id_usuario'];
+		$password	= $_POST['pass'];
+		$formateado	= str_replace(' ', '+', $id);
+		$id_usuario	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_usuario)) {
+			$usuario->obtener_datos($id_session);
+			$pass_base	= openssl_decrypt($usuario->objetos[0]->contrasena, CODE, KEY);
+			if($pass_base != '') {
+				// password de la base encriptado
+				if($password == $pass_base) {
+					// eliminar usuario
+					$usuario->borrar($id_usuario);
+					$mensaje = 'success';
+				} else {
+					$mensaje = 'error_pass';
+				}
+			} else {
+				// password de la base no encriptado
+				if($password == $usuario->objetos[0]->contrasena) {
+					// eliminar usuario
+					$usuario->borrar($id_usuario);
+					$mensaje = 'success';
+				} else {
+					$mensaje = 'error_pass';
+				}
+			}
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
 	}
+	$json = array(
+		'mensaje'	=>	$mensaje,
+		'funcion'	=>	'eliminar usuario'
+	);
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
-if($_POST['funcion']=='tipo_usuario'){
-	echo $tipo_usuario;
-}
-
- ?>
