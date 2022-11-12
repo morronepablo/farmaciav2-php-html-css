@@ -16,10 +16,11 @@ class Usuario{
 			  u.avatar as avatar,
 			  u.id_tipo as id_tipo,
 			  t.nombre as tipo,
-			  u.contrasena as contrasena
+			  u.contrasena as contrasena,
+			  u.estado as estado
 			  FROM usuario u
 			  JOIN tipo t ON u.id_tipo = t.id
-			  WHERE u.dni=:dni";
+			  WHERE u.dni=:dni AND u.estado='A'";
 		$variables = array(
 			':dni' => $dni
 		);
@@ -119,7 +120,8 @@ class Usuario{
 			  t.nombre as tipo,
 			  CONCAT(l.nombre,' - ', p.nombre) as residencia,
 			  l.id as id_residencia,
-			  u.contrasena
+			  u.contrasena,
+			  u.estado
 			  FROM usuario u
 			  JOIN tipo t ON u.id_tipo = t.id
 			  JOIN localidad l ON l.id = u.id_localidad
@@ -159,6 +161,17 @@ class Usuario{
 		$variables = array(
 			':id' 		=> $id,
 			':estado'	=> 'I'
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+	function activar($id){
+		$sql = "UPDATE usuario 
+				SET estado=:estado 
+				WHERE id=:id";
+		$variables = array(
+			':id' 		=> $id,
+			':estado'	=> 'A'
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
