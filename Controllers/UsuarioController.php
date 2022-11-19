@@ -362,4 +362,94 @@ else if($_POST['funcion']=='activar_usuario'){
 	echo $jsonstring;
 }
 
+else if($_POST['funcion']=='ascender_usuario'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$id_session 	= $_SESSION['id'];
+		$id				= $_POST['id_usuario'];
+		$password		= $_POST['pass'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_usuario		= openssl_decrypt($formateado, CODE, KEY);
+		$tipo_usuario 	= 2;
+		if(is_numeric($id_usuario)) {
+			$usuario->obtener_datos($id_session);
+			$pass_base	= openssl_decrypt($usuario->objetos[0]->contrasena, CODE, KEY);
+			if($pass_base != '') {
+				// password de la base encriptado
+				if($password == $pass_base) {
+					// activar usuario
+					$usuario->actualizar_tipo_usuario($id_usuario, $tipo_usuario);
+					$mensaje = 'success';
+				} else {
+					$mensaje = 'error_pass';
+				}
+			} else {
+				// password de la base no encriptado
+				if($password == $usuario->objetos[0]->contrasena) {
+					// activar usuario
+					$usuario->actualizar_tipo_usuario($id_usuario, $tipo_usuario);
+					$mensaje = 'success';
+				} else {
+					$mensaje = 'error_pass';
+				}
+			}
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje,
+		'funcion'	=>	'ascender usuario'
+	);
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
+}
+
+else if($_POST['funcion']=='descender_usuario'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$id_session 	= $_SESSION['id'];
+		$id				= $_POST['id_usuario'];
+		$password		= $_POST['pass'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_usuario		= openssl_decrypt($formateado, CODE, KEY);
+		$tipo_usuario 	= 3;
+		if(is_numeric($id_usuario)) {
+			$usuario->obtener_datos($id_session);
+			$pass_base	= openssl_decrypt($usuario->objetos[0]->contrasena, CODE, KEY);
+			if($pass_base != '') {
+				// password de la base encriptado
+				if($password == $pass_base) {
+					// activar usuario
+					$usuario->actualizar_tipo_usuario($id_usuario, $tipo_usuario);
+					$mensaje = 'success';
+				} else {
+					$mensaje = 'error_pass';
+				}
+			} else {
+				// password de la base no encriptado
+				if($password == $usuario->objetos[0]->contrasena) {
+					// activar usuario
+					$usuario->actualizar_tipo_usuario($id_usuario, $tipo_usuario);
+					$mensaje = 'success';
+				} else {
+					$mensaje = 'error_pass';
+				}
+			}
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje,
+		'funcion'	=>	'descender usuario'
+	);
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
+}
+
 ?>

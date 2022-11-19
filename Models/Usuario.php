@@ -176,106 +176,19 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+	function actualizar_tipo_usuario($id, $tipo_usuario){
+		$sql = "UPDATE usuario 
+				SET id_tipo=:tipo_usuario 
+				WHERE id=:id";
+		$variables = array(
+			':id' 			=> $id,
+			':tipo_usuario'	=> $tipo_usuario
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 	/******************************/
 	
-	function ascender($pass,$id_ascendido,$id_usuario){
-		$sql="SELECT * FROM usuario where id_usuario=:id_usuario";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id_usuario'=>$id_usuario));
-		$this->objetos=$query->fetchall();
-		foreach ($this->objetos as $objeto) {
-			$contrasena_actual = $objeto->contrasena_us;
-		}
-		if(strpos($contrasena_actual,'$2y$10$')===0){
-			if(password_verify($pass, $contrasena_actual)){
-				$tipo=1;
-				$sql="UPDATE usuario SET us_tipo=:tipo where id_usuario=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id_ascendido,':tipo'=>$tipo));
-				echo 'ascendido';
-			}
-			else{
-				echo 'noascendido';
-			}			
-		}
-		else{
-			if($pass==$contrasena_actual){
-				$tipo=1;
-				$sql="UPDATE usuario SET us_tipo=:tipo where id_usuario=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id_ascendido,':tipo'=>$tipo));
-				echo 'ascendido';				
-			}
-			else{
-				echo 'noascendido';
-			}			
-		}
-	}
-	
-	function descender($pass,$id_descendido,$id_usuario){
-		$sql="SELECT * FROM usuario where id_usuario=:id_usuario";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id_usuario'=>$id_usuario));
-		$this->objetos=$query->fetchall();
-		foreach ($this->objetos as $objeto) {
-			$contrasena_actual = $objeto->contrasena_us;
-		}
-		if(strpos($contrasena_actual,'$2y$10$')===0){
-			if(password_verify($pass, $contrasena_actual)){
-				$tipo=2;
-				$sql="UPDATE usuario SET us_tipo=:tipo where id_usuario=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id_descendido,':tipo'=>$tipo));
-				echo 'descendido';
-			}
-			else{
-				echo 'nodescendido';
-			}			
-		}
-		else{
-			if($pass==$contrasena_actual){
-				$tipo=2;
-				$sql="UPDATE usuario SET us_tipo=:tipo where id_usuario=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id_descendido,':tipo'=>$tipo));
-				echo 'descendido';				
-			}
-			else{
-				echo 'nodescendido';
-			}			
-		}
-	}
-
-	function devolver_avatar($id_usuario){
-		$sql="SELECT avatar FROM usuario where id_usuario=:id_usuario";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id_usuario'=>$id_usuario));
-		$this->objetos=$query->fetchall();
-		return $this->objetos;
-	}
-	function verificar($email,$dni){
-		$sql="SELECT * FROM usuario where correo_us=:email and dni_us=:dni";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':email'=>$email,':dni'=>$dni));
-		$this->objetos=$query->fetchall();
-		if(!empty($this->objetos)){
-			if($query->rowCount()==1){
-				echo 'encontrado';
-			}
-			else{
-				echo 'noencontrado';
-			}
-		}
-		else{
-			echo 'noencontrado';
-		}
-	}
-	function remplazar($codigo,$email,$dni){
-		$sql="UPDATE usuario SET contrasena_us=:codigo where correo_us=:email and dni_us=:dni";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':codigo'=>$codigo,':email'=>$email,':dni'=>$dni));
-		// echo 'remplazado';
-	}
 }
 
  ?>

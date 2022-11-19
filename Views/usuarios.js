@@ -394,10 +394,10 @@ $(document).ready(function(){
                                         }
                                         else if(datos.id_tipo_sesion == 2 && datos.id_tipo != 1 && datos.id_tipo != 2 &&  datos.estado == 'A') {
                                             if(datos.id_tipo == 3) {
-                                                template +=`<button class="btn btn-outline-danger btn-circle btn-lg">
+                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
-                                                        <button class="btn btn-outline-success btn-circle btn-lg">
+                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="ascender_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="fas fa-sort-amount-up mr-5"></i>
                                                         </button>`
                                             }
@@ -660,6 +660,18 @@ $(document).ready(function(){
                 }
                 else if(respuesta.funcion == 'activar usuario') {
                     toastr.success('Se activó al usuario correctamente', 'Éxito!', {timeOut: 2000});
+                    obtener_usuarios();
+                    $('#confirmar').modal('hide');
+                    $('#form-confirmar').trigger('reset');
+                }
+                else if(respuesta.funcion == 'ascender usuario') {
+                    toastr.success('Se ascendió al usuario correctamente', 'Éxito!', {timeOut: 2000});
+                    obtener_usuarios();
+                    $('#confirmar').modal('hide');
+                    $('#form-confirmar').trigger('reset');
+                }
+                else if(respuesta.funcion == 'descender usuario') {
+                    toastr.success('Se descendió al usuario correctamente', 'Éxito!', {timeOut: 2000});
                     obtener_usuarios();
                     $('#confirmar').modal('hide');
                     $('#form-confirmar').trigger('reset');
