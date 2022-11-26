@@ -1,99 +1,112 @@
-<?php
-include_once 'conexion.php';
-class Cliente{
+<?php 
+include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Conexion.php';
+class Cliente {
 	var $objetos;
 	public function __construct(){
-		$db= new Conexion();
-		$this->acceso=$db->pdo;
-	}
-  function buscar(){
-		if(!empty($_POST['consulta'])){
-			$consulta=$_POST['consulta'];
-			$sql="SELECT * FROM cliente where estado='A' and nombre LIKE :consulta";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':consulta'=>"%$consulta%"));
-			$this->objetos=$query->fetchall();
-			return $this->objetos;
-		}
-		else{
-			$sql="SELECT * FROM cliente where estado='A' and nombre NOT LIKE '' ORDER BY id desc LIMIT 25";
-			$query = $this->acceso->prepare($sql);
-			$query->execute();
-			$this->objetos=$query->fetchall();
-			return $this->objetos;
-		}
-	}
-	function crear($nombre,$apellido,$dni,$telefono,$correo,$sexo,$adicional,$avatar){
-		$sql="SELECT id,estado FROM cliente where nombre=:nombre and apellidos=:apellido and dni=:dni";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':nombre'=>$nombre,':apellido'=>$apellido,':dni'=>$dni));
-		$this->objetos=$query->fetchall();
-		if(!empty($this->objetos)){
-			foreach ($this->objetos as $cli) {
-				$cli_id = $cli->id;
-				$cli_estado = $cli->estado;
-			}
-			if($cli_estado=='A'){
-					echo 'noadd';
-			}
-			else{
-				$sql="UPDATE cliente SET estado='A' where id=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$cli_id));
-				echo 'add';
-			}
-		}
-		else{
-			$sql="INSERT INTO cliente(nombre,apellidos,dni,telefono,correo,sexo,adicional,avatar) values (:nombre,:apellido,:dni,:telefono,:correo,:sexo,:adicional,:avatar);";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':nombre'=>$nombre,':apellido'=>$apellido,':dni'=>$dni,':telefono'=>$telefono,':correo'=>$correo,':sexo'=>$sexo,':adicional'=>$adicional,':avatar'=>$avatar));
-			echo 'add';
-		}
-	}
-	function editar($id,$telefono,$correo,$adicional){
-		$sql="SELECT id FROM cliente where id=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id));
-		$this->objetos=$query->fetchall();
-		if(empty($this->objetos)){
-			echo 'noedit';
-		}
-		else{
-			$sql="UPDATE cliente SET telefono=:telefono, correo=:correo, adicional=:adicional where id=:id";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':id'=>$id,':telefono'=>$telefono,':correo'=>$correo,':adicional'=>$adicional));
-			echo 'edit';
-		}
-	}
-	function borrar($id){
-		$sql="UPDATE cliente SET estado='I' where id=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id));
-		if(!empty($query->execute(array(':id'=>$id)))){
-			echo 'borrado';
-		}
-		else{
-			echo 'noborrado';
-		}
+		$db = new Conexion();
+		$this->acceso = $db->pdo;
 	}
 
-	function rellenar_clientes(){
-		$sql="SELECT * FROM cliente where estado='A' order by nombre asc";
+	function editar_datos($id_usuario,$telefono,$residencia,$direccion,$correo,$sexo,$adicional){
+		$sql = "UPDATE usuario 
+				SET telefono=:telefono, 
+					id_localidad=:residencia,
+					direccion=:direccion,
+					correo=:correo, 
+					sexo=:sexo, 
+					adicional=:adicional 
+				WHERE id=:id_usuario";
+		$variables = array(
+			':telefono' 	=> $telefono,
+			':residencia' 	=> $residencia,
+			':direccion' 	=> $direccion,
+			':correo' 		=> $correo,
+			':sexo' 		=> $sexo,
+			':adicional' 	=> $adicional,
+			':id_usuario' 	=> $id_usuario
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
+	function obtener_clientes(){
+		$sql="SELECT 
+			  id, 
+			  nombre,
+			  apellido,
+			  edad,
+			  dni,
+			  telefono,
+			  correo,
+			  sexo,
+			  adicional,
+			  avatar,
+			  estado
+			  FROM cliente c
+			  ORDER BY id
+		";
 		$query = $this->acceso->prepare($sql);
 		$query->execute();
-		$this->objetos=$query->fetchall();
+		$this->objetos= $query->fetchall();
 		return $this->objetos;
 	}
 
-	function buscar_datos_cliente($id_cliente){
-		$sql="SELECT * FROM cliente where id=:id_cliente";
+	function crear($nombre, $apellido, $edad, $dni, $contrasena, $telefono, $id_localidad, $direccion, $correo, $sexo, $adicional) {
+		$sql = "INSERT INTO usuario(nombre, apellido, edad, dni, contrasena, telefono, direccion, correo, sexo, adicional, avatar, id_tipo, id_localidad)
+				VALUES(:nombre, :apellido, :edad, :dni, :contrasena, :telefono, :direccion, :correo, :sexo, :adicional, :avatar, :id_tipo, :id_localidad)";
+		$variables = array(
+			':nombre' 		=> $nombre,
+			':apellido' 	=> $apellido,
+			':edad' 		=> $edad,
+			':dni' 			=> $dni,
+			':contrasena'	=> $contrasena,
+			':telefono' 	=> $telefono,
+			':direccion' 	=> $direccion,
+			':correo' 		=> $correo,
+			':sexo' 		=> $sexo,
+			':adicional' 	=> $adicional,
+			':avatar' 		=> 'default.png',
+			':id_tipo' 		=> 3,
+			':id_localidad' => $id_localidad
+		);
 		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id_cliente'=>$id_cliente));
-		$this->objetos=$query->fetchall();
-		return $this->objetos;
+		$query->execute($variables);
 	}
-
-
+	function borrar($id){
+		$sql = "UPDATE usuario 
+				SET estado=:estado 
+				WHERE id=:id";
+		$variables = array(
+			':id' 		=> $id,
+			':estado'	=> 'I'
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+	function activar($id){
+		$sql = "UPDATE usuario 
+				SET estado=:estado 
+				WHERE id=:id";
+		$variables = array(
+			':id' 		=> $id,
+			':estado'	=> 'A'
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+	function actualizar_tipo_usuario($id, $tipo_usuario){
+		$sql = "UPDATE usuario 
+				SET id_tipo=:tipo_usuario 
+				WHERE id=:id";
+		$variables = array(
+			':id' 			=> $id,
+			':tipo_usuario'	=> $tipo_usuario
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+	/******************************/
+	
 }
 
  ?>

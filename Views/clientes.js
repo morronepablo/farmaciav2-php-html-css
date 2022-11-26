@@ -8,55 +8,6 @@ $(document).ready(function(){
         "preventDuplicates": true
     }
 
-    $("#residencia").select2({
-        placeholder: "Seleccione una residencia",
-        language: {
-          noResult: function () {
-            return "No hay resultados.";
-          },
-          searching: function () {
-            return "Buscando...";
-          },
-        },
-    });
-
-    async function obtener_residencias() {
-        let funcion = "obtener_residencias";
-        let data = await fetch("/farmaciav2/Controllers/LocalidadController.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "funcion=" + funcion,
-        });
-        if (data.ok) {
-          let response = await data.text();
-          try {
-            let residencias = JSON.parse(response);
-            let template = ``;
-            residencias.forEach((residencia) => {
-              template += `
-                        <option value="${residencia.id}">${residencia.residencia}</option>
-                        `;
-            });
-            $("#residencia").html(template);
-            $("#residencia").val("").trigger("change");
-          } catch (error) {
-            console.error(error);
-            console.log(response);
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-            });
-          }
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: data.statusText,
-            text: "Hubo confilcto de código: " + data.status,
-          });
-        }
-    }
-
     function llenar_menu_superior(usuario) {
         let template= `
         <ul class="navbar-nav">
@@ -283,8 +234,7 @@ $(document).ready(function(){
                 if(usuario.length != 0 && usuario.id_tipo != 3) {
                     llenar_menu_superior(usuario);
                     llenar_menu_lateral(usuario);
-                    obtener_residencias();
-                    obtener_usuarios();
+                    obtener_clientes();
                     CloseLoader();
                 } else {
                     location.href = "/farmaciav2/";
@@ -307,9 +257,9 @@ $(document).ready(function(){
         }
     }
 
-	async function obtener_usuarios() {
-        let funcion = "obtener_usuarios";
-        let data = await fetch('/farmaciav2/Controllers/UsuarioController.php', {
+	async function obtener_clientes() {
+        let funcion = "obtener_clientes";
+        let data = await fetch('/farmaciav2/Controllers/ClienteController.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion
@@ -317,9 +267,11 @@ $(document).ready(function(){
         if(data.ok) {
             let response = await data.text();
             try {
-                let usuarios = JSON.parse(response);
-                $('#usuarios').DataTable({
-                    data: usuarios,
+                let clientes = JSON.parse(response);
+                //console.log(clientes);
+                
+                $('#clientes').DataTable({
+                    data: clientes,
                     "aaSorting": [],
                     "searching": true,
                     "scrollX": false,
@@ -331,23 +283,11 @@ $(document).ready(function(){
                                 template += `
                                 <div class="card bg-light">
                                     <div class="h5 card-header text-muted border-bottom-0">`
-                                    if(datos.id_tipo == 1) {
-                                        template += `<span class="badge badge-danger">${datos.tipo}</span>`;
-                                    } 
-                                    if(datos.id_tipo == 2) {
-                                        if(datos.estado == 'A') {
-                                            template += `<span class="badge badge-success">${datos.tipo}</span>`;
-                                        } else {
-                                            template += `<span class="badge badge-success">${datos.tipo}</span> - <span class="badge badge-secondary">Inactivo</span>`;
-                                        }
-                                    } 
-                                    if(datos.id_tipo == 3) {
-                                        if(datos.estado == 'A') {
-                                            template += `<span class="badge badge-info">${datos.tipo}</span>`;
-                                        } else {
-                                            template += `<span class="badge badge-info">${datos.tipo}</span> - <span class="badge badge-secondary">Inactivo</span>`;
-                                        }
-                                    } 
+                                    if(datos.estado == 'A') {
+                                        template += `<span class="badge badge-success">Activo</span>`;
+                                    } else {
+                                        template += `<span class="badge badge-secondary">Inactivo</span>`;
+                                    }
                         template +=`</div>
                                     <div class="card-body pt-0">
                                         <div class="row">
@@ -357,54 +297,36 @@ $(document).ready(function(){
                                                     <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> DNI: ${datos.dni}</li>
                                                     <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Edad: ${datos.edad}</li>
                                                     <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Teléfono: ${datos.telefono}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Dirección: ${datos.direccion}</li>
                                                 </ul>
                                             </div>
                                             <div class="col-md-4">
                                                 <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Residencia: ${datos.residencia}</li>
                                                     <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Correo: ${datos.correo}</li>
                                                     <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Sexo: ${datos.sexo}</li>
                                                     <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Adicional: ${datos.adicional}</li>
                                                 </ul>
                                             </div>
                                             <div class="col-md-4 text-center">
-                                                <img src="/farmaciav2/Util/img/user/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
+                                                <img src="/farmaciav2/Util/img/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-footer">
                                         <div class="text-right">`
-                                        if(datos.id_tipo_sesion == 1 && datos.id_tipo != 1 &&  datos.estado == 'A') {
-                                            if(datos.id_tipo == 2) {
-                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
+                                        if(datos.estado == 'A') {
+                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="eliminar_cliente btn btn-outline-danger btn-circle btn-lg">
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
-                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="descender_usuario" class="confirmar btn btn-outline-secondary btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
-                                                            <i class="fas fa-sort-amount-down mr-5"></i>
+                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="editar_cliente btn btn-outline-success btn-circle btn-lg">
+                                                            <i class="fas fa-pencil-alt mr-5"></i>
                                                         </button>`
-                                            } else if(datos.id_tipo == 3) {
-                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
-                                                            <i class="far fa-trash-alt mr-5"></i>
-                                                        </button>   
-                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="ascender_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
-                                                            <i class="fas fa-sort-amount-up mr-5"></i>
-                                                        </button>`
-                                            }
-                                        }
-                                        else if(datos.id_tipo_sesion == 2 && datos.id_tipo != 1 && datos.id_tipo != 2 &&  datos.estado == 'A') {
-                                            if(datos.id_tipo == 3) {
-                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
-                                                            <i class="far fa-trash-alt mr-5"></i>
-                                                        </button>   
-                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="ascender_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
-                                                            <i class="fas fa-sort-amount-up mr-5"></i>
-                                                        </button>`
-                                            }
                                         }
                                         else if(datos.estado == 'I') {
-                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="activar_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
+                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="activar_cliente btn btn-outline-primary btn-circle btn-lg">
                                                             <i class="fas fa-plus mr-5"></i>
+                                                        </button>
+                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="editar_cliente btn btn-outline-success btn-circle btn-lg">
+                                                            <i class="fas fa-pencil-alt mr-5"></i>
                                                         </button>`
                                         }
                                
