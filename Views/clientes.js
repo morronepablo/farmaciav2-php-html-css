@@ -359,8 +359,8 @@ $(document).ready(function(){
         }
     }
 
-    async function crear_usuario(datos) {
-        let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+    async function crear_cliente(datos) {
+        let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
           method: "POST",
           body: datos
         });
@@ -369,30 +369,17 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha creado el usuario correctamente', 'Exito!', {timeOut: 2000});
-                obtener_usuarios();
-                $('#crear_usuario').modal('hide');
-                $('#form-crear_usuario').trigger('reset');
-                $('#residencia').val('').trigger('change');
-            } else if(respuesta.mensaje == 'error_decrypt') {
-                Swal.fire({
-                    position: "center",
-                    icon: 'error',
-                    title: 'No vulnere los datos...',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(function() {
-                    //refresca la pagina (F5)
-                    location.reload();
-                  });
-            } else if(respuesta.mensaje == 'error_usuario') {
+                toastr.success('Se ha creado el cliente correctamente', 'Exito!', {timeOut: 2000});
+                obtener_clientes();
+                $('#crear_cliente').modal('hide');
+                $('#form-crear_cliente').trigger('reset');
+            } else if(respuesta.mensaje == 'error_cliente') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'El usuario ya existe...',
-                    text: 'El usuario ya existe, póngase en contacto con el administrador del sistema.'
+                    title: 'El cliente ya existe...',
+                    text: 'El cliente ya existe, póngase en contacto con el administrador del sistema.'
                   });
-                  $('#form-crear_usuario').trigger('reset');
-                  $('#residencia').val('').trigger('change');
+                  $('#form-crear_cliente').trigger('reset');
             } else if(respuesta.mensaje == 'error_session') {
                 Swal.fire({
                     position: "center",
@@ -425,10 +412,10 @@ $(document).ready(function(){
     
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-crear_usuario')[0]);
-            let funcion = "crear_usuario";
+            let datos = new FormData($('#form-crear_cliente')[0]);
+            let funcion = "crear_cliente";
             datos.append('funcion', funcion);
-            crear_usuario(datos);
+            crear_cliente(datos);
         },
     });
 
@@ -438,7 +425,7 @@ $(document).ready(function(){
         return estado;
     }, "* Este campo solo permite letras");
     
-    $("#form-crear_usuario").validate({
+    $("#form-crear_cliente").validate({
         rules: {
             nombre: {
                 required: true,
@@ -459,22 +446,11 @@ $(document).ready(function(){
                 maxlength: 8,
                 number: true
             },
-            password: {
-                required: true
-            },
             telefono: {
                 required: true,
                 minlength: 10,
                 maxlength: 10,
                 number: true
-            },
-            residencia: {
-                required: true,
-            },
-            direccion: {
-                required: true,
-                minlength: 2,
-                maxlength: 100,
             },
             sexo: {
                 required: true,
@@ -506,22 +482,11 @@ $(document).ready(function(){
                 minlength: "* Se permite mínimo 7 caracteres",
                 maxlength: "* Se permite máximo 8 caracteres",
             },
-            password: {
-                required: "* Dato requerido",
-            },
             telefono: {
                 required: "* Dato requerido",
                 number: "* El dato debe ser numérico",
                 minlength: "* Se permite mínimo 10 caracteres",
                 maxlength: "* Se permite máximo 10 caracteres",
-            },
-            residencia: {
-                required: "* Dato requerido",
-            },
-            direccion: {
-                required: "* Dato requerido",
-                minlength: "* Se permite mínimo 2 caracteres",
-                maxlength: "* Se permite máximo 100 caracteres",
             },
             sexo: {
                 required: "* Dato requerido",
@@ -699,172 +664,6 @@ $(document).ready(function(){
         }
     }
 
-
-	/*var tipo_usuario = $('#tipo_usuario').val();
-	if(tipo_usuario==2){
-		$('#button-crear').hide();
-	}
-	buscar_datos();
-	var funcion;
-	function buscar_datos(consulta){
-		funcion='buscar_usuarios_adm';
-		$.post('../controlador/UsuarioController.php',{consulta,funcion},(response)=>{
-			const usuarios = JSON.parse(response);
-			let template='';
-			usuarios.forEach(usuario=>{
-				template+=`
-				<div usuarioId="${usuario.id}" class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
-              <div class="card bg-light">
-                <div class="card-header text-muted border-bottom-0">`;
-                if(usuario.tipo_usuario==3){
-                	template+=`<h1 class="badge badge-danger">${usuario.tipo}</h1>`;
-                }
-                if(usuario.tipo_usuario==1){
-                	template+=`<h1 class="badge badge-warning">${usuario.tipo}</h1>`;
-                }
-                if(usuario.tipo_usuario==2){
-                	template+=`<h1 class="badge badge-info">${usuario.tipo}</h1>`;
-                }
-                template+=`</div>
-                <div class="card-body pt-0">
-                  <div class="row">
-                    <div class="col-7">
-                      <h2 class="lead"><b>${usuario.nombre} ${usuario.apellidos}</b></h2>
-                      <p class="text-muted text-sm"><b>Sobre mi: </b>${usuario.adicional}</p>
-                      <ul class="ml-4 mb-0 fa-ul text-muted">
-                      	<li class="small"><span class="fa-li"><i class="fas fa-lg fa-id-card"></i></span> DNI. : ${usuario.dni}</li>
-                      	<li class="small"><span class="fa-li"><i class="fas fa-lg fa-birthday-cake"></i></span> Edad : ${usuario.edad}</li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Dirección : ${usuario.residencia}</li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Teléfono : ${usuario.telefono}</li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-at"></i></span> Correo : ${usuario.correo}</li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-smile-wink	"></i></span> Sexo : ${usuario.sexo}</li>
-                      </ul>
-                    </div>
-                    <div class="col-5 text-center">
-                      <img src="${usuario.avatar}" alt="" class="img-circle img-fluid">
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer">
-                  <div class="text-right">`;
-                if(tipo_usuario==3){
-                	if(usuario.tipo_usuario!=3){
-                		template+=`
-                		<button class="borrar-usuario btn btn-danger mr-1" type="button" data-toggle="modal" data-target="#confirmar">
-                    		<i class="fas fa-user-times mr-2"></i>Eliminar
-                    	</button>
-                		`;
-                	}
-                	if(usuario.tipo_usuario==2){
-                		template+=`
-                		<button class="ascender btn btn-primary ml-1" type="button" data-toggle="modal" data-target="#confirmar">
-                    		<i class="fas fa-sort-amount-up mr-2"></i>Ascender
-                    	</button>
-                		`;
-                	}
-                	if(usuario.tipo_usuario==1){
-                		template+=`
-                		<button class="descender btn btn-secondary ml-1" type="button" data-toggle="modal" data-target="#confirmar">
-                    		<i class="fas fa-sort-amount-down mr-2"></i>Descender
-                    	</button>
-                		`;
-                	}
-                }
-                else{
-                	if(tipo_usuario==1 && usuario.tipo_usuario!=1 && usuario.tipo_usuario!=3){
-                		template+=`
-                		<button class="borrar-usuario btn btn-danger" type="button" data-toggle="modal" data-target="#confirmar">
-                    		<i class="fas fa-user-times mr-2"></i>Eliminar
-                    	</button>
-                		`;
-                	}
-                }
-
-                template+=`
-                  </div>
-                </div>
-              </div>
-            </div>
-				`;
-			})
-			$('#usuarios').html(template);
-		});
-	}
-	$(document).on('keyup','#buscar',function(){
-		let valor = $(this).val();
-		if(valor!=""){
-			buscar_datos(valor);
-		}
-		else{
-			buscar_datos();
-		}
-	});
-	$('#form-crear').submit(e=>{
-		let nombre = $('#nombre').val();
-		let apellido = $('#apellido').val();
-		let edad = $('#edad').val();
-		let dni = $('#dni').val();
-		let pass = $('#pass').val();
-		funcion ='crear_usuario';
-		$.post('../controlador/UsuarioController.php',{nombre,apellido,edad,dni,pass,funcion},(response)=>{
-			if(response=='add'){
-				$('#add').hide('slow');
-				$('#add').show(1000);
-				$('#add').hide(2000);
-				$('#form-crear').trigger('reset');
-				buscar_datos();
-			}
-			else{
-				$('#noadd').hide('slow');
-				$('#noadd').show(1000);
-				$('#noadd').hide(2000);
-				$('#form-crear').trigger('reset');
-			}
-		});
-		e.preventDefault();
-	});
-	$(document).on('click','.ascender',(e)=>{
-		const elemento= $(this)[0].activeElement.parentElement.parentElement.parentElement.parentElement;
-		const id=$(elemento).attr('usuarioId');
-		funcion='ascender';
-		$('#id_user').val(id);
-		$('#funcion').val(funcion);
-	});
-	$(document).on('click','.descender',(e)=>{
-		const elemento= $(this)[0].activeElement.parentElement.parentElement.parentElement.parentElement;
-		const id=$(elemento).attr('usuarioId');
-		funcion='descender';
-		$('#id_user').val(id);
-		$('#funcion').val(funcion);
-	});
-	$(document).on('click','.borrar-usuario',(e)=>{
-		const elemento= $(this)[0].activeElement.parentElement.parentElement.parentElement.parentElement;
-		const id=$(elemento).attr('usuarioId');
-		funcion='borrar_usuario';
-		$('#id_user').val(id);
-		$('#funcion').val(funcion);
-	});
-	$('#form-confirmar').submit(e=>{
-		let pass=$('#oldpass').val();
-		let id_usuario=$('#id_user').val();
-		funcion=$('#funcion').val();
-		$.post('../controlador/UsuarioController.php',{pass,id_usuario,funcion},(response)=>{
-			if(response=='ascendido'|| response=='descendido'|| response=='borrado'){
-				$('#confirmado').hide('slow');
-				$('#confirmado').show(1000);
-				$('#confirmado').hide(2000);
-				$('#form-confirmar').trigger('reset');
-			}
-			else{
-				$('#rechazado').hide('slow');
-				$('#rechazado').show(1000);
-				$('#rechazado').hide(2000);
-				$('#form-confirmar').trigger('reset');
-			}
-			buscar_datos();
-		});
-		e.preventDefault();
-	});*/
 })
 
 let espanol = {

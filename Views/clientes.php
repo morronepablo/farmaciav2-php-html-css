@@ -45,14 +45,14 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
 </div>
 <!-- Fin Modal Confirmar Contraseña -->
 <!-- Modal Crear Usuario -->
-<div class="modal fade" id="crear_usuario">
+<div class="modal fade" id="crear_cliente">
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Crear usuario</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Crear cliente</h5>
             </div>
             <div class="modal-body">
-                <form id="form-crear_usuario" enctype="multipart/form-data">
+                <form id="form-crear_cliente" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -72,23 +72,11 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                                 <input type="text" class="form-control" name="dni" id="dni" placeholder="Ingrese su DNI">
                             </div>
                             <div class="form-group">
-                                <label for="">Contraseña:</label>
-                                <input type="text" class="form-control" name="password" id="password" placeholder="Ingrese su contraseña">
-                            </div>
-                            <div class="form-group">
                                 <label for="">Teléfono:</label>
                                 <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Ingrese su teléfono">
                             </div>
                         </div>
                         <div class="col-md-6">
-                        <div class="form-group">
-                                <label for="">Residencia:</label>
-                                <select name="residencia" id="residencia" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success"></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="">Dirección:</label>
-                                <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingrese su dirección">
-                            </div>
                             <div class="form-group">
                                 <label for="">Correo:</label>
                                 <input type="text" class="form-control" name="correo" id="correo" placeholder="Ingrese su correo">
@@ -99,7 +87,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                             </div>
                             <div class="form-group">
                                 <label for="">Información adicional:</label>
-                                <textarea type="text" class="form-control" style="height:124px" name="adicional" id="adicional" placeholder="Ingrese su información adicional"></textarea>
+                                <textarea type="text" class="form-control" style="height:210px" name="adicional" id="adicional" placeholder="Ingrese su información adicional"></textarea>
                             </div>
                         </div>
                     </div>

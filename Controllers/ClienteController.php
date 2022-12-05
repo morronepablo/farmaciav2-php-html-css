@@ -62,34 +62,23 @@ else if($_POST['funcion']=='obtener_clientes'){
 	echo $jsonstring;
 }
 
-else if($_POST['funcion']=='crear_usuario'){
+else if($_POST['funcion']=='crear_cliente'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
-		$id_usuario = $_SESSION['id'];
 		$nombre		= $_POST['nombre'];
 		$apellido	= $_POST['apellido'];
 		$edad		= $_POST['nacimiento'];
 		$dni		= $_POST['dni'];
-		$contrasena	= $_POST['password'];
 		$telefono	= $_POST['telefono'];
-		$residencia	= $_POST['residencia'];
-		$direccion	= $_POST['direccion'];
 		$correo		= $_POST['correo'];
 		$sexo		= $_POST['sexo'];
 		$adicional	= $_POST['adicional'];
-
-		$formateado		= str_replace(' ', '+', $residencia);
-		$id_localidad	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_localidad)) {
-			$usuario->login($dni);
-			if(empty($usuario->objetos)) {
-				$usuario->crear($nombre, $apellido, $edad, $dni, $contrasena, $telefono, $id_localidad, $direccion, $correo, $sexo, $adicional);
-				$mensaje = 'success';
-			} else {
-				$mensaje = 'error_usuario';
-			}
+		$cliente->encontrar_cliente($dni);
+		if(empty($cliente->objetos)) {
+			$cliente->crear($nombre, $apellido, $edad, $dni, $telefono, $correo, $sexo, $adicional);
+			$mensaje = 'success';
 		} else {
-			$mensaje = 'error_decrypt';
+			$mensaje = 'error_cliente';
 		}
 	} else {
 		$mensaje = 'error_session';
