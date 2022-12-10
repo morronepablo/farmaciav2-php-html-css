@@ -250,7 +250,7 @@ $(document).ready(function(){
                 if(usuario.length != 0 && usuario.id_tipo != 3) {
                     llenar_menu_superior(usuario);
                     llenar_menu_lateral(usuario);
-                    obtener_clientes();
+                    obtener_laboratorios();
                     CloseLoader();
                 } else {
                     location.href = "/farmaciav2/";
@@ -273,9 +273,9 @@ $(document).ready(function(){
         }
     }
 
-	async function obtener_clientes() {
-        let funcion = "obtener_clientes";
-        let data = await fetch('/farmaciav2/Controllers/ClienteController.php', {
+	async function obtener_laboratorios() {
+        let funcion = "obtener_laboratorios";
+        let data = await fetch('/farmaciav2/Controllers/LaboratorioController.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion
@@ -283,11 +283,11 @@ $(document).ready(function(){
         if(data.ok) {
             let response = await data.text();
             try {
-                let clientes = JSON.parse(response);
-                //console.log(clientes);
+                let laboratorios = JSON.parse(response);
+                console.log(laboratorios);
                 
-                $('#clientes').DataTable({
-                    data: clientes,
+                $('#laboratorios').DataTable({
+                    data: laboratorios,
                     "aaSorting": [],
                     "searching": true,
                     "scrollX": false,
@@ -297,59 +297,32 @@ $(document).ready(function(){
                             "render": function(data, type, datos, meta) {
                                 let template = '';
                                 template += `
-                                <div class="card bg-light">
-                                    <div class="h5 card-header text-muted border-bottom-0">`
-                                    if(datos.estado == 'A') {
-                                        template += `<span class="badge badge-success">Activo</span>`;
-                                    } else {
-                                        template += `<span class="badge badge-secondary">Inactivo</span>`;
-                                    }
-                        template +=`</div>
-                                    <div class="card-body pt-0">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <h4 class=""><b>${datos.nombre} ${datos.apellido}</b></h4>
-                                                <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> DNI: ${datos.dni}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Edad: ${datos.edad}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Teléfono: ${datos.telefono}</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Correo: ${datos.correo}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Sexo: ${datos.sexo}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Adicional: ${datos.adicional}</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-4 text-center">
-                                                <img src="/farmaciav2/Util/img/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
-                                            </div>
+                                <div class="card card-widget widget-user-2">
+                                    <div class="widget-user-header bg-success d-flex" >
+                                        <div class="widget-user-image" style="width: 80px; height: 80px; object-fit: cover;">
+                                            <img class="img-circle elevation-2" src="/farmaciav2/Util/img/laboratorios/${datos.avatar}" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
+                                        <div>
+                                            <h3 class="widget-user-username" style="margin: 0 20px;">${datos.nombre}</h3>`
+                                            if(datos.estado == 'A') {
+                                                template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-warning">Activo</span></h5>`
+                                            } else {
+                                                template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-secondary">Inactivo</span></h5>`
+                                            }
+                            
+                            template += `</div>
                                     </div>
-                                    <div class="card-footer">
-                                        <div class="text-right">`
-                                        if(datos.estado == 'A') {
-                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="eliminar_cliente btn btn-outline-danger btn-circle btn-lg">
-                                                            <i class="far fa-trash-alt mr-5"></i>
-                                                        </button>   
-                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="editar_cliente btn btn-outline-success btn-circle btn-lg">
-                                                            <i class="fas fa-pencil-alt mr-5"></i>
-                                                        </button>`
-                                        }
-                                        else if(datos.estado == 'I') {
-                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="activar_cliente btn btn-outline-primary btn-circle btn-lg">
-                                                            <i class="fas fa-plus mr-5"></i>
-                                                        </button>
-                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="editar_cliente btn btn-outline-success btn-circle btn-lg">
-                                                            <i class="fas fa-pencil-alt mr-5"></i>
-                                                        </button>`
-                                        }
-                               
-                            template +=`</div>
+                                    <div class="card-footer p-0">
+                                        <ul class="nav flex-column">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link">
+                                                    Projects <span class="float-right badge bg-primary">31</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
-                                `
+                                `;
                                 return template;
                             }
                         }
@@ -357,6 +330,7 @@ $(document).ready(function(){
                     "language": espanol,
                     "destroy": true
                 })
+                
             } catch (error) {
                 console.error(error);
                 console.log(response);

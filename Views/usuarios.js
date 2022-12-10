@@ -222,19 +222,35 @@ $(document).ready(function(){
                     </a>
                 </li>
                 <li id="gestion_almacen" class="nav-header">Almacén</li>
+                <li id="" class="nav-item">
+                    <a href="/farmaciav2/Views/laboratorios.php" class="nav-link">
+                        <i class="nav-icon fas fa-flask"></i>
+                        <p>
+                            Laboratorios
+                        </p>
+                    </a>
+                </li>
+                <li id="" class="nav-item">
+                    <a href="/farmaciav2/Views/presentaciones.php" class="nav-link">
+                        <i class="nav-icon fas fa-tags"></i>
+                        <p>
+                            Presentaciones
+                        </p>
+                    </a>
+                </li>
+                <li id="" class="nav-item">
+                    <a href="/farmaciav2/Views/tipos.php" class="nav-link">
+                        <i class="nav-icon fas fa-vials"></i>
+                        <p>
+                            Tipos
+                        </p>
+                    </a>
+                </li>
                 <li id="gestion_producto" class="nav-item">
                     <a href="adm_producto.php" class="nav-link">
                         <i class="nav-icon fas fa-pills"></i>
                         <p>
                             Gestión producto
-                        </p>
-                    </a>
-                </li>
-                <li id="gestion_atributo" class="nav-item">
-                    <a href="adm_atributo.php" class="nav-link">
-                        <i class="nav-icon fas fa-vials"></i>
-                        <p>
-                            Gestión atributo
                         </p>
                     </a>
                 </li>
