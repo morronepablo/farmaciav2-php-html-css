@@ -315,9 +315,17 @@ $(document).ready(function(){
                                     <div class="card-footer p-0">
                                         <ul class="nav flex-column">
                                             <li class="nav-item">
-                                                <a href="#" class="nav-link">
-                                                    Projects <span class="float-right badge bg-primary">31</span>
-                                                </a>
+                                                <a href="#" class="nav-link">`;
+                                                    if(datos.estado == 'A') {
+                                                        template += `
+                                                        <span style="margin-right: 5px;"><button class="btn btn-outline-primary btn-circle btn-lg"><i class="fas fa-pencil-alt"></i></button></span>
+                                                        <span style="margin-right: 5px;"><button class="btn btn-outline-info btn-circle btn-lg"><i class="fas fa-image"></i></button></span>
+                                                        <span style="margin-right: 5px;"><button class="btn btn-outline-danger btn-circle btn-lg"><i class="fas fa-trash"></i></button></span>
+                                                        `;
+                                                    } else {
+                                                        template += `<span><button class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-plus"></i></button></span>`;
+                                                    }
+                                    template += `</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -349,8 +357,8 @@ $(document).ready(function(){
         }
     }
 
-    async function crear_cliente(datos) {
-        let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
+    async function crear_laboratorio(datos) {
+        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
           method: "POST",
           body: datos
         });
@@ -359,17 +367,17 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha creado el cliente correctamente', 'Exito!', {timeOut: 2000});
-                obtener_clientes();
-                $('#crear_cliente').modal('hide');
-                $('#form-crear_cliente').trigger('reset');
-            } else if(respuesta.mensaje == 'error_cliente') {
+                toastr.success('Se ha creado el laboratorio correctamente', 'Exito!', {timeOut: 2000});
+                obtener_laboratorios();
+                $('#crear_laboratorio').modal('hide');
+                $('#form-crear_laboratorio').trigger('reset');
+            } else if(respuesta.mensaje == 'error_lab') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'El cliente ya existe...',
-                    text: 'El cliente ya existe, póngase en contacto con el administrador del sistema.'
+                    title: 'El laboratorio ya existe...',
+                    text: 'El laboratorio ya existe, póngase en contacto con el administrador del sistema.'
                   });
-                  $('#form-crear_cliente').trigger('reset');
+                  $('#form-crear_laboratorio').trigger('reset');
             } else if(respuesta.mensaje == 'error_session') {
                 Swal.fire({
                     position: "center",
@@ -402,92 +410,25 @@ $(document).ready(function(){
     
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-crear_cliente')[0]);
-            let funcion = "crear_cliente";
+            let datos = new FormData($('#form-crear_laboratorio')[0]);
+            let funcion = "crear_laboratorio";
             datos.append('funcion', funcion);
-            crear_cliente(datos);
+            crear_laboratorio(datos);
         },
     });
-
-    jQuery.validator.addMethod("letras", (value) => {
-        let campo = value.replace(/ /g, '');
-        let estado = /^[A-Za-z]+$/.test(campo);
-        return estado;
-    }, "* Este campo solo permite letras");
     
-    $("#form-crear_cliente").validate({
+    $("#form-crear_laboratorio").validate({
         rules: {
             nombre: {
                 required: true,
-                minlength: 3,
-                letras: true
-            },
-            apellido: {
-                required: true,
-                minlength: 3,
-                letras: true
-            },
-            nacimiento: {
-                required: true
-            },
-            dni: {
-                required: true,
-                minlength: 7,
-                maxlength: 8,
-                number: true
-            },
-            telefono: {
-                required: true,
-                minlength: 10,
-                maxlength: 10,
-                number: true
-            },
-            sexo: {
-                required: true,
-                letras: true
-            },
-            correo: {
-                required: true,
-                email: true,
-            },
-            adicional: {
-                maxlength: 100,
-            },
+                minlength: 3
+            }
         },
         messages: {
             nombre: {
                 required: "* Dato requerido",
                 minlength: "* Se permite mínimo 3 caracteres"
-            },
-            apellido: {
-                required: "* Dato requerido",
-                minlength: "* Se permite mínimo 3 caracteres"
-            },
-            nacimiento: {
-                required: "* Dato requerido",
-            },
-            dni: {
-                required: "* Dato requerido",
-                number: "* El dato debe ser numérico",
-                minlength: "* Se permite mínimo 7 caracteres",
-                maxlength: "* Se permite máximo 8 caracteres",
-            },
-            telefono: {
-                required: "* Dato requerido",
-                number: "* El dato debe ser numérico",
-                minlength: "* Se permite mínimo 10 caracteres",
-                maxlength: "* Se permite máximo 10 caracteres",
-            },
-            sexo: {
-                required: "* Dato requerido",
-            },
-            correo: {
-                required: "* Dato requerido",
-                email: "* Ingrese un correo de formato válido",
-            },
-            adicional: {
-                maxlength: "* Se permite máximo 100 caracteres",
-            },
+            }
         },
         errorElement: "span",
         errorPlacement: function (error, element) {

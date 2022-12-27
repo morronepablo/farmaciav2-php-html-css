@@ -15,12 +15,12 @@ class Laboratorio {
 		return $this->objetos;
 	}
 
-	function encontrar_cliente($dni){
+	function encontrar_laboratorio($nombre){
 		$sql="SELECT *
-			  FROM cliente
-			  WHERE dni=:dni";
+			  FROM laboratorio
+			  WHERE nombre=:nombre";
 		$variables = array(
-			':dni' => $dni
+			':nombre' => $nombre
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
@@ -28,19 +28,11 @@ class Laboratorio {
 		return $this->objetos;
 	}
 
-	function crear($nombre, $apellido, $edad, $dni, $telefono, $correo, $sexo, $adicional) {
-		$sql = "INSERT INTO cliente(nombre, apellido, dni, edad, telefono, correo, sexo, adicional, avatar)
-				VALUES(:nombre, :apellido, :dni, :edad, :telefono, :correo, :sexo, :adicional, :avatar)";
+	function crear($nombre) {
+		$sql = "INSERT INTO laboratorio(nombre)
+				VALUES(:nombre)";
 		$variables = array(
-			':nombre' 		=> $nombre,
-			':apellido' 	=> $apellido,
-			':edad' 		=> $edad,
-			':dni' 			=> $dni,
-			':telefono' 	=> $telefono,
-			':correo' 		=> $correo,
-			':sexo' 		=> $sexo,
-			':adicional' 	=> $adicional,
-			':avatar' 		=> 'avatar.png'
+			':nombre' => $nombre,
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);

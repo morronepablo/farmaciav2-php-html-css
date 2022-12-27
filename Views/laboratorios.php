@@ -46,52 +46,18 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
 </div>
 <!-- Fin Modal Confirmar Contraseña -->
 <!-- Modal Crear Usuario -->
-<div class="modal fade" id="crear_cliente">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+<div class="modal fade" id="crear_laboratorio">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Crear cliente</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Crear laboratorio</h5>
             </div>
             <div class="modal-body">
-                <form id="form-crear_cliente" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="">Nombres:</label>
-                                <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese su nombre">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Apellidos:</label>
-                                <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Ingrese su apellido">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Fecha nacimiento:</label>
-                                <input type="date" class="form-control" name="nacimiento" id="nacimiento" placeholder="Ingrese su nacimiento">
-                            </div>
-                            <div class="form-group">
-                                <label for="">DNI:</label>
-                                <input type="text" class="form-control" name="dni" id="dni" placeholder="Ingrese su DNI">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Teléfono:</label>
-                                <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Ingrese su teléfono">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="">Correo:</label>
-                                <input type="text" class="form-control" name="correo" id="correo" placeholder="Ingrese su correo">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Sexo:</label>
-                                <input type="text" class="form-control" name="sexo" id="sexo" placeholder="Ingrese su sexo">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Información adicional:</label>
-                                <textarea type="text" class="form-control" style="height:210px" name="adicional" id="adicional" placeholder="Ingrese su información adicional"></textarea>
-                            </div>
-                        </div>
-                    </div>
+                <form id="form-crear_laboratorio" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="">Nombres:</label>
+                        <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese su nombre">
+                    </div>      
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>

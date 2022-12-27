@@ -20,23 +20,16 @@ if($_POST['funcion']=='obtener_laboratorios'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='crear_cliente'){
+else if($_POST['funcion']=='crear_laboratorio'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
-		$nombre		= $_POST['nombre'];
-		$apellido	= $_POST['apellido'];
-		$edad		= $_POST['nacimiento'];
-		$dni		= $_POST['dni'];
-		$telefono	= $_POST['telefono'];
-		$correo		= $_POST['correo'];
-		$sexo		= $_POST['sexo'];
-		$adicional	= $_POST['adicional'];
-		$cliente->encontrar_cliente($dni);
-		if(empty($cliente->objetos)) {
-			$cliente->crear($nombre, $apellido, $edad, $dni, $telefono, $correo, $sexo, $adicional);
+		$nombre = $_POST['nombre'];
+		$laboratorio->encontrar_laboratorio($nombre);
+		if(empty($laboratorio->objetos)) {
+			$laboratorio->crear($nombre);
 			$mensaje = 'success';
 		} else {
-			$mensaje = 'error_cliente';
+			$mensaje = 'error_lab';
 		}
 	} else {
 		$mensaje = 'error_session';
@@ -44,8 +37,8 @@ else if($_POST['funcion']=='crear_cliente'){
 	$json = array(
 		'mensaje'	=>	$mensaje
 	);
-	$jsonstring = json_encode($json);
-	echo $jsonstring;
+
+	echo json_encode($json);
 }
 
 else if($_POST['funcion']=='eliminar_usuario'){
