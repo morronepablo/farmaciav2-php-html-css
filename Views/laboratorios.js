@@ -318,7 +318,18 @@ $(document).ready(function(){
                                                 <a href="#" class="nav-link">`;
                                                     if(datos.estado == 'A') {
                                                         template += `
-                                                        <span style="margin-right: 5px;"><button class="btn btn-outline-primary btn-circle btn-lg"><i class="fas fa-pencil-alt"></i></button></span>
+                                                        <span style="margin-right: 5px;">
+                                                            <button 
+                                                                class="btn btn-outline-primary btn-circle btn-lg editar" 
+                                                                data-toggle="modal" 
+                                                                data-target="#editar_laboratorio" 
+                                                                id="${datos.id}"
+                                                                nombre="${datos.nombre}"
+                                                                avatar="${datos.avatar}"
+                                                            >
+                                                                <i class="fas fa-pencil-alt"></i>
+                                                            </button>
+                                                        </span>
                                                         <span style="margin-right: 5px;"><button class="btn btn-outline-info btn-circle btn-lg"><i class="fas fa-image"></i></button></span>
                                                         <span style="margin-right: 5px;"><button class="btn btn-outline-danger btn-circle btn-lg"><i class="fas fa-trash"></i></button></span>
                                                         `;
@@ -445,19 +456,113 @@ $(document).ready(function(){
         },
     });
 
-    $(document).on('click','.confirmar', (e) => {
+    $(document).on('click','.editar', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
         let avatar      = $(elemento).attr("avatar");
         let nombre      = $(elemento).attr("nombre");
-        let apellido    = $(elemento).attr("apellido");
-        let funcion     = $(elemento).attr("funcion");
-        console.log(funcion);
-        $('#nombre_confirmar').text(nombre);
-        $('#apellido_confirmar').text(apellido);
-        $('#avatar_confirmar').attr('src', '/farmaciav2/Util/img/user/' + avatar);
-        $('#id_usuario').val(id);
-        $('#funcion').val(funcion);
+        $('#id_laboratorio').val(id);
+        $('#nombre_edit').val(nombre);
+        $('#nombre_card').text(nombre);
+        $('#avatar_card').attr('src', '/farmaciav2/Util/img/laboratorios/' + avatar); 
+    });
+
+    async function editar_laboratorio(datos) {
+        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
+          method: "POST",
+          body: datos
+        });
+        if (data.ok) {
+          let response = await data.text();
+          try {
+            let respuesta = JSON.parse(response);
+            if(respuesta.mensaje == 'success') {
+                toastr.success('Se ha editado el laboratorio correctamente', 'Exito!', {timeOut: 2000});
+                obtener_laboratorios();
+                $('#editar_laboratorio').modal('hide');
+                $('#form-editar_laboratorio').trigger('reset');
+            } else if(respuesta.mensaje == 'error_lab') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'El laboratorio ya existe...',
+                    text: 'El laboratorio ya existe, póngase en contacto con el administrador del sistema.'
+                  });
+                  //$('#form-editar_laboratorio').trigger('reset');
+            } else if(respuesta.mensaje == 'error_decrypt') {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'No vulnere los datos',
+                    showConfirmButton: false,
+                    timer: 1500
+                  }).then(function() {
+                    location.reload();
+                  })
+            } else if(respuesta.mensaje == 'error_session') {
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'Sesión finalizada...',
+                    showConfirmButton: false,
+                    timer: 1500,
+                  }).then(function() {
+                    //refresca la pagina (F5)
+                    location.href='/farmaciav2/index.php';
+                  });
+            }
+          } catch (error) {
+            console.error(error);
+            console.log(response);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+            });
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: data.statusText,
+            text: "Hubo confilcto de código: " + data.status,
+          });
+        }
+    }
+    
+    $.validator.setDefaults({
+        submitHandler: function () {
+            let datos = new FormData($('#form-editar_laboratorio')[0]);
+            let funcion = "editar_laboratorio";
+            datos.append('funcion', funcion);
+            editar_laboratorio(datos);
+        },
+    });
+    
+    $("#form-editar_laboratorio").validate({
+        rules: {
+            nombre_edit: {
+                required: true,
+                minlength: 3
+            }
+        },
+        messages: {
+            nombre_edit: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo 3 caracteres"
+            }
+        },
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+            $(element).removeClass("is-valid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+            $(element).addClass("is-valid");
+        },
     });
 
     async function confirmar(datos) {

@@ -38,6 +38,16 @@ class Laboratorio {
 		$query->execute($variables);
 	}
 
+	function editar($id_laboratorio, $nombre) {
+		$sql = "UPDATE laboratorio SET nombre=:nombre WHERE id=:id";
+		$variables = array(
+			':nombre'	=> $nombre,
+			':id' 		=> $id_laboratorio,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
 	/******************************/
 	
 	function editar_datos($id_usuario,$telefono,$residencia,$direccion,$correo,$sexo,$adicional){
