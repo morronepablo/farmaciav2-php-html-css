@@ -26,7 +26,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     </div>
 </div>
 <!-- Fin Modal Crear Laboratorio -->
-<!-- Modal Crear Usuario -->
+<!-- Modal Editar Laboratorio -->
 <div class="modal fade" id="editar_laboratorio">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content card card-success">
@@ -63,7 +63,50 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
         </div>
     </div>
 </div>
-<!-- Fin Modal Crear Usuario -->
+<!-- Fin Modal Editar Laboratorio -->
+<!-- Modal Editar Avatar -->
+<div class="modal fade" id="editar_avatar">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content card card-success">
+            <div class="modal-header card-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar avatar</h5>
+            </div>
+            <div class="modal-body p-0">
+                <form id="form-editar_avatar" enctype="multipart/form-data">
+                    <div class="card card-widget widget-user">
+                        <div class="widget-user-header bg-success">
+                            <h3 class="widget-user-username" id="nombre_avatar"></h3>
+                        </div>
+                        <div class="widget-user-image">
+                            <img class="img-circle elevation-2" id="avatar" alt="User Avatar" style="width: 80px; height: 80px; object-fit: cover;">
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <input type="hidden" id="id_laboratorio_avatar" name="id_laboratorio_avatar">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="">Avatar:</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" name="avatar_edit" id="avatar_edit">
+                                                <label for="" class="custom-file-label">Seleccione una imagen</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+                <button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Editar Avatar -->
 <title>Gestión laboratorio | Morrone</title>
 <div class="content-wrapper" style="min-height: 678.917px;">
     <section class="content-header">

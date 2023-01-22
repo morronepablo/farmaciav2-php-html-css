@@ -70,36 +70,24 @@ else if($_POST['funcion']=='editar_laboratorio'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='eliminar_usuario'){
+else if($_POST['funcion']=='editar_avatar'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
-		$id_session = $_SESSION['id'];
-		$id			= $_POST['id_usuario'];
-		$password	= $_POST['pass'];
-		$formateado	= str_replace(' ', '+', $id);
-		$id_usuario	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_usuario)) {
-			$usuario->obtener_datos($id_session);
-			$pass_base	= openssl_decrypt($usuario->objetos[0]->contrasena, CODE, KEY);
-			if($pass_base != '') {
-				// password de la base encriptado
-				if($password == $pass_base) {
-					// eliminar usuario
-					$usuario->borrar($id_usuario);
-					$mensaje = 'success';
-				} else {
-					$mensaje = 'error_pass';
-				}
-			} else {
-				// password de la base no encriptado
-				if($password == $usuario->objetos[0]->contrasena) {
-					// eliminar usuario
-					$usuario->borrar($id_usuario);
-					$mensaje = 'success';
-				} else {
-					$mensaje = 'error_pass';
-				}
+		$id_usuario 	= $_SESSION['id'];
+		$id				= $_POST['id_laboratorio_avatar'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_laboratorio	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_laboratorio)) {
+			$nombre = uniqid().'-'.$_FILES['avatar_edit']['name'];
+			$ruta = $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/img/laboratorios/'.$nombre;
+			move_uploaded_file($_FILES['avatar_edit']['tmp_name'], $ruta);
+			$laboratorio->obtener_laboratorio_id($id_laboratorio);
+			$avatar = $laboratorio->objetos[0]->avatar;
+			if($avatar != 'lab_default.png') {
+				unlink($_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/img/laboratorios/'.$avatar);
 			}
+			$laboratorio->editar_avatar($id_laboratorio, $nombre);
+			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
 		}
@@ -107,8 +95,7 @@ else if($_POST['funcion']=='eliminar_usuario'){
 		$mensaje = 'error_session';
 	}
 	$json = array(
-		'mensaje'	=>	$mensaje,
-		'funcion'	=>	'eliminar usuario'
+		'mensaje' => $mensaje
 	);
 	$jsonstring = json_encode($json);
 	echo $jsonstring;

@@ -48,6 +48,29 @@ class Laboratorio {
 		$query->execute($variables);
 	}
 
+	function obtener_laboratorio_id($id){
+		$sql="SELECT * FROM laboratorio WHERE id=:id";
+		$variables = array(
+			':id' => $id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
+	}
+
+	function editar_avatar($id_laboratorio, $nombre) {
+		$sql = "UPDATE laboratorio 
+				SET avatar=:nombre
+				WHERE id=:id";
+		$variables = array(
+			':id' => $id_laboratorio,
+			':nombre' => $nombre,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
 	/******************************/
 	
 	function editar_datos($id_usuario,$telefono,$residencia,$direccion,$correo,$sexo,$adicional){

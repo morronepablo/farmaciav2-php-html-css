@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    bsCustomFileInput.init();
 	Loader();
     //setTimeout(verificar_sesion, 2000);
     
@@ -330,7 +331,18 @@ $(document).ready(function(){
                                                                 <i class="fas fa-pencil-alt"></i>
                                                             </button>
                                                         </span>
-                                                        <span style="margin-right: 5px;"><button class="btn btn-outline-info btn-circle btn-lg"><i class="fas fa-image"></i></button></span>
+                                                        <span style="margin-right: 5px;">
+                                                            <button 
+                                                                class="btn btn-outline-info btn-circle btn-lg editar_avatar"
+                                                                data-toggle="modal" 
+                                                                data-target="#editar_avatar"
+                                                                id="${datos.id}"
+                                                                nombre="${datos.nombre}"
+                                                                avatar="${datos.avatar}"
+                                                            >
+                                                                <i class="fas fa-image"></i>
+                                                            </button>
+                                                        </span>
                                                         <span style="margin-right: 5px;"><button class="btn btn-outline-danger btn-circle btn-lg"><i class="fas fa-trash"></i></button></span>
                                                         `;
                                                     } else {
@@ -565,8 +577,18 @@ $(document).ready(function(){
         },
     });
 
-    async function confirmar(datos) {
-        let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+    $(document).on('click','.editar_avatar', (e) => {
+        let elemento    = $(this)[0].activeElement;
+        let id          = $(elemento).attr("id");
+        let avatar      = $(elemento).attr("avatar");
+        let nombre      = $(elemento).attr("nombre");
+        $('#id_laboratorio_avatar').val(id);
+        $('#nombre_avatar').text(nombre);
+        $('#avatar').attr('src', '/farmaciav2/Util/img/laboratorios/' + avatar); 
+    });
+
+    async function editar_avatar(datos) {
+        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
           method: "POST",
           body: datos
         });
@@ -575,30 +597,10 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                if(respuesta.funcion == 'eliminar usuario') {
-                    toastr.success('Se elimino al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'activar usuario') {
-                    toastr.success('Se activó al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'ascender usuario') {
-                    toastr.success('Se ascendió al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'descender usuario') {
-                    toastr.success('Se descendió al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
+                toastr.success('Su avatar fué actualizado correctamente', 'Éxito!', {timeOut: 2000});
+                obtener_laboratorios();
+                $('#editar_avatar').modal('hide');
+                $('#form-editar_avatar').trigger('reset'); 
             } else if(respuesta.mensaje == 'error_decrypt') {
                 Swal.fire({
                     position: "center",
@@ -610,8 +612,6 @@ $(document).ready(function(){
                     //refresca la pagina (F5)
                     location.reload();
                   });
-            } else if(respuesta.mensaje == 'error_pass') {
-                toastr.error('No se puedo ' + respuesta.funcion + ' Porque su contraseña actual no coincide con nuestros registros, intente de nuevo', 'Error!', {timeOut: 2500});
             } else if(respuesta.mensaje == 'error_session') {
                 Swal.fire({
                     position: "center",
@@ -644,20 +644,24 @@ $(document).ready(function(){
 
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-confirmar')[0]);
-            confirmar(datos);
+            let datos = new FormData($('#form-editar_avatar')[0]);
+            let funcion = "editar_avatar";
+            datos.append('funcion', funcion);
+            editar_avatar(datos);
         },
     });
     
-    $("#form-confirmar").validate({
+    $("#form-editar_avatar").validate({
         rules: {
-            pass: {
-                required: true
+            avatar_edit: {
+                required: true,
+                extension: 'png|jpg|jpeg|webp'
             }
         },
         messages: {
-            pass: {
-                required: "* Dato requerido"
+            avatar_edit: {
+                required: "* Dato requerido",
+                extension: "* Solo se permite formato png, jpg, jpeg, webp"
             }
         },
         errorElement: "span",
