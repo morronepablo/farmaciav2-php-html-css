@@ -343,10 +343,28 @@ $(document).ready(function(){
                                                                 <i class="fas fa-image"></i>
                                                             </button>
                                                         </span>
-                                                        <span style="margin-right: 5px;"><button class="btn btn-outline-danger btn-circle btn-lg"><i class="fas fa-trash"></i></button></span>
+                                                        <span style="margin-right: 5px;">
+                                                            <button 
+                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar"
+                                                                id="${datos.id}"
+                                                                nombre="${datos.nombre}"
+                                                                avatar="${datos.avatar}"
+                                                            >
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </span>
                                                         `;
                                                     } else {
-                                                        template += `<span><button class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-plus"></i></button></span>`;
+                                                        template += `<span>
+                                                                        <button 
+                                                                            class="btn btn-outline-success btn-circle btn-lg activar"
+                                                                            id="${datos.id}"
+                                                                            nombre="${datos.nombre}"
+                                                                            avatar="${datos.avatar}"
+                                                                        >
+                                                                            <i class="fas fa-plus"></i>
+                                                                        </button>
+                                                                    </span>`;
                                                     }
                                     template += `</a>
                                             </li>
@@ -678,6 +696,208 @@ $(document).ready(function(){
             $(element).addClass("is-valid");
         },
     });
+
+    async function eliminar(id) {
+        let funcion = 'eliminar';
+        let respuesta = '';
+        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'funcion=' + funcion + '&&id=' + id
+        });
+        if (data.ok) {
+          let response = await data.text();
+          try {
+            respuesta = JSON.parse(response);
+            
+          } catch (error) {
+            console.error(error);
+            console.log(response);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+            });
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: data.statusText,
+            text: "Hubo confilcto de código: " + data.status,
+          });
+        }
+        return respuesta;
+    }
+
+    $(document).on('click', '.eliminar', (e) => {
+        let elemento    = $(this)[0].activeElement;
+        let id          = $(elemento).attr("id");
+        let avatar      = $(elemento).attr("avatar");
+        let nombre      = $(elemento).attr("nombre");
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-success ml-2',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+          
+        swalWithBootstrapButtons.fire({
+            title: `Desea eliminar el laboratorio ${nombre} ?`,
+            imageUrl: '/farmaciav2/Util/img/laboratorios/' + avatar,
+            imageWidth: 200,
+            imageHeight: 200,
+            showCancelButton: true,
+            confirmButtonText: 'Si, eliminar !',
+            cancelButtonText: 'No, cancelar !',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminar(id).then(respuesta => {
+                    if(respuesta.mensaje == 'success') {
+                        obtener_laboratorios();
+                        swalWithBootstrapButtons.fire(
+                            'Eliminado!',
+                            'El laboratorio fue eliminado correctamente',
+                            'success'
+                        ) 
+                    } else if(respuesta.mensaje == 'error_decrypt') {
+                        Swal.fire({
+                            position: "center",
+                            icon: 'error',
+                            title: 'No vulnere los datos...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then(function() {
+                            //refresca la pagina (F5)
+                            location.reload();
+                          });
+                    } else if(respuesta.mensaje == 'error_session') {
+                        Swal.fire({
+                            position: "center",
+                            icon: 'error',
+                            title: 'Sesión finalizada...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then(function() {
+                            //refresca la pagina (F5)
+                            location.href='/farmaciav2/index.php';
+                          });
+                    }
+                })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelado',
+                    'canceló la eliminación del laboratorio',
+                    'error'
+                )
+            }
+        })
+    })
+
+    async function activar(id) {
+        let funcion = 'activar';
+        let respuesta = '';
+        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'funcion=' + funcion + '&&id=' + id
+        });
+        if (data.ok) {
+          let response = await data.text();
+          try {
+            respuesta = JSON.parse(response);
+            
+          } catch (error) {
+            console.error(error);
+            console.log(response);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+            });
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: data.statusText,
+            text: "Hubo confilcto de código: " + data.status,
+          });
+        }
+        return respuesta;
+    }
+
+    $(document).on('click', '.activar', (e) => {
+        let elemento    = $(this)[0].activeElement;
+        let id          = $(elemento).attr("id");
+        let avatar      = $(elemento).attr("avatar");
+        let nombre      = $(elemento).attr("nombre");
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-success ml-2',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+          
+        swalWithBootstrapButtons.fire({
+            title: `Desea volver activar el laboratorio ${nombre} ?`,
+            imageUrl: '/farmaciav2/Util/img/laboratorios/' + avatar,
+            imageWidth: 200,
+            imageHeight: 200,
+            showCancelButton: true,
+            confirmButtonText: 'Si, activar !',
+            cancelButtonText: 'No, cancelar !',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                activar(id).then(respuesta => {
+                    if(respuesta.mensaje == 'success') {
+                        obtener_laboratorios();
+                        swalWithBootstrapButtons.fire(
+                            'Activado!',
+                            'El laboratorio fue activado correctamente',
+                            'success'
+                        ) 
+                    } else if(respuesta.mensaje == 'error_decrypt') {
+                        Swal.fire({
+                            position: "center",
+                            icon: 'error',
+                            title: 'No vulnere los datos...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then(function() {
+                            //refresca la pagina (F5)
+                            location.reload();
+                          });
+                    } else if(respuesta.mensaje == 'error_session') {
+                        Swal.fire({
+                            position: "center",
+                            icon: 'error',
+                            title: 'Sesión finalizada...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then(function() {
+                            //refresca la pagina (F5)
+                            location.href='/farmaciav2/index.php';
+                          });
+                    }
+                })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelado',
+                    'canceló la activación del laboratorio',
+                    'error'
+                )
+            }
+        })
+    })
 
 	function Loader(mensaje) {
         if(mensaje == '' || mensaje == null) {

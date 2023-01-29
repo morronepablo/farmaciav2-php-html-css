@@ -71,63 +71,32 @@ class Laboratorio {
 		$query->execute($variables);
 	}
 
-	/******************************/
-	
-	function editar_datos($id_usuario,$telefono,$residencia,$direccion,$correo,$sexo,$adicional){
-		$sql = "UPDATE usuario 
-				SET telefono=:telefono, 
-					id_localidad=:residencia,
-					direccion=:direccion,
-					correo=:correo, 
-					sexo=:sexo, 
-					adicional=:adicional 
-				WHERE id=:id_usuario";
+	function eliminar($id_laboratorio) {
+		$sql = "UPDATE laboratorio 
+				SET estado=:estado
+				WHERE id=:id";
 		$variables = array(
-			':telefono' 	=> $telefono,
-			':residencia' 	=> $residencia,
-			':direccion' 	=> $direccion,
-			':correo' 		=> $correo,
-			':sexo' 		=> $sexo,
-			':adicional' 	=> $adicional,
-			':id_usuario' 	=> $id_usuario
+			':id' 		=> $id_laboratorio,
+			':estado' 	=> 'I',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
 
-	function borrar($id){
-		$sql = "UPDATE usuario 
-				SET estado=:estado 
+	function activar($id_laboratorio) {
+		$sql = "UPDATE laboratorio 
+				SET estado=:estado
 				WHERE id=:id";
 		$variables = array(
-			':id' 		=> $id,
-			':estado'	=> 'I'
+			':id' 		=> $id_laboratorio,
+			':estado' 	=> 'A',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	function activar($id){
-		$sql = "UPDATE usuario 
-				SET estado=:estado 
-				WHERE id=:id";
-		$variables = array(
-			':id' 		=> $id,
-			':estado'	=> 'A'
-		);
-		$query = $this->acceso->prepare($sql);
-		$query->execute($variables);
-	}
-	function actualizar_tipo_usuario($id, $tipo_usuario){
-		$sql = "UPDATE usuario 
-				SET id_tipo=:tipo_usuario 
-				WHERE id=:id";
-		$variables = array(
-			':id' 			=> $id,
-			':tipo_usuario'	=> $tipo_usuario
-		);
-		$query = $this->acceso->prepare($sql);
-		$query->execute($variables);
-	}
+
+	/******************************/
+	
 	
 }
 
