@@ -333,17 +333,25 @@ $(document).ready(function(){
                                             template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="eliminar_cliente btn btn-outline-danger btn-circle btn-lg">
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
-                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="editar_cliente btn btn-outline-success btn-circle btn-lg">
+                                                        <button 
+                                                            id="${datos.id}" 
+                                                            avatar="${datos.avatar}" 
+                                                            nombre="${datos.nombre}" 
+                                                            apellido="${datos.apellido}" 
+                                                            telefono="${datos.telefono}"
+                                                            correo="${datos.correo}"
+                                                            adicional="${datos.adicional}"
+                                                            data-toggle="modal"
+                                                            data-target="#editar_cliente"
+                                                            class="editar_cliente btn btn-outline-success btn-circle btn-lg"
+                                                        >
                                                             <i class="fas fa-pencil-alt mr-5"></i>
                                                         </button>`
                                         }
                                         else if(datos.estado == 'I') {
                                             template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="activar_cliente btn btn-outline-primary btn-circle btn-lg">
                                                             <i class="fas fa-plus mr-5"></i>
-                                                        </button>
-                                                        <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="editar_cliente btn btn-outline-success btn-circle btn-lg">
-                                                            <i class="fas fa-pencil-alt mr-5"></i>
-                                                        </button>`
+                                                        </button>`;
                                         }
                                
                             template +=`</div>
@@ -530,23 +538,27 @@ $(document).ready(function(){
         },
     });
 
-    $(document).on('click','.confirmar', (e) => {
+    $(document).on('click','.editar_cliente', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
         let avatar      = $(elemento).attr("avatar");
         let nombre      = $(elemento).attr("nombre");
         let apellido    = $(elemento).attr("apellido");
-        let funcion     = $(elemento).attr("funcion");
-        console.log(funcion);
-        $('#nombre_confirmar').text(nombre);
-        $('#apellido_confirmar').text(apellido);
-        $('#avatar_confirmar').attr('src', '/farmaciav2/Util/img/user/' + avatar);
+        let telefono    = $(elemento).attr("telefono");
+        let correo      = $(elemento).attr("correo");
+        let adicional   = $(elemento).attr("adicional");
+
+        $('#nombre_edit').text(nombre);
+        $('#apellido_edit').text(apellido);
+        $('#avatar_edit').attr('src', '/farmaciav2/Util/img/' + avatar);
         $('#id_usuario').val(id);
-        $('#funcion').val(funcion);
+        $('#telefono_edit').val(telefono);
+        $('#correo_edit').val(correo);
+        $('#adicional_edit').val(adicional);
     });
 
-    async function confirmar(datos) {
-        let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+    async function editar_cliente(datos) {
+        let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
           method: "POST",
           body: datos
         });
@@ -555,30 +567,10 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                if(respuesta.funcion == 'eliminar usuario') {
-                    toastr.success('Se elimino al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'activar usuario') {
-                    toastr.success('Se activó al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'ascender usuario') {
-                    toastr.success('Se ascendió al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'descender usuario') {
-                    toastr.success('Se descendió al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
+                toastr.success('Se ha editado al Cliente correctamente...', 'Éxito!');
+                $('#form-editar_cliente').trigger('reset');
+                $('#editar_cliente').modal('hide');
+                obtener_clientes();
             } else if(respuesta.mensaje == 'error_decrypt') {
                 Swal.fire({
                     position: "center",
@@ -590,8 +582,6 @@ $(document).ready(function(){
                     //refresca la pagina (F5)
                     location.reload();
                   });
-            } else if(respuesta.mensaje == 'error_pass') {
-                toastr.error('No se puedo ' + respuesta.funcion + ' Porque su contraseña actual no coincide con nuestros registros, intente de nuevo', 'Error!', {timeOut: 2500});
             } else if(respuesta.mensaje == 'error_session') {
                 Swal.fire({
                     position: "center",
@@ -624,20 +614,46 @@ $(document).ready(function(){
 
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-confirmar')[0]);
-            confirmar(datos);
+            let datos = new FormData($('#form-editar_cliente')[0]);
+            let funcion="editar_cliente";
+            datos.append('funcion',funcion); 
+            editar_cliente(datos);
         },
     });
     
-    $("#form-confirmar").validate({
+    $("#form-editar_cliente").validate({
         rules: {
-            pass: {
-                required: true
-            }
+            telefono_edit: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                number: true
+            },
+            correo_edit: {
+                required: true,
+                email: true
+            },
+            adicional_edit: {
+                required: true,
+                minlength: 2,
+                maxlength: 100
+            },
         },
         messages: {
-            pass: {
-                required: "* Dato requerido"
+            telefono_edit: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo de 10 caracteres",
+                maxlength: "* Se permite máximo de 10 caracteres",
+                number: "* Los datos deben ser solo números"
+            },
+            correo_edit: {
+                required: "* Dato requerido",
+                email: "* Solo se permite formato email"
+            },
+            adicional_edit: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo de 2 caracteres",
+                maxlength: "* Se permite máximo de 100 caracteres"
             }
         },
         errorElement: "span",

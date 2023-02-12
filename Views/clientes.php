@@ -1,49 +1,7 @@
 <?php
 session_start();
 include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
-?>
-<!-- Modal Confirmar Contraseña -->
-<div class="modal fade" id="confirmar">
-	<div class="modal-dialog">
-		<div class="modal-content card card-success">
-			<div class="modal-header card-header">
-				<h5 class="modal-title" id="exampleModalLabel">Ingrese su contraseña para confirmar</h5>
-			</div>
-			<div class="modal-body p-0">
-				<div class="card card-widget widget-user">
-					<div class="widget-user-header bg-success">
-						<h3 id="nombre_confirmar" class="widget-user-username"></h3>
-						<h5 id="apellido_confirmar" class="widget-user-desc"></h5>
-					</div>
-					<div class="widget-user-image">
-						<img id="avatar_confirmar" class="img-circle elevation-2" src="" alt="User Avatar">
-					</div>
-					<div class="card-footer">
-						<div class="row">
-							<div class="col-md-12">
-								<form id="form-confirmar" enctype="multipart/form-data">
-                                    <input type="hidden" name="funcion" id="funcion">
-                                    <input type="hidden" name="id_usuario" id="id_usuario">
-									<div class="input-group mt-2 mb-3">
-										<div class="input-group-prepend">
-											<span class="input-group-text"><i class="fas fa-unlock-alt"></i></span>
-										</div>
-										<input type="password" id="pass" name="pass" class="form-control" placeholder="Ingrese contraseña actual">
-									</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
-				<button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- Fin Modal Confirmar Contraseña -->
+?>  
 <!-- Modal Crear Usuario -->
 <div class="modal fade" id="crear_cliente">
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -101,6 +59,53 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     </div>
 </div>
 <!-- Fin Modal Crear Usuario -->
+<!-- Modal Editar Cliente -->
+<div class="modal fade" id="editar_cliente">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content card card-success">
+            <div class="modal-header card-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar cliente</h5>
+            </div>
+            <div class="modal-body p-0">
+                <form id="form-editar_cliente" enctype="multipart/form-data">
+                    <div class="card card-widget widget-user">
+                        <div class="widget-user-header bg-success">
+                            <h3 class="widget-user-username" id="nombre_edit"></h3>
+                            <h5 id="apellido_edit" class="widget-user-desc"></h5>
+                        </div>
+                        <div class="widget-user-image">
+                            <img class="img-circle elevation-2" id="avatar_edit" alt="User Avatar" style="width: 80px; height: 80px; object-fit: cover;">
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <input type="hidden" id="id_usuario" name="id_usuario">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="">Teléfono:</label>
+                                        <input type="text" class="form-control" name="telefono_edit" id="telefono_edit" placeholder="Ingrese teléfono">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Correo:</label>
+                                        <input type="text" class="form-control" name="correo_edit" id="correo_edit" placeholder="Ingrese correo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Información Adicional:</label>
+                                        <textarea type="text" class="form-control" style="height: 100px" name="adicional_edit" id="adicional_edit" placeholder="Ingrese información adicional"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+                <button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Editar Laboratorio -->
 <title>Gestión cliente | Morrone</title>
 <div class="content-wrapper" style="min-height: 678.917px;">
     <section class="content-header">

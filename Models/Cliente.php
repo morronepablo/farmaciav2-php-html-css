@@ -60,29 +60,24 @@ class Cliente {
 		$query->execute($variables);
 	}
 
-	/******************************/
-	
-	function editar_datos($id_usuario,$telefono,$residencia,$direccion,$correo,$sexo,$adicional){
-		$sql = "UPDATE usuario 
+	function editar($id_cliente,$telefono,$correo,$adicional){
+		$sql = "UPDATE cliente 
 				SET telefono=:telefono, 
-					id_localidad=:residencia,
-					direccion=:direccion,
 					correo=:correo, 
-					sexo=:sexo, 
 					adicional=:adicional 
-				WHERE id=:id_usuario";
+				WHERE id=:id_cliente";
 		$variables = array(
 			':telefono' 	=> $telefono,
-			':residencia' 	=> $residencia,
-			':direccion' 	=> $direccion,
 			':correo' 		=> $correo,
-			':sexo' 		=> $sexo,
 			':adicional' 	=> $adicional,
-			':id_usuario' 	=> $id_usuario
+			':id_cliente	' 	=> $id_cliente
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+
+	/******************************/
+	
 
 	function borrar($id){
 		$sql = "UPDATE usuario 

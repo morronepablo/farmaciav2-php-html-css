@@ -6,20 +6,18 @@ session_start();
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 $fecha_actual = date('d-m-Y');
 
-if($_POST['funcion']=='editar_datos'){
+if($_POST['funcion']=='editar_cliente'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
-		$id_usuario 	= $_SESSION['id'];
-		$telefono 		= $_POST['telefono'];
-		$residencia 	= $_POST['residencia'];
-		$direccion 		= $_POST['direccion'];
-		$correo 		= $_POST['correo'];
-		$sexo 			= $_POST['sexo'];
-		$adicional 		= $_POST['adicional'];
-		$formateado		= str_replace(' ', '+', $residencia);
-		$id_residencia	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_residencia)) {
-			$usuario->editar_datos($id_usuario,$telefono,$id_residencia,$direccion,$correo,$sexo,$adicional);
+		//$id_usuario 	= $_SESSION['id'];
+		$telefono 		= $_POST['telefono_edit'];
+		$correo		 	= $_POST['correo_edit'];
+		$adicional 		= $_POST['adicional_edit'];
+		$id				= $_POST['id_usuario'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_cliente		= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_cliente)) {
+			$cliente->editar($id_cliente,$telefono,$correo,$adicional);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
