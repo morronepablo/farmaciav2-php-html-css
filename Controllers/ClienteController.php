@@ -88,36 +88,16 @@ else if($_POST['funcion']=='crear_cliente'){
 	echo $jsonstring;
 }
 
-else if($_POST['funcion']=='eliminar_usuario'){
+else if($_POST['funcion']=='eliminar_cliente'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
-		$id_session = $_SESSION['id'];
-		$id			= $_POST['id_usuario'];
-		$password	= $_POST['pass'];
-		$formateado	= str_replace(' ', '+', $id);
-		$id_usuario	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_usuario)) {
-			$usuario->obtener_datos($id_session);
-			$pass_base	= openssl_decrypt($usuario->objetos[0]->contrasena, CODE, KEY);
-			if($pass_base != '') {
-				// password de la base encriptado
-				if($password == $pass_base) {
-					// eliminar usuario
-					$usuario->borrar($id_usuario);
-					$mensaje = 'success';
-				} else {
-					$mensaje = 'error_pass';
-				}
-			} else {
-				// password de la base no encriptado
-				if($password == $usuario->objetos[0]->contrasena) {
-					// eliminar usuario
-					$usuario->borrar($id_usuario);
-					$mensaje = 'success';
-				} else {
-					$mensaje = 'error_pass';
-				}
-			}
+		//$id_usuario 	= $_SESSION['id'];
+		$id				= $_POST['id'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_cliente		= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_cliente)) {
+			$cliente->eliminar($id_cliente);
+			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
 		}
@@ -125,43 +105,22 @@ else if($_POST['funcion']=='eliminar_usuario'){
 		$mensaje = 'error_session';
 	}
 	$json = array(
-		'mensaje'	=>	$mensaje,
-		'funcion'	=>	'eliminar usuario'
+		'mensaje'	=>	$mensaje
 	);
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
 
-else if($_POST['funcion']=='activar_usuario'){
+else if($_POST['funcion']=='activar_cliente'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
-		$id_session = $_SESSION['id'];
-		$id			= $_POST['id_usuario'];
-		$password	= $_POST['pass'];
-		$formateado	= str_replace(' ', '+', $id);
-		$id_usuario	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_usuario)) {
-			$usuario->obtener_datos($id_session);
-			$pass_base	= openssl_decrypt($usuario->objetos[0]->contrasena, CODE, KEY);
-			if($pass_base != '') {
-				// password de la base encriptado
-				if($password == $pass_base) {
-					// activar usuario
-					$usuario->activar($id_usuario);
-					$mensaje = 'success';
-				} else {
-					$mensaje = 'error_pass';
-				}
-			} else {
-				// password de la base no encriptado
-				if($password == $usuario->objetos[0]->contrasena) {
-					// activar usuario
-					$usuario->activar($id_usuario);
-					$mensaje = 'success';
-				} else {
-					$mensaje = 'error_pass';
-				}
-			}
+		//$id_usuario 	= $_SESSION['id'];
+		$id				= $_POST['id'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_cliente		= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_cliente)) {
+			$cliente->activar($id_cliente);
+			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
 		}
@@ -169,12 +128,10 @@ else if($_POST['funcion']=='activar_usuario'){
 		$mensaje = 'error_session';
 	}
 	$json = array(
-		'mensaje'	=>	$mensaje,
-		'funcion'	=>	'activar usuario'
+		'mensaje'	=>	$mensaje
 	);
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
-
 
 ?>

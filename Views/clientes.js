@@ -671,6 +671,202 @@ $(document).ready(function(){
         },
     });
 
+    async function eliminar_cliente(id) {
+        let funcion = "eliminar_cliente";
+        let respuesta = '';
+        let data = await fetch('/farmaciav2/Controllers/ClienteController.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'funcion=' + funcion + '&&id=' + id
+        })
+        if(data.ok) {
+            let response = await data.text();
+            try {
+                respuesta = JSON.parse(response);
+                
+            } catch (error) {
+                console.error(error);
+                console.log(response);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo confilcto en el sistema, póngase en contacto con el administrador'
+                })
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: data.statusText,
+                text: 'Hubo confilcto de código: ' + data.status
+            })
+        }
+        return respuesta;
+    }
+
+    $(document).on('click','.eliminar_cliente', (e) => {
+        let elemento    = $(this)[0].activeElement;
+        let id          = $(elemento).attr("id");
+        let nombre      = $(elemento).attr("nombre");
+        let apellido    = $(elemento).attr("apellido");
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-success ml-2',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+          
+        swalWithBootstrapButtons.fire({
+            title: `Desea eliminar a ${nombre} ${apellido} ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si, eliminar !',
+            cancelButtonText: 'No, cancelar !',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminar_cliente(id).then(respuesta => {
+                    if(respuesta.mensaje == 'success') {
+                        obtener_clientes();
+                        swalWithBootstrapButtons.fire(
+                            'Eliminado!',
+                            'El cliente fue eliminado correctamente',
+                            'success'
+                        ) 
+                    } else if(respuesta.mensaje == 'error_decrypt') {
+                        Swal.fire({
+                            position: "center",
+                            icon: 'error',
+                            title: 'No vulnere los datos...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then(function() {
+                            //refresca la pagina (F5)
+                            location.reload();
+                          });
+                    } else if(respuesta.mensaje == 'error_session') {
+                        Swal.fire({
+                            position: "center",
+                            icon: 'error',
+                            title: 'Sesión finalizada...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then(function() {
+                            location.href='/farmaciav2/index.php';
+                          });
+                    }
+                })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelado',
+                    'canceló la eliminación del cliente',
+                    'error'
+                )
+            }
+        })
+    });
+
+    async function activar_cliente(id) {
+        let funcion = "activar_cliente";
+        let respuesta = '';
+        let data = await fetch('/farmaciav2/Controllers/ClienteController.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'funcion=' + funcion + '&&id=' + id
+        })
+        if(data.ok) {
+            let response = await data.text();
+            try {
+                respuesta = JSON.parse(response);
+                
+            } catch (error) {
+                console.error(error);
+                console.log(response);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo confilcto en el sistema, póngase en contacto con el administrador'
+                })
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: data.statusText,
+                text: 'Hubo confilcto de código: ' + data.status
+            })
+        }
+        return respuesta;
+    }
+
+    $(document).on('click','.activar_cliente', (e) => {
+        let elemento    = $(this)[0].activeElement;
+        let id          = $(elemento).attr("id");
+        let nombre      = $(elemento).attr("nombre");
+        let apellido    = $(elemento).attr("apellido");
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-success ml-2',
+              cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+          
+        swalWithBootstrapButtons.fire({
+            title: `Desea volver activar a ${nombre} ${apellido} ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si, activar !',
+            cancelButtonText: 'No, cancelar !',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                activar_cliente(id).then(respuesta => {
+                    if(respuesta.mensaje == 'success') {
+                        obtener_clientes();
+                        swalWithBootstrapButtons.fire(
+                            'Activado!',
+                            'El cliente fue activado correctamente',
+                            'success'
+                        ) 
+                    } else if(respuesta.mensaje == 'error_decrypt') {
+                        Swal.fire({
+                            position: "center",
+                            icon: 'error',
+                            title: 'No vulnere los datos...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then(function() {
+                            //refresca la pagina (F5)
+                            location.reload();
+                          });
+                    } else if(respuesta.mensaje == 'error_session') {
+                        Swal.fire({
+                            position: "center",
+                            icon: 'error',
+                            title: 'Sesión finalizada...',
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then(function() {
+                            location.href='/farmaciav2/index.php';
+                          });
+                    }
+                })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelado',
+                    'canceló la activación del cliente',
+                    'error'
+                )
+            }
+        })
+    });
+
 	function Loader(mensaje) {
         if(mensaje == '' || mensaje == null) {
             mensaje = "Cargando datos..."

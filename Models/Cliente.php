@@ -70,44 +70,31 @@ class Cliente {
 			':telefono' 	=> $telefono,
 			':correo' 		=> $correo,
 			':adicional' 	=> $adicional,
-			':id_cliente	' 	=> $id_cliente
+			':id_cliente' 	=> $id_cliente
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
 
-	/******************************/
-	
+	function eliminar($id_cliente){
+		$sql = "UPDATE cliente 
+				SET estado=:estado 
+				WHERE id=:id_cliente";
+		$variables = array(
+			':estado' 	=> 'I',
+			':id_cliente' 	=> $id_cliente
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 
-	function borrar($id){
-		$sql = "UPDATE usuario 
+	function activar($id_cliente){
+		$sql = "UPDATE cliente 
 				SET estado=:estado 
-				WHERE id=:id";
+				WHERE id=:id_cliente";
 		$variables = array(
-			':id' 		=> $id,
-			':estado'	=> 'I'
-		);
-		$query = $this->acceso->prepare($sql);
-		$query->execute($variables);
-	}
-	function activar($id){
-		$sql = "UPDATE usuario 
-				SET estado=:estado 
-				WHERE id=:id";
-		$variables = array(
-			':id' 		=> $id,
-			':estado'	=> 'A'
-		);
-		$query = $this->acceso->prepare($sql);
-		$query->execute($variables);
-	}
-	function actualizar_tipo_usuario($id, $tipo_usuario){
-		$sql = "UPDATE usuario 
-				SET id_tipo=:tipo_usuario 
-				WHERE id=:id";
-		$variables = array(
-			':id' 			=> $id,
-			':tipo_usuario'	=> $tipo_usuario
+			':estado' 	=> 'A',
+			':id_cliente' 	=> $id_cliente
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
