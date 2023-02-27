@@ -147,4 +147,4 @@ else if($_POST['funcion']=='activar'){
 	echo $jsonstring;
 }
 
-
+?>

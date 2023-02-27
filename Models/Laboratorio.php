@@ -94,9 +94,6 @@ class Laboratorio {
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-
-	/******************************/
-	
 	
 }
 
