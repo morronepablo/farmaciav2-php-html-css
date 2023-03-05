@@ -301,7 +301,7 @@ $(document).ready(function(){
                                 <div class="card card-widget widget-user-2">
                                     <div class="widget-user-header bg-success d-flex" >
                                         <div class="widget-user-image" style="width: 80px; height: 80px; object-fit: cover;">
-                                            <img class="img-circle elevation-2" src="/farmaciav2/Util/img/presentacion.png" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                                            <img class="img-circle elevation-2" src="/farmaciav2/Util/img/presentacion.jpg" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div>
                                             <h3 class="widget-user-username" style="margin: 0 20px;">${datos.nombre}</h3>`
@@ -384,8 +384,8 @@ $(document).ready(function(){
         }
     }
 
-    async function crear_laboratorio(datos) {
-        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
+    async function crear_presentacion(datos) {
+        let data = await fetch("/farmaciav2/Controllers/PresentacionController.php", {
           method: "POST",
           body: datos
         });
@@ -394,17 +394,17 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha creado el laboratorio correctamente', 'Exito!', {timeOut: 2000});
-                obtener_laboratorios();
-                $('#crear_laboratorio').modal('hide');
-                $('#form-crear_laboratorio').trigger('reset');
-            } else if(respuesta.mensaje == 'error_lab') {
+                toastr.success('Se ha creado la presentación correctamente', 'Exito!', {timeOut: 2000});
+                obtener_presentaciones();
+                $('#crear_presentacion').modal('hide');
+                $('#form-crear_presentacion').trigger('reset');
+            } else if(respuesta.mensaje == 'error_pre') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'El laboratorio ya existe...',
-                    text: 'El laboratorio ya existe, póngase en contacto con el administrador del sistema.'
+                    title: 'La presentación ya existe...',
+                    text: 'La presentación ya existe, póngase en contacto con el administrador del sistema.'
                   });
-                  $('#form-crear_laboratorio').trigger('reset');
+                  $('#form-crear_presentacion').trigger('reset');
             } else if(respuesta.mensaje == 'error_session') {
                 Swal.fire({
                     position: "center",
@@ -437,14 +437,14 @@ $(document).ready(function(){
     
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-crear_laboratorio')[0]);
-            let funcion = "crear_laboratorio";
+            let datos = new FormData($('#form-crear_presentacion')[0]);
+            let funcion = "crear_presentacion";
             datos.append('funcion', funcion);
-            crear_laboratorio(datos);
+            crear_presentacion(datos);
         },
     });
     
-    $("#form-crear_laboratorio").validate({
+    $("#form-crear_presentacion").validate({
         rules: {
             nombre: {
                 required: true,
@@ -471,6 +471,13 @@ $(document).ready(function(){
             $(element).addClass("is-valid");
         },
     });
+
+
+
+
+
+
+
 
     $(document).on('click','.editar', (e) => {
         let elemento    = $(this)[0].activeElement;

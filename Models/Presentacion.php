@@ -15,9 +15,9 @@ class Presentacion {
 		return $this->objetos;
 	}
 
-	function encontrar_laboratorio($nombre){
+	function encontrar_presentacion($nombre){
 		$sql="SELECT *
-			  FROM laboratorio
+			  FROM presentacion
 			  WHERE nombre=:nombre";
 		$variables = array(
 			':nombre' => $nombre
@@ -29,7 +29,7 @@ class Presentacion {
 	}
 
 	function crear($nombre) {
-		$sql = "INSERT INTO laboratorio(nombre)
+		$sql = "INSERT INTO presentacion(nombre)
 				VALUES(:nombre)";
 		$variables = array(
 			':nombre' => $nombre,

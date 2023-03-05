@@ -19,16 +19,16 @@ if($_POST['funcion']=='obtener_presentaciones'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='crear_laboratorio'){
+else if($_POST['funcion']=='crear_presentacion'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$nombre = $_POST['nombre'];
-		$laboratorio->encontrar_laboratorio($nombre);
-		if(empty($laboratorio->objetos)) {
-			$laboratorio->crear($nombre);
+		$presentacion->encontrar_presentacion($nombre);
+		if(empty($presentacion->objetos)) {
+			$presentacion->crear($nombre);
 			$mensaje = 'success';
 		} else {
-			$mensaje = 'error_lab';
+			$mensaje = 'error_pre';
 		}
 	} else {
 		$mensaje = 'error_session';
