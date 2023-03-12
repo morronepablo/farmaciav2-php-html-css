@@ -479,19 +479,18 @@ $(document).ready(function(){
 
 
 
-    $(document).on('click','.editar', (e) => {
+    $(document).on('click','.editar_presentacion', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
-        let avatar      = $(elemento).attr("avatar");
         let nombre      = $(elemento).attr("nombre");
-        $('#id_laboratorio').val(id);
+        $('#id_presentacion').val(id);
         $('#nombre_edit').val(nombre);
         $('#nombre_card').text(nombre);
-        $('#avatar_card').attr('src', '/farmaciav2/Util/img/laboratorios/' + avatar); 
+        $('#avatar_card').attr('src', '/farmaciav2/Util/img/presentacion.jpg'); 
     });
 
-    async function editar_laboratorio(datos) {
-        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
+    async function editar_presentacion(datos) {
+        let data = await fetch("/farmaciav2/Controllers/PresentacionController.php", {
           method: "POST",
           body: datos
         });
@@ -500,17 +499,16 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha editado el laboratorio correctamente', 'Exito!', {timeOut: 2000});
-                obtener_laboratorios();
-                $('#editar_laboratorio').modal('hide');
-                $('#form-editar_laboratorio').trigger('reset');
-            } else if(respuesta.mensaje == 'error_lab') {
+                toastr.success('Se ha editado la presentación correctamente', 'Exito!', {timeOut: 2000});
+                obtener_presentaciones();
+                $('#editar_presentacion').modal('hide');
+                $('#form-editar_presentacion').trigger('reset');
+            } else if(respuesta.mensaje == 'error_pre') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'El laboratorio ya existe...',
-                    text: 'El laboratorio ya existe, póngase en contacto con el administrador del sistema.'
+                    title: 'La presentación ya existe...',
+                    text: 'La presentación ya existe, póngase en contacto con el administrador del sistema.'
                   });
-                  //$('#form-editar_laboratorio').trigger('reset');
             } else if(respuesta.mensaje == 'error_decrypt') {
                 Swal.fire({
                     position: 'center',
@@ -553,14 +551,14 @@ $(document).ready(function(){
     
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-editar_laboratorio')[0]);
-            let funcion = "editar_laboratorio";
+            let datos = new FormData($('#form-editar_presentacion')[0]);
+            let funcion = "editar_presentacion";
             datos.append('funcion', funcion);
-            editar_laboratorio(datos);
+            editar_presentacion(datos);
         },
     });
     
-    $("#form-editar_laboratorio").validate({
+    $("#form-editar_presentacion").validate({
         rules: {
             nombre_edit: {
                 required: true,
@@ -571,108 +569,6 @@ $(document).ready(function(){
             nombre_edit: {
                 required: "* Dato requerido",
                 minlength: "* Se permite mínimo 3 caracteres"
-            }
-        },
-        errorElement: "span",
-        errorPlacement: function (error, element) {
-            error.addClass("invalid-feedback");
-            element.closest(".form-group").append(error);
-        },
-        highlight: function (element, errorClass, validClass) {
-            $(element).addClass("is-invalid");
-            $(element).removeClass("is-valid");
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $(element).removeClass("is-invalid");
-            $(element).addClass("is-valid");
-        },
-    });
-
-    $(document).on('click','.editar_avatar', (e) => {
-        let elemento    = $(this)[0].activeElement;
-        let id          = $(elemento).attr("id");
-        let avatar      = $(elemento).attr("avatar");
-        let nombre      = $(elemento).attr("nombre");
-        $('#id_laboratorio_avatar').val(id);
-        $('#nombre_avatar').text(nombre);
-        $('#avatar').attr('src', '/farmaciav2/Util/img/laboratorios/' + avatar); 
-    });
-
-    async function editar_avatar(datos) {
-        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
-          method: "POST",
-          body: datos
-        });
-        if (data.ok) {
-          let response = await data.text();
-          try {
-            let respuesta = JSON.parse(response);
-            if(respuesta.mensaje == 'success') {
-                toastr.success('Su avatar fué actualizado correctamente', 'Éxito!', {timeOut: 2000});
-                obtener_laboratorios();
-                $('#editar_avatar').modal('hide');
-                $('#form-editar_avatar').trigger('reset'); 
-            } else if(respuesta.mensaje == 'error_decrypt') {
-                Swal.fire({
-                    position: "center",
-                    icon: 'error',
-                    title: 'No vulnere los datos...',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(function() {
-                    //refresca la pagina (F5)
-                    location.reload();
-                  });
-            } else if(respuesta.mensaje == 'error_session') {
-                Swal.fire({
-                    position: "center",
-                    icon: 'error',
-                    title: 'Sesión finalizada...',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(function() {
-                    //refresca la pagina (F5)
-                    location.href='/farmaciav2/index.php';
-                  });
-            }
-          } catch (error) {
-            console.error(error);
-            console.log(response);
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-            });
-          }
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: data.statusText,
-            text: "Hubo confilcto de código: " + data.status,
-          });
-        }
-    }
-
-    $.validator.setDefaults({
-        submitHandler: function () {
-            let datos = new FormData($('#form-editar_avatar')[0]);
-            let funcion = "editar_avatar";
-            datos.append('funcion', funcion);
-            editar_avatar(datos);
-        },
-    });
-    
-    $("#form-editar_avatar").validate({
-        rules: {
-            avatar_edit: {
-                required: true,
-                extension: 'png|jpg|jpeg|webp'
-            }
-        },
-        messages: {
-            avatar_edit: {
-                required: "* Dato requerido",
-                extension: "* Solo se permite formato png, jpg, jpeg, webp"
             }
         },
         errorElement: "span",

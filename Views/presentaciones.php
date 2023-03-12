@@ -31,10 +31,10 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Editar laboratorio</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Editar presentación</h5>
             </div>
             <div class="modal-body p-0">
-                <form id="form-editar_laboratorio" enctype="multipart/form-data">
+                <form id="form-editar_presentacion" enctype="multipart/form-data">
                     <div class="card card-widget widget-user">
                         <div class="widget-user-header bg-success">
                             <h3 class="widget-user-username" id="nombre_card"></h3>
@@ -44,7 +44,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                         </div>
                         <div class="card-footer">
                             <div class="row">
-                                <input type="hidden" id="id_laboratorio" name="id_laboratorio">
+                                <input type="hidden" id="id_presentacion" name="id_presentacion">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="">Nombre:</label>

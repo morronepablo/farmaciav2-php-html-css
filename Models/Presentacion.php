@@ -38,11 +38,11 @@ class Presentacion {
 		$query->execute($variables);
 	}
 
-	function editar($id_laboratorio, $nombre) {
-		$sql = "UPDATE laboratorio SET nombre=:nombre WHERE id=:id";
+	function editar($id_presentacion, $nombre) {
+		$sql = "UPDATE presentacion SET nombre=:nombre WHERE id=:id_presentacion";
 		$variables = array(
-			':nombre'	=> $nombre,
-			':id' 		=> $id_laboratorio,
+			':nombre'			=> $nombre,
+			':id_presentacion'	=> $id_presentacion,
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);

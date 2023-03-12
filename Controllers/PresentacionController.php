@@ -40,20 +40,20 @@ else if($_POST['funcion']=='crear_presentacion'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='editar_laboratorio'){
+else if($_POST['funcion']=='editar_presentacion'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$nombre 	= $_POST['nombre_edit'];
-		$id 		= $_POST['id_laboratorio'];
+		$id 		= $_POST['id_presentacion'];
 		$formateado	= str_replace(' ', '+', $id);
-		$id_laboratorio	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_laboratorio)) {
-			$laboratorio->encontrar_laboratorio($nombre);
-			if(empty($laboratorio->objetos)) {
-				$laboratorio->editar($id_laboratorio, $nombre);
+		$id_presentacion	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_presentacion)) {
+			$presentacion->encontrar_presentacion($nombre);
+			if(empty($presentacion->objetos)) {
+				$presentacion->editar($id_presentacion, $nombre);
 				$mensaje = 'success';
 			} else {
-				$mensaje = 'error_lab';
+				$mensaje = 'error_pre';
 			}
 		} else  {
 			$mensaje = 'error_decrypt';
