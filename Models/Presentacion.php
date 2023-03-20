@@ -59,37 +59,25 @@ class Presentacion {
 		return $this->objetos;
 	}
 
-	function editar_avatar($id_laboratorio, $nombre) {
-		$sql = "UPDATE laboratorio 
-				SET avatar=:nombre
-				WHERE id=:id";
+	function eliminar($id_presentacion) {
+		$sql = "UPDATE presentacion 
+				SET estado=:estado
+				WHERE id=:id_presentacion";
 		$variables = array(
-			':id' => $id_laboratorio,
-			':nombre' => $nombre,
+			':id_presentacion'	=> $id_presentacion,
+			':estado' 			=> 'I',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
 
-	function eliminar($id_laboratorio) {
-		$sql = "UPDATE laboratorio 
+	function activar($id_presentacion) {
+		$sql = "UPDATE presentacion 
 				SET estado=:estado
-				WHERE id=:id";
+				WHERE id=:id_presentacion";
 		$variables = array(
-			':id' 		=> $id_laboratorio,
-			':estado' 	=> 'I',
-		);
-		$query = $this->acceso->prepare($sql);
-		$query->execute($variables);
-	}
-
-	function activar($id_laboratorio) {
-		$sql = "UPDATE laboratorio 
-				SET estado=:estado
-				WHERE id=:id";
-		$variables = array(
-			':id' 		=> $id_laboratorio,
-			':estado' 	=> 'A',
+			':id_presentacion'	=> $id_presentacion,
+			':estado' 			=> 'A',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);

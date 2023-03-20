@@ -69,46 +69,15 @@ else if($_POST['funcion']=='editar_presentacion'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='editar_avatar'){
-	$mensaje = '';
-	if(!empty($_SESSION['id'])) {
-		$id_usuario 	= $_SESSION['id'];
-		$id				= $_POST['id_laboratorio_avatar'];
-		$formateado		= str_replace(' ', '+', $id);
-		$id_laboratorio	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_laboratorio)) {
-			$nombre = uniqid().'-'.$_FILES['avatar_edit']['name'];
-			$ruta = $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/img/laboratorios/'.$nombre;
-			move_uploaded_file($_FILES['avatar_edit']['tmp_name'], $ruta);
-			$laboratorio->obtener_laboratorio_id($id_laboratorio);
-			$avatar = $laboratorio->objetos[0]->avatar;
-			if($avatar != 'lab_default.png') {
-				unlink($_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/img/laboratorios/'.$avatar);
-			}
-			$laboratorio->editar_avatar($id_laboratorio, $nombre);
-			$mensaje = 'success';
-		} else {
-			$mensaje = 'error_decrypt';
-		}
-	} else {
-		$mensaje = 'error_session';
-	}
-	$json = array(
-		'mensaje' => $mensaje
-	);
-	$jsonstring = json_encode($json);
-	echo $jsonstring;
-}
-
 else if($_POST['funcion']=='eliminar'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$id_usuario 	= $_SESSION['id'];
 		$id				= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_laboratorio	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_laboratorio)) {
-			$laboratorio->eliminar($id_laboratorio);
+		$id_presentacion	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_presentacion)) {
+			$presentacion->eliminar($id_presentacion);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
@@ -129,9 +98,9 @@ else if($_POST['funcion']=='activar'){
 		$id_usuario 	= $_SESSION['id'];
 		$id				= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_laboratorio	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_laboratorio)) {
-			$laboratorio->activar($id_laboratorio);
+		$id_presentacion	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_presentacion)) {
+			$presentacion->activar($id_presentacion);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';

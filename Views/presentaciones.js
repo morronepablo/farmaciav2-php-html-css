@@ -472,13 +472,6 @@ $(document).ready(function(){
         },
     });
 
-
-
-
-
-
-
-
     $(document).on('click','.editar_presentacion', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
@@ -589,7 +582,7 @@ $(document).ready(function(){
     async function eliminar(id) {
         let funcion = 'eliminar';
         let respuesta = '';
-        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
+        let data = await fetch("/farmaciav2/Controllers/PresentacionController.php", {
             method: "POST",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion + '&&id=' + id
@@ -618,10 +611,10 @@ $(document).ready(function(){
         return respuesta;
     }
 
-    $(document).on('click', '.eliminar', (e) => {
+    $(document).on('click', '.eliminar_presentacion', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
-        let avatar      = $(elemento).attr("avatar");
+        let avatar      = 'presentacion.jpg';
         let nombre      = $(elemento).attr("nombre");
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -632,8 +625,8 @@ $(document).ready(function(){
         })
           
         swalWithBootstrapButtons.fire({
-            title: `Desea eliminar el laboratorio ${nombre} ?`,
-            imageUrl: '/farmaciav2/Util/img/laboratorios/' + avatar,
+            title: `Desea eliminar la presentación ${nombre} ?`,
+            imageUrl: '/farmaciav2/Util/img/' + avatar,
             imageWidth: 200,
             imageHeight: 200,
             showCancelButton: true,
@@ -644,10 +637,10 @@ $(document).ready(function(){
             if (result.isConfirmed) {
                 eliminar(id).then(respuesta => {
                     if(respuesta.mensaje == 'success') {
-                        obtener_laboratorios();
+                        obtener_presentaciones();
                         swalWithBootstrapButtons.fire(
                             'Eliminado!',
-                            'El laboratorio fue eliminado correctamente',
+                            'La presentación fue eliminada correctamente',
                             'success'
                         ) 
                     } else if(respuesta.mensaje == 'error_decrypt') {
@@ -680,7 +673,7 @@ $(document).ready(function(){
             ) {
                 swalWithBootstrapButtons.fire(
                     'Cancelado',
-                    'canceló la eliminación del laboratorio',
+                    'canceló la eliminación de la presentación',
                     'error'
                 )
             }
@@ -690,7 +683,7 @@ $(document).ready(function(){
     async function activar(id) {
         let funcion = 'activar';
         let respuesta = '';
-        let data = await fetch("/farmaciav2/Controllers/LaboratorioController.php", {
+        let data = await fetch("/farmaciav2/Controllers/PresentacionController.php", {
             method: "POST",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion + '&&id=' + id
@@ -719,10 +712,10 @@ $(document).ready(function(){
         return respuesta;
     }
 
-    $(document).on('click', '.activar', (e) => {
+    $(document).on('click', '.activar_presentacion', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
-        let avatar      = $(elemento).attr("avatar");
+        let avatar      = 'presentacion.jpg';
         let nombre      = $(elemento).attr("nombre");
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -733,8 +726,8 @@ $(document).ready(function(){
         })
           
         swalWithBootstrapButtons.fire({
-            title: `Desea volver activar el laboratorio ${nombre} ?`,
-            imageUrl: '/farmaciav2/Util/img/laboratorios/' + avatar,
+            title: `Desea volver activar la presentación ${nombre} ?`,
+            imageUrl: '/farmaciav2/Util/img/' + avatar,
             imageWidth: 200,
             imageHeight: 200,
             showCancelButton: true,
@@ -745,10 +738,10 @@ $(document).ready(function(){
             if (result.isConfirmed) {
                 activar(id).then(respuesta => {
                     if(respuesta.mensaje == 'success') {
-                        obtener_laboratorios();
+                        obtener_presentaciones();
                         swalWithBootstrapButtons.fire(
                             'Activado!',
-                            'El laboratorio fue activado correctamente',
+                            'La presentación fue activada correctamente',
                             'success'
                         ) 
                     } else if(respuesta.mensaje == 'error_decrypt') {
@@ -781,7 +774,7 @@ $(document).ready(function(){
             ) {
                 swalWithBootstrapButtons.fire(
                     'Cancelado',
-                    'canceló la activación del laboratorio',
+                    'canceló la activación de la presentación',
                     'error'
                 )
             }
