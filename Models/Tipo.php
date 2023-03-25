@@ -1,92 +1,88 @@
-<?php
-include 'conexion.php';
-class Tipo{
+<?php 
+include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Conexion.php';
+class Tipo {
 	var $objetos;
 	public function __construct(){
-		$db= new Conexion();
+		$db = new Conexion();
 		$this->acceso = $db->pdo;
 	}
-	function crear($nombre){
-		$sql="SELECT id_tip_prod,estado FROM tipo_producto where nombre=:nombre";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':nombre'=>$nombre));
-		$this->objetos=$query->fetchall();
-		if(!empty($this->objetos)){
-				foreach ($this->objetos as $tip) {
-					$tip_id = $tip->id_tip_prod;
-					$tip_estado = $tip->estado;
-				}
-				if($tip_estado=='A'){
-						echo 'noadd';
-				}
-				else{
-					$sql="UPDATE tipo_producto SET estado='A' where id_tip_prod=:id ";
-					$query = $this->acceso->prepare($sql);
-					$query->execute(array(':id'=>$tip_id));
-					echo 'add';
-				}
-		}
-		else{
-			$sql="INSERT INTO tipo_producto(nombre) values (:nombre);";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':nombre'=>$nombre));
-			echo 'add';
-		}
-	}
-	function buscar(){
-		if(!empty($_POST['consulta'])){
-			$consulta=$_POST['consulta'];
-			$sql="SELECT * FROM tipo_producto where estado='A' and nombre LIKE :consulta";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':consulta'=>"%$consulta%"));
-			$this->objetos=$query->fetchall();
-			return $this->objetos;
-		}
-		else{
 
-			$sql="SELECT * FROM tipo_producto where estado='A' and nombre NOT LIKE '' ORDER BY id_tip_prod LIMIT 25";
-			$query = $this->acceso->prepare($sql);
-			$query->execute();
-			$this->objetos=$query->fetchall();
-			return $this->objetos;
-		}
-	}
-
-	function borrar($id){
-		$sql="SELECT * FROM producto where prod_tip_prod=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id));
-		$tip=$query->fetchall();
-		if(!empty($tip)){
-				echo 'noborrado';
-
-		}
-		else{
-				$sql="UPDATE tipo_producto SET estado='I' where id_tip_prod=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$id));
-				if(!empty($query->execute(array(':id'=>$id)))){
-					echo 'borrado';
-				}
-				else{
-					echo 'noborrado';
-				}
-		}
-	}
-	function editar($nombre,$id_editado){
-		$sql="UPDATE tipo_producto SET nombre=:nombre where id_tip_prod=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id_editado,':nombre'=>$nombre));
-		echo 'edit';
-	}
-	function rellenar_tipos(){
-		$sql="SELECT * FROM tipo_producto WHERE estado = 'A' order by nombre asc";
+	function obtener_tipos(){
+		$sql="SELECT * FROM tipo_producto ORDER BY nombre";
 		$query = $this->acceso->prepare($sql);
 		$query->execute();
-		$this->objetos = $query->fetchall();
+		$this->objetos= $query->fetchall();
 		return $this->objetos;
 	}
-}
 
+	function encontrar_presentacion($nombre){
+		$sql="SELECT *
+			  FROM presentacion
+			  WHERE nombre=:nombre";
+		$variables = array(
+			':nombre' => $nombre
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
+	}
+
+	function crear($nombre) {
+		$sql = "INSERT INTO presentacion(nombre)
+				VALUES(:nombre)";
+		$variables = array(
+			':nombre' => $nombre,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
+	function editar($id_presentacion, $nombre) {
+		$sql = "UPDATE presentacion SET nombre=:nombre WHERE id=:id_presentacion";
+		$variables = array(
+			':nombre'			=> $nombre,
+			':id_presentacion'	=> $id_presentacion,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
+	function obtener_laboratorio_id($id){
+		$sql="SELECT * FROM laboratorio WHERE id=:id";
+		$variables = array(
+			':id' => $id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
+	}
+
+	function eliminar($id_presentacion) {
+		$sql = "UPDATE presentacion 
+				SET estado=:estado
+				WHERE id=:id_presentacion";
+		$variables = array(
+			':id_presentacion'	=> $id_presentacion,
+			':estado' 			=> 'I',
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
+	function activar($id_presentacion) {
+		$sql = "UPDATE presentacion 
+				SET estado=:estado
+				WHERE id=:id_presentacion";
+		$variables = array(
+			':id_presentacion'	=> $id_presentacion,
+			':estado' 			=> 'A',
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+	
+}
 
  ?>
