@@ -19,16 +19,16 @@ if($_POST['funcion']=='obtener_tipos'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='crear_presentacion'){
+else if($_POST['funcion']=='crear_tipo'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$nombre = $_POST['nombre'];
-		$presentacion->encontrar_presentacion($nombre);
-		if(empty($presentacion->objetos)) {
-			$presentacion->crear($nombre);
+		$tipo->encontrar_tipo($nombre);
+		if(empty($tipo->objetos)) {
+			$tipo->crear($nombre);
 			$mensaje = 'success';
 		} else {
-			$mensaje = 'error_pre';
+			$mensaje = 'error_tip';
 		}
 	} else {
 		$mensaje = 'error_session';

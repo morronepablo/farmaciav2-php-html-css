@@ -384,8 +384,8 @@ $(document).ready(function(){
         }
     }
 
-    async function crear_presentacion(datos) {
-        let data = await fetch("/farmaciav2/Controllers/PresentacionController.php", {
+    async function crear_tipo(datos) {
+        let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
           method: "POST",
           body: datos
         });
@@ -394,17 +394,17 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha creado la presentación correctamente', 'Exito!', {timeOut: 2000});
-                obtener_presentaciones();
-                $('#crear_presentacion').modal('hide');
-                $('#form-crear_presentacion').trigger('reset');
-            } else if(respuesta.mensaje == 'error_pre') {
+                toastr.success('Se ha creado el tipo correctamente', 'Éxito!', {timeOut: 2000});
+                obtener_tipos();
+                $('#crear_tipo').modal('hide');
+                $('#form-crear_tipo').trigger('reset');
+            } else if(respuesta.mensaje == 'error_tip') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'La presentación ya existe...',
-                    text: 'La presentación ya existe, póngase en contacto con el administrador del sistema.'
+                    title: 'El tipo ya existe...',
+                    text: 'El tipo ya existe, póngase en contacto con el administrador del sistema.'
                   });
-                  $('#form-crear_presentacion').trigger('reset');
+                  $('#form-crear_tipo').trigger('reset');
             } else if(respuesta.mensaje == 'error_session') {
                 Swal.fire({
                     position: "center",
@@ -423,28 +423,28 @@ $(document).ready(function(){
             Swal.fire({
               icon: "error",
               title: "Error",
-              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+              text: "Hubo conflicto en el sistema, póngase en contacto con el administrador",
             });
           }
         } else {
           Swal.fire({
             icon: "error",
             title: data.statusText,
-            text: "Hubo confilcto de código: " + data.status,
+            text: "Hubo conflicto de código: " + data.status,
           });
         }
     }
     
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-crear_presentacion')[0]);
-            let funcion = "crear_presentacion";
+            let datos = new FormData($('#form-crear_tipo')[0]);
+            let funcion = "crear_tipo";
             datos.append('funcion', funcion);
-            crear_presentacion(datos);
+            crear_tipo(datos);
         },
     });
     
-    $("#form-crear_presentacion").validate({
+    $("#form-crear_tipo").validate({
         rules: {
             nombre: {
                 required: true,

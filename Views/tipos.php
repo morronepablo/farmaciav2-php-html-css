@@ -4,14 +4,14 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
 ?>
 
 <!-- Modal Crear Tipos -->
-<div class="modal fade" id="crear_presentacion">
+<div class="modal fade" id="crear_tipo">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Crear presentación</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Crear tipo</h5>
             </div>
             <div class="modal-body">
-                <form id="form-crear_presentacion" enctype="multipart/form-data">
+                <form id="form-crear_tipo" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="">Nombre:</label>
                         <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese su nombre">
@@ -71,7 +71,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Gestión tipos <button class="btn bg-gradient-primary" data-toggle="modal" data-target="#crear_tipo">Crear tipos</button></h1>
+                    <h1>Gestión tipos <button class="btn bg-gradient-primary" data-toggle="modal" data-target="#crear_tipo">Crear tipo</button></h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">

@@ -15,9 +15,9 @@ class Tipo {
 		return $this->objetos;
 	}
 
-	function encontrar_presentacion($nombre){
+	function encontrar_tipo($nombre){
 		$sql="SELECT *
-			  FROM presentacion
+			  FROM tipo_producto
 			  WHERE nombre=:nombre";
 		$variables = array(
 			':nombre' => $nombre
@@ -29,7 +29,7 @@ class Tipo {
 	}
 
 	function crear($nombre) {
-		$sql = "INSERT INTO presentacion(nombre)
+		$sql = "INSERT INTO tipo_producto(nombre)
 				VALUES(:nombre)";
 		$variables = array(
 			':nombre' => $nombre,
