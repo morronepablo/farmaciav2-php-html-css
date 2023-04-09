@@ -472,18 +472,18 @@ $(document).ready(function(){
         },
     });
 
-    $(document).on('click','.editar_presentacion', (e) => {
+    $(document).on('click','.editar_tipo', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
         let nombre      = $(elemento).attr("nombre");
-        $('#id_presentacion').val(id);
+        $('#id_tipo').val(id);
         $('#nombre_edit').val(nombre);
         $('#nombre_card').text(nombre);
         $('#avatar_card').attr('src', '/farmaciav2/Util/img/presentacion.jpg'); 
     });
 
-    async function editar_presentacion(datos) {
-        let data = await fetch("/farmaciav2/Controllers/PresentacionController.php", {
+    async function editar_tipo(datos) {
+        let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
           method: "POST",
           body: datos
         });
@@ -492,15 +492,15 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha editado la presentación correctamente', 'Exito!', {timeOut: 2000});
-                obtener_presentaciones();
-                $('#editar_presentacion').modal('hide');
-                $('#form-editar_presentacion').trigger('reset');
-            } else if(respuesta.mensaje == 'error_pre') {
+                toastr.success('Se ha editado el tipo correctamente', 'Exito!', {timeOut: 2000});
+                obtener_tipos();
+                $('#editar_tipo').modal('hide');
+                $('#form-editar_tipo').trigger('reset');
+            } else if(respuesta.mensaje == 'error_tip') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'La presentación ya existe...',
-                    text: 'La presentación ya existe, póngase en contacto con el administrador del sistema.'
+                    title: 'El tipo ya existe...',
+                    text: 'El tipo ya existe, póngase en contacto con el administrador del sistema.'
                   });
             } else if(respuesta.mensaje == 'error_decrypt') {
                 Swal.fire({
@@ -544,14 +544,14 @@ $(document).ready(function(){
     
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-editar_presentacion')[0]);
-            let funcion = "editar_presentacion";
+            let datos = new FormData($('#form-editar_tipo')[0]);
+            let funcion = "editar_tipo";
             datos.append('funcion', funcion);
-            editar_presentacion(datos);
+            editar_tipo(datos);
         },
     });
     
-    $("#form-editar_presentacion").validate({
+    $("#form-editar_tipo").validate({
         rules: {
             nombre_edit: {
                 required: true,

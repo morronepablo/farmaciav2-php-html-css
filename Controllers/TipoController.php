@@ -40,20 +40,20 @@ else if($_POST['funcion']=='crear_tipo'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='editar_presentacion'){
+else if($_POST['funcion']=='editar_tipo'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$nombre 	= $_POST['nombre_edit'];
-		$id 		= $_POST['id_presentacion'];
+		$id 		= $_POST['id_tipo'];
 		$formateado	= str_replace(' ', '+', $id);
-		$id_presentacion	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_presentacion)) {
-			$presentacion->encontrar_presentacion($nombre);
-			if(empty($presentacion->objetos)) {
-				$presentacion->editar($id_presentacion, $nombre);
+		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_tipo)) {
+			$tipo->encontrar_tipo($nombre);
+			if(empty($tipo->objetos)) {
+				$tipo->editar($id_tipo, $nombre);
 				$mensaje = 'success';
 			} else {
-				$mensaje = 'error_pre';
+				$mensaje = 'error_tip';
 			}
 		} else  {
 			$mensaje = 'error_decrypt';
