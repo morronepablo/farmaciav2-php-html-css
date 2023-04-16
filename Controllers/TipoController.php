@@ -75,9 +75,9 @@ else if($_POST['funcion']=='eliminar'){
 		$id_usuario 	= $_SESSION['id'];
 		$id				= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_presentacion	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_presentacion)) {
-			$presentacion->eliminar($id_presentacion);
+		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_tipo)) {
+			$tipo->eliminar($id_tipo);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
@@ -98,9 +98,9 @@ else if($_POST['funcion']=='activar'){
 		$id_usuario 	= $_SESSION['id'];
 		$id				= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_presentacion	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_presentacion)) {
-			$presentacion->activar($id_presentacion);
+		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_tipo)) {
+			$tipo->activar($id_tipo);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';

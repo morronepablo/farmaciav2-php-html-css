@@ -582,7 +582,7 @@ $(document).ready(function(){
     async function eliminar(id) {
         let funcion = 'eliminar';
         let respuesta = '';
-        let data = await fetch("/farmaciav2/Controllers/PresentacionController.php", {
+        let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
             method: "POST",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion + '&&id=' + id
@@ -611,7 +611,7 @@ $(document).ready(function(){
         return respuesta;
     }
 
-    $(document).on('click', '.eliminar_presentacion', (e) => {
+    $(document).on('click', '.eliminar_tipo', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
         let avatar      = 'presentacion.jpg';
@@ -625,7 +625,7 @@ $(document).ready(function(){
         })
           
         swalWithBootstrapButtons.fire({
-            title: `Desea eliminar la presentación ${nombre} ?`,
+            title: `Desea eliminar el tipo ${nombre} ?`,
             imageUrl: '/farmaciav2/Util/img/' + avatar,
             imageWidth: 200,
             imageHeight: 200,
@@ -637,10 +637,10 @@ $(document).ready(function(){
             if (result.isConfirmed) {
                 eliminar(id).then(respuesta => {
                     if(respuesta.mensaje == 'success') {
-                        obtener_presentaciones();
+                        obtener_tipos();
                         swalWithBootstrapButtons.fire(
                             'Eliminado!',
-                            'La presentación fue eliminada correctamente',
+                            'El tipo fue eliminado correctamente',
                             'success'
                         ) 
                     } else if(respuesta.mensaje == 'error_decrypt') {
@@ -673,7 +673,7 @@ $(document).ready(function(){
             ) {
                 swalWithBootstrapButtons.fire(
                     'Cancelado',
-                    'canceló la eliminación de la presentación',
+                    'canceló la eliminación del tipo',
                     'error'
                 )
             }
@@ -683,7 +683,7 @@ $(document).ready(function(){
     async function activar(id) {
         let funcion = 'activar';
         let respuesta = '';
-        let data = await fetch("/farmaciav2/Controllers/PresentacionController.php", {
+        let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
             method: "POST",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion + '&&id=' + id
@@ -712,7 +712,7 @@ $(document).ready(function(){
         return respuesta;
     }
 
-    $(document).on('click', '.activar_presentacion', (e) => {
+    $(document).on('click', '.activar_tipo', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
         let avatar      = 'presentacion.jpg';
@@ -726,7 +726,7 @@ $(document).ready(function(){
         })
           
         swalWithBootstrapButtons.fire({
-            title: `Desea volver activar la presentación ${nombre} ?`,
+            title: `Desea volver activar el tipo ${nombre} ?`,
             imageUrl: '/farmaciav2/Util/img/' + avatar,
             imageWidth: 200,
             imageHeight: 200,
@@ -738,10 +738,10 @@ $(document).ready(function(){
             if (result.isConfirmed) {
                 activar(id).then(respuesta => {
                     if(respuesta.mensaje == 'success') {
-                        obtener_presentaciones();
+                        obtener_tipos();
                         swalWithBootstrapButtons.fire(
                             'Activado!',
-                            'La presentación fue activada correctamente',
+                            'El tipo fue activado correctamente',
                             'success'
                         ) 
                     } else if(respuesta.mensaje == 'error_decrypt') {
@@ -774,7 +774,7 @@ $(document).ready(function(){
             ) {
                 swalWithBootstrapButtons.fire(
                     'Cancelado',
-                    'canceló la activación de la presentación',
+                    'canceló la activación del tipo',
                     'error'
                 )
             }

@@ -59,25 +59,25 @@ class Tipo {
 		return $this->objetos;
 	}
 
-	function eliminar($id_presentacion) {
-		$sql = "UPDATE presentacion 
+	function eliminar($id_tipo) {
+		$sql = "UPDATE tipo_producto 
 				SET estado=:estado
-				WHERE id=:id_presentacion";
+				WHERE id=:id_tipo";
 		$variables = array(
-			':id_presentacion'	=> $id_presentacion,
-			':estado' 			=> 'I',
+			':id_tipo'	=> $id_tipo,
+			':estado' 	=> 'I',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
 
-	function activar($id_presentacion) {
-		$sql = "UPDATE presentacion 
+	function activar($id_tipo) {
+		$sql = "UPDATE tipo_producto 
 				SET estado=:estado
-				WHERE id=:id_presentacion";
+				WHERE id=:id_tipo";
 		$variables = array(
-			':id_presentacion'	=> $id_presentacion,
-			':estado' 			=> 'A',
+			':id_tipo'	=> $id_tipo,
+			':estado' 	=> 'A',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
