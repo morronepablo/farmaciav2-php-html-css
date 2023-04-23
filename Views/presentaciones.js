@@ -183,7 +183,7 @@ $(document).ready(function(){
                     </a>
                 </li>
                 <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/presentaciones.php" class="nav-link">
+                    <a href="/farmaciav2/Views/presentaciones.php" class="active nav-link">
                         <i class="nav-icon fas fa-tags"></i>
                         <p>
                             Presentaciones
@@ -216,7 +216,7 @@ $(document).ready(function(){
                 </li>
                 <li id="gestion_compras" class="nav-header">Compras</li>
                 <li id="gestion_proveedor" class="nav-item">
-                    <a href="adm_proveedor.php" class="nav-link">
+                    <a href="/farmaciav2/Views/proveedores.php" class="nav-link">
                         <i class="nav-icon fas fa-truck"></i>
                         <p>
                             Gestión proveedor

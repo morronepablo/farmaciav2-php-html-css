@@ -165,7 +165,7 @@ $(document).ready(function() {
                 </li>
                 <li id="gestion_ventas" class="nav-header">Ventas</li>
                 <li id="gestion_listar_ventas" class="nav-item">
-                    <a href="adm_venta.php" class="nav-link">
+                    <a href="/farmaciav2/Views/adm_venta.php" class="nav-link">
                         <i class="nav-icon fas fa-notes-medical"></i>
                         <p>
                             Listar Ventas
@@ -215,7 +215,7 @@ $(document).ready(function() {
                 </li>
                 <li id="gestion_compras" class="nav-header">Compras</li>
                 <li id="gestion_proveedor" class="nav-item">
-                    <a href="adm_proveedor.php" class="nav-link">
+                    <a href="/farmaciav2/Views/proveedores.php" class="nav-link">
                         <i class="nav-icon fas fa-truck"></i>
                         <p>
                             Gestión proveedor
