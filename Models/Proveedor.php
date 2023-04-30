@@ -1,95 +1,88 @@
-<?php
-include 'conexion.php';
-class Proveedor{
+<?php 
+include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Conexion.php';
+class Proveedor {
 	var $objetos;
 	public function __construct(){
-		$db= new Conexion();
+		$db = new Conexion();
 		$this->acceso = $db->pdo;
 	}
-	function crear($nombre,$telefono,$correo,$direccion,$avatar){
-		$sql="SELECT id_proveedor,estado FROM proveedor where nombre=:nombre and telefono=:telefono and correo=:correo and direccion=:direccion";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':nombre'=>$nombre,':telefono'=>$telefono,':correo'=>$correo,':direccion'=>$direccion));
-		$this->objetos=$query->fetchall();
-		if(!empty($this->objetos)){
-			foreach ($this->objetos as $prov) {
-				$prov_id = $prov->id_proveedor;
-				$prov_estado = $prov->estado;
-			}
-			if($prov_estado=='A'){
-					echo 'noadd';
-			}
-			else{
-				$sql="UPDATE proveedor SET estado='A' where id_proveedor=:id";
-				$query = $this->acceso->prepare($sql);
-				$query->execute(array(':id'=>$prov_id));
-				echo 'add';
-			}
-		}
-		else{
-			$sql="INSERT INTO proveedor(nombre,telefono,correo,direccion,avatar) values (:nombre,:telefono,:correo,:direccion,:avatar);";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':nombre'=>$nombre,':telefono'=>$telefono,':correo'=>$correo,':direccion'=>$direccion,':avatar'=>$avatar));
-			echo 'add';
-		}
-	}
-	function buscar(){
-		if(!empty($_POST['consulta'])){
-			$consulta=$_POST['consulta'];
-			$sql="SELECT * FROM proveedor where estado='A' and nombre LIKE :consulta";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':consulta'=>"%$consulta%"));
-			$this->objetos=$query->fetchall();
-			return $this->objetos;
-		}
-		else{
 
-			$sql="SELECT * FROM proveedor where estado='A' and nombre NOT LIKE '' ORDER BY id_proveedor desc LIMIT 25";
-			$query = $this->acceso->prepare($sql);
-			$query->execute();
-			$this->objetos=$query->fetchall();
-			return $this->objetos;
-		}
-	}
-	function cambiar_logo($id,$nombre){
-		$sql="UPDATE proveedor SET avatar=:nombre where id_proveedor=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id,':nombre'=>$nombre));
-	}
-	function borrar($id){
-		$sql="UPDATE proveedor SET estado='I' where id_proveedor=:id";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id));
-		if(!empty($query->execute(array(':id'=>$id)))){
-			echo 'borrado';
-		}
-		else{
-			echo 'noborrado';
-		}
-	}
-	function editar($id,$nombre,$telefono,$correo,$direccion){
-		$sql="SELECT id_proveedor FROM proveedor where id_proveedor!=:id and nombre=:nombre";
-		$query = $this->acceso->prepare($sql);
-		$query->execute(array(':id'=>$id,':nombre'=>$nombre));
-		$this->objetos=$query->fetchall();
-		if(!empty($this->objetos)){
-			echo 'noedit';
-		}
-		else{
-			$sql="UPDATE proveedor SET nombre=:nombre, telefono=:telefono, correo=:correo, direccion=:direccion where id_proveedor=:id";
-			$query = $this->acceso->prepare($sql);
-			$query->execute(array(':id'=>$id,':nombre'=>$nombre,':telefono'=>$telefono,':correo'=>$correo,':direccion'=>$direccion));
-			echo 'edit';
-		}
-	}
-	function rellenar_proveedores(){
-		$sql="SELECT * FROM proveedor where estado = 'A' order by nombre asc";
+	function obtener_proveedores(){
+		$sql="SELECT * FROM proveedor ORDER BY nombre";
 		$query = $this->acceso->prepare($sql);
 		$query->execute();
-		$this->objetos=$query->fetchall();
+		$this->objetos= $query->fetchall();
 		return $this->objetos;
 	}
-}
 
+	function encontrar_tipo($nombre){
+		$sql="SELECT *
+			  FROM tipo_producto
+			  WHERE nombre=:nombre";
+		$variables = array(
+			':nombre' => $nombre
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
+	}
+
+	function crear($nombre) {
+		$sql = "INSERT INTO tipo_producto(nombre)
+				VALUES(:nombre)";
+		$variables = array(
+			':nombre' => $nombre,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
+	function editar($id_tipo, $nombre) {
+		$sql = "UPDATE tipo_producto SET nombre=:nombre WHERE id=:id_tipo";
+		$variables = array(
+			':nombre'	=> $nombre,
+			':id_tipo'	=> $id_tipo,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
+	function obtener_laboratorio_id($id){
+		$sql="SELECT * FROM laboratorio WHERE id=:id";
+		$variables = array(
+			':id' => $id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
+	}
+
+	function eliminar($id_tipo) {
+		$sql = "UPDATE tipo_producto 
+				SET estado=:estado
+				WHERE id=:id_tipo";
+		$variables = array(
+			':id_tipo'	=> $id_tipo,
+			':estado' 	=> 'I',
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
+	function activar($id_tipo) {
+		$sql = "UPDATE tipo_producto 
+				SET estado=:estado
+				WHERE id=:id_tipo";
+		$variables = array(
+			':id_tipo'	=> $id_tipo,
+			':estado' 	=> 'A',
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+	
+}
 
  ?>

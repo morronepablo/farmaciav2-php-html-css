@@ -251,7 +251,7 @@ $(document).ready(function(){
                 if(usuario.length != 0 && usuario.id_tipo != 3) {
                     llenar_menu_superior(usuario);
                     llenar_menu_lateral(usuario);
-                    obtener_tipos();
+                    obtener_proveedores();
                     CloseLoader();
                 } else {
                     location.href = "/farmaciav2/";
@@ -274,9 +274,9 @@ $(document).ready(function(){
         }
     }
 
-	async function obtener_tipos() {
-        let funcion = "obtener_tipos";
-        let data = await fetch('/farmaciav2/Controllers/TipoController.php', {
+	async function obtener_proveedores() {
+        let funcion = "obtener_proveedores";
+        let data = await fetch('/farmaciav2/Controllers/ProveedorController.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion
@@ -284,9 +284,9 @@ $(document).ready(function(){
         if(data.ok) {
             let response = await data.text();
             try {
-                let tipos = JSON.parse(response);
-                console.log(tipos);
-                
+                let proveedores = JSON.parse(response);
+                console.log(proveedores);
+                /*
                 $('#tipos').DataTable({
                     data: tipos,
                     "aaSorting": [],
@@ -365,7 +365,7 @@ $(document).ready(function(){
                     "language": espanol,
                     "destroy": true
                 })
-                
+                */
             } catch (error) {
                 console.error(error);
                 console.log(response);

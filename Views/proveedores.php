@@ -4,7 +4,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
 ?>
 
 <!-- Modal Crear Tipos -->
-<div class="modal fade" id="crear_tipo">
+<div class="modal fade" id="crear_proveedor">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
@@ -65,18 +65,18 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
 </div>
 <!-- Fin Modal Editar Tipos -->
 
-<title>Gestión tipos | Morrone</title>
+<title>Gestión proveedor | Morrone</title>
 <div class="content-wrapper" style="min-height: 678.917px;">
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Gestión tipos <button class="btn bg-gradient-primary" data-toggle="modal" data-target="#crear_tipo">Crear tipo</button></h1>
+                    <h1>Gestión proveedor <button class="btn bg-gradient-primary" data-toggle="modal" data-target="#crear_proveedor">Crear proveedor</button></h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/farmaciav2/Views/catalogo.php">Inicio</a></li>
-                        <li class="breadcrumb-item active">Gestión tipos</li>
+                        <li class="breadcrumb-item active">Gestión proveedor</li>
                     </ol>
                 </div>
             </div>
@@ -85,13 +85,13 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     <section class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Tipos</h3>
+                <h3 class="card-title">Proveedores</h3>
             </div>
             <div class="card-body">
-                <table id="tipos" class="table table-hover">
+                <table id="proveedores" class="table table-hover">
                     <thead class="bg-primary">
                         <tr>
-                            <th width="100%">Tipos</th>
+                            <th width="100%">Proveedores</th>
                         </tr>
                     </thead>
                     <tbody>

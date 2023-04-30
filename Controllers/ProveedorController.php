@@ -1,88 +1,126 @@
 <?php 
-include '../modelo/Proveedor.php';
+include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Proveedor.php';
+include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/Config/config.php';
 $proveedor = new Proveedor();
-if($_POST['funcion']=='crear'){
-	$nombre    = $_POST['nombre'];
-	$telefono  = $_POST['telefono'];
-	$correo    = $_POST['correo'];
-	$direccion = $_POST['direccion'];
-	$avatar    = 'prov_default.png';
+session_start();
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+$fecha_actual = date('d-m-Y');
 
-	$proveedor->crear($nombre,$telefono,$correo,$direccion,$avatar);
-
-}
-if($_POST['funcion']=='editar'){
-	$id        = $_POST['id'];
-	$nombre    = $_POST['nombre'];
-	$telefono  = $_POST['telefono'];
-	$correo    = $_POST['correo'];
-	$direccion = $_POST['direccion'];
-
-	$proveedor->editar($id,$nombre,$telefono,$correo,$direccion);
-
-}
-if($_POST['funcion']=='buscar'){
-	$proveedor->buscar();
-	$json=array();
+if($_POST['funcion']=='obtener_proveedores'){
+	$json = array();
+	$proveedor->obtener_proveedores();
 	foreach ($proveedor->objetos as $objeto) {
-		$json[]=array(
-			'id'=>$objeto->id_proveedor,
-			'nombre'=>$objeto->nombre,
-			'telefono'=>$objeto->telefono,
-			'correo'=>$objeto->correo,
-			'direccion'=>$objeto->direccion,
-			'avatar'=>'../img/prov/'.$objeto->avatar
+		$json[] = array(
+			'id'		=> openssl_encrypt($objeto->id, CODE, KEY),
+			'nombre'	=> $objeto->nombre,
+			'telefono'	=> $objeto->telefono,
+			'correo'	=> $objeto->correo,
+			'direccion'	=> $objeto->direccion,
+			'avatar'	=> $objeto->avatar,
+			'nombre'	=> $objeto->nombre,
+			'nombre'	=> $objeto->nombre,
+			'nombre'	=> $objeto->nombre,
+			'nombre'	=> $objeto->nombre,
+			'estado' 	=> $objeto->estado
 		);
 	}
+	echo json_encode($json);
+}
+
+else if($_POST['funcion']=='crear_tipo'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$nombre = $_POST['nombre'];
+		$tipo->encontrar_tipo($nombre);
+		if(empty($tipo->objetos)) {
+			$tipo->crear($nombre);
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_tip';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+
+	echo json_encode($json);
+}
+
+else if($_POST['funcion']=='editar_tipo'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$nombre 	= $_POST['nombre_edit'];
+		$id 		= $_POST['id_tipo'];
+		$formateado	= str_replace(' ', '+', $id);
+		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_tipo)) {
+			$tipo->encontrar_tipo($nombre);
+			if(empty($tipo->objetos)) {
+				$tipo->editar($id_tipo, $nombre);
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_tip';
+			}
+		} else  {
+			$mensaje = 'error_decrypt';
+		}
+		
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+
+	echo json_encode($json);
+}
+
+else if($_POST['funcion']=='eliminar'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$id_usuario 	= $_SESSION['id'];
+		$id				= $_POST['id'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_tipo)) {
+			$tipo->eliminar($id_tipo);
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje' => $mensaje
+	);
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
-if($_POST['funcion']=='cambiar_logo'){
-	$id=$_POST['id_logo_prov'];
-	$avatar=$_POST['avatar'];
-	if(($_FILES['photo']['type']=='image/jpeg')||($_FILES['photo']['type']=='image/png')||($_FILES['photo']['type']=='image/gif')){
-		$nombre=uniqid().'-'.$_FILES['photo']['name'];
-		$ruta='../img/prov/'.$nombre;
-		move_uploaded_file($_FILES['photo']['tmp_name'],$ruta);
-		$proveedor->cambiar_logo($id,$nombre);
-		if($avatar!='../img/prov/prov_default.png'){
-			unlink($avatar);
-		}
-		
-		
-		$json= array();
-		$json[]=array(
-			'ruta'=>$ruta,
-			'alert'=>'edit'
-		);
-		$jsonstring = json_encode($json[0]);
-		echo $jsonstring;
-	}
-	else{
-		$json= array();
-		$json[]=array(
-			'alert'=>'noedit'
-		);
-		$jsonstring = json_encode($json[0]);
-		echo $jsonstring;
-	}
-}
-if($_POST['funcion']=='borrar'){
-	$id = $_POST['id'];
-	$proveedor->borrar($id);
 
-}
-if($_POST['funcion']=='rellenar_proveedores'){
-	$proveedor->rellenar_proveedores();
-	$json = array();
-	foreach ($proveedor->objetos as $objeto) {
-		$json[]=array(
-			'id'=>$objeto->id_proveedor,
-			'nombre'=>$objeto->nombre
-		);
+else if($_POST['funcion']=='activar'){
+	$mensaje = '';
+	if(!empty($_SESSION['id'])) {
+		$id_usuario 	= $_SESSION['id'];
+		$id				= $_POST['id'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_tipo)) {
+			$tipo->activar($id_tipo);
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
 	}
-	$jsonstring=json_encode($json);
+	$json = array(
+		'mensaje' => $mensaje
+	);
+	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
 
- ?>
+?>
