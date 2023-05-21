@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-12-2022 a las 20:39:31
+-- Tiempo de generación: 21-05-2023 a las 21:06:33
 -- Versión del servidor: 10.1.26-MariaDB
 -- Versión de PHP: 7.1.9
 
@@ -47,8 +47,8 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`id`, `nombre`, `apellido`, `dni`, `edad`, `telefono`, `correo`, `sexo`, `adicional`, `avatar`, `estado`) VALUES
-(1, 'Diego Martin', 'Trinidad', 24556789, '1975-01-25', 1144785268, 'diegotrinidad@gmail.com', 'Masculino', 'usuario nuevo', 'avatar.png', 'I'),
-(2, 'Pedro', 'Galindez', 24876445, '0000-00-00', 1144189384, 'galindezpedro@gmail.com', 'Masculino', 'ya no nuevo. jaja', 'avatar.png', 'A'),
+(1, 'Diego Martin', 'Trinidad', 24556789, '1975-01-25', 1144785268, 'diegotrinidad@gmail.com', 'Masculino', 'usuario nuevo', 'avatar.png', 'A'),
+(2, 'Pedro', 'Galindez', 24876445, '0000-00-00', 1144189399, 'galindezpedro@gmail.com', 'Masculino', 'ya algo', 'avatar.png', 'A'),
 (3, 'Walter Fernando', 'Trinidad', 22187456, '0000-00-00', 1134881243, 'trinidadwalter@gmail.com', 'Masculino', 'nuevo usuario', 'avatar.png', 'A'),
 (4, 'Natalia Elvira', 'Oduber Andara', 94654750, '0000-00-00', 1138661609, 'nataliaoduber@gmail.com', 'Femenino', 'usuario nuevo', 'avatar.png', 'A'),
 (5, 'Maximiliano', 'Hoeffler', 25889997, '1975-06-04', 1144189384, 'maxi@gmail.com', 'Masculino', '', 'avatar.png', 'A');
@@ -144,7 +144,7 @@ INSERT INTO `laboratorio` (`id`, `nombre`, `avatar`, `estado`, `fecha_creacion`,
 (2, 'Novartis', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
 (3, 'Bayer S.A.', '5f80db167b6e2-Bayer.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
 (4, 'Roemmers', '5f80df56336b1-laboratorio-roemmers.jpg', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(5, 'Abbott', '5f80e19b6801a-Abbott.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
+(5, 'Abbott', '5f80e19b6801a-Abbott.png', 'A', '2022-06-11 18:29:06', '2023-01-29 16:47:17'),
 (6, 'Biotenk', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
 (7, 'DroFAr', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
 (8, 'Eli Lilly Interamérica Inc. ', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
@@ -169,7 +169,9 @@ INSERT INTO `laboratorio` (`id`, `nombre`, `avatar`, `estado`, `fecha_creacion`,
 (27, 'Productos Roche S.A.Q.e I.', '60032ef90c3b9-Roche.jpg', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
 (28, 'Rigecin', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-12-10 16:37:39'),
 (29, 'Sanofi-aventis', '607c729e8d6b5-Sanofi.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(30, 'Isa', '607c705746bc8-ISA.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06');
+(30, 'Isa', '607c705746bc8-ISA.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
+(31, 'Andrómaco Argentina', 'lab_default.png', 'A', '2022-12-26 21:04:24', '2022-12-26 21:04:24'),
+(32, 'Alcon Argentina', '63cd84af11ec8-Alcon-logo.png', 'A', '2023-01-14 11:33:28', '2023-01-29 16:47:22');
 
 -- --------------------------------------------------------
 
@@ -2627,9 +2629,9 @@ CREATE TABLE `presentacion` (
 --
 
 INSERT INTO `presentacion` (`id`, `nombre`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
-(1, 'Ampolla', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
+(1, 'Ampolla', 'A', '2022-06-11 18:31:32', '2023-03-20 19:38:33'),
 (3, 'Crema', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(4, 'Aerosol', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
+(4, 'Aerosol', 'A', '2022-06-11 18:31:32', '2023-03-20 19:38:28'),
 (5, 'Anillo', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
 (6, 'Champu', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
 (7, 'Emulsion', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
@@ -2638,7 +2640,8 @@ INSERT INTO `presentacion` (`id`, `nombre`, `estado`, `fecha_creacion`, `fecha_e
 (10, 'Comprimidos', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
 (11, 'Inyectable', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
 (12, 'Suspensión', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(13, 'Sobres Efervescentes ', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32');
+(13, 'Sobres Efervescentes ', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
+(14, 'Gel', 'A', '2023-03-05 16:09:16', '2023-03-05 16:09:16');
 
 -- --------------------------------------------------------
 
@@ -2701,25 +2704,27 @@ INSERT INTO `producto` (`id`, `codigo`, `nombre`, `concentracion`, `adicional`, 
 --
 
 CREATE TABLE `proveedor` (
-  `id_proveedor` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `nombre` varchar(45) NOT NULL,
   `telefono` int(11) NOT NULL,
   `correo` varchar(45) DEFAULT NULL,
   `direccion` varchar(45) NOT NULL,
-  `avatar` varchar(255) DEFAULT NULL,
-  `estado` varchar(10) NOT NULL DEFAULT 'A'
+  `avatar` varchar(255) DEFAULT 'prov_default.png',
+  `estado` varchar(10) NOT NULL DEFAULT 'A',
+  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Volcado de datos para la tabla `proveedor`
 --
 
-INSERT INTO `proveedor` (`id_proveedor`, `nombre`, `telefono`, `correo`, `direccion`, `avatar`, `estado`) VALUES
-(1, 'Beta Medical S.R.L.', 43530054, 'ventas@betamedical.com.ar', 'Suipacha 544 - Avellaneda - Buenos Aires', '5f852544cd0d0-logo-beta-medical.png', 'A'),
-(2, 'SCIENZA Argentina', 55547890, '213@gmail.com', 'Av. Juan de Garay 437 - CABA', '5f8524305cf01-SCIENZA.jpg', 'A'),
-(3, 'Generia Drogueria', 44887778, '1@gmail.com', 'Pueyrredon 3881 - Ciudadela - Bs. As.', '5f85220456aa5-logo dorgueria.jpg', 'A'),
-(7, 'Disprofarma', 1111, 'info@disprofarma.com.ar', 'Av. Castañares 3222 - Haedo - Buenos Aires', '5f852270860aa-disprofarma.jpg', 'A'),
-(9, 'Droguería Nueva Era', 2147483647, 'comercial2@droguerianuevaera.com.ar', 'Corvalan 554, Rosario, Santa Fe ', 'prov_default.png', 'A');
+INSERT INTO `proveedor` (`id`, `nombre`, `telefono`, `correo`, `direccion`, `avatar`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
+(1, 'Beta Medical S.R.L.', 43530054, 'ventas@betamedical.com.ar', 'Suipacha 544 - Avellaneda - Buenos Aires', '5f852544cd0d0-logo-beta-medical.png', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53'),
+(2, 'SCIENZA Argentina', 55547890, '213@gmail.com', 'Av. Juan de Garay 437 - CABA', '5f8524305cf01-SCIENZA.jpg', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53'),
+(3, 'Generia Drogueria', 44887778, '1@gmail.com', 'Pueyrredon 3881 - Ciudadela - Bs. As.', '5f85220456aa5-logo dorgueria.jpg', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53'),
+(7, 'Disprofarma', 1111, 'info@disprofarma.com.ar', 'Av. Castañares 3222 - Haedo - Buenos Aires', '5f852270860aa-disprofarma.jpg', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53'),
+(9, 'Droguería Nueva Era', 2147483647, 'comercial2@droguerianuevaera.com.ar', 'Corvalan 554, Rosario, Santa Fe ', 'prov_default.png', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53');
 
 -- --------------------------------------------------------
 
@@ -2803,8 +2808,9 @@ CREATE TABLE `tipo_producto` (
 
 INSERT INTO `tipo_producto` (`id`, `nombre`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
 (2, 'Genericos', 'A', '2022-06-11 18:30:29', '2022-06-11 18:30:29'),
-(3, 'Comerciales', 'A', '2022-06-11 18:30:29', '2022-06-11 18:30:29'),
-(4, 'Regalos', 'I', '2022-06-11 18:30:29', '2022-06-11 18:30:29');
+(3, 'Comerciales', 'A', '2022-06-11 18:30:29', '2023-04-16 15:16:59'),
+(4, 'Regalos', 'I', '2022-06-11 18:30:29', '2022-06-11 18:30:29'),
+(5, 'Joyeria', 'A', '2023-04-02 14:34:08', '2023-04-02 14:34:08');
 
 -- --------------------------------------------------------
 
@@ -2942,7 +2948,7 @@ ALTER TABLE `producto`
 -- Indices de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  ADD PRIMARY KEY (`id_proveedor`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `provincia`
@@ -3018,7 +3024,7 @@ ALTER TABLE `estado_pago`
 -- AUTO_INCREMENT de la tabla `laboratorio`
 --
 ALTER TABLE `laboratorio`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `localidad`
@@ -3036,7 +3042,7 @@ ALTER TABLE `lote`
 -- AUTO_INCREMENT de la tabla `presentacion`
 --
 ALTER TABLE `presentacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -3048,7 +3054,7 @@ ALTER TABLE `producto`
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `provincia`
@@ -3066,7 +3072,7 @@ ALTER TABLE `tipo`
 -- AUTO_INCREMENT de la tabla `tipo_producto`
 --
 ALTER TABLE `tipo_producto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
@@ -3095,7 +3101,7 @@ ALTER TABLE `venta_producto`
 --
 ALTER TABLE `compra`
   ADD CONSTRAINT `compra_ibfk_1` FOREIGN KEY (`id_estado_pago`) REFERENCES `estado_pago` (`id`),
-  ADD CONSTRAINT `compra_ibfk_2` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`);
+  ADD CONSTRAINT `compra_ibfk_2` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id`);
 
 --
 -- Filtros para la tabla `detalle_venta`

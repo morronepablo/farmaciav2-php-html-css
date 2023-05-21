@@ -286,9 +286,9 @@ $(document).ready(function(){
             try {
                 let proveedores = JSON.parse(response);
                 console.log(proveedores);
-                /*
-                $('#tipos').DataTable({
-                    data: tipos,
+                
+                $('#proveedores').DataTable({
+                    data: proveedores,
                     "aaSorting": [],
                     "searching": true,
                     "scrollX": false,
@@ -298,66 +298,60 @@ $(document).ready(function(){
                             "render": function(data, type, datos, meta) {
                                 let template = '';
                                 template += `
-                                <div class="card card-widget widget-user-2">
-                                    <div class="widget-user-header bg-success d-flex" >
-                                        <div class="widget-user-image" style="width: 80px; height: 80px; object-fit: cover;">
-                                            <img class="img-circle elevation-2" src="/farmaciav2/Util/img/presentacion.jpg" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                                <div class="card bg-light">
+                                    <div class="h5 card-header text-muted border-bottom-0">`
+                                    if(datos.estado == 'A') {
+                                        template += `<span class="badge badge-success">Activo</span>`;
+                                    } else {
+                                        template += `<span class="badge badge-secondary">Inactivo</span>`;
+                                    }
+                        template +=`</div>
+                                    <div class="card-body pt-0">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h4 class=""><b>${datos.nombre}</b></h4>
+                                                <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Teléfono: ${datos.telefono}</li>
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Correo: ${datos.correo}</li>
+                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Dirección: ${datos.direccion}</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="col-md-6 text-center">
+                                                <img src="/farmaciav2/Util/img/proveedores/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: contain;">
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h3 class="widget-user-username" style="margin: 0 20px;">${datos.nombre}</h3>`
-                                            if(datos.estado == 'A') {
-                                                template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-warning">Activo</span></h5>`
-                                            } else {
-                                                template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-secondary">Inactivo</span></h5>`
-                                            }
-                            
-                            template += `</div>
                                     </div>
-                                    <div class="card-footer p-0">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a href="#" class="nav-link">`;
-                                                    if(datos.estado == 'A') {
-                                                        template += `
-                                                        <span style="margin-right: 5px;">
-                                                            <button 
-                                                                class="btn btn-outline-primary btn-circle btn-lg editar_tipo" 
-                                                                data-toggle="modal" 
-                                                                data-target="#editar_tipo" 
-                                                                id="${datos.id}"
-                                                                nombre="${datos.nombre}"
-                                                            >
-                                                                <i class="fas fa-pencil-alt"></i>
-                                                            </button>
-                                                        </span>
-                                                        
-                                                        <span style="margin-right: 5px;">
-                                                            <button 
-                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar_tipo"
-                                                                id="${datos.id}"
-                                                                nombre="${datos.nombre}"
-                                                            >
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </span>
-                                                        `;
-                                                    } else {
-                                                        template += `<span>
-                                                                        <button 
-                                                                            class="btn btn-outline-success btn-circle btn-lg activar_tipo"
-                                                                            id="${datos.id}"
-                                                                            nombre="${datos.nombre}"
-                                                                        >
-                                                                            <i class="fas fa-plus"></i>
-                                                                        </button>
-                                                                    </span>`;
-                                                    }
-                                    template += `</a>
-                                            </li>
-                                        </ul>
+                                    <div class="card-footer">
+                                        <div class="text-right">`
+                                        if(datos.estado == 'A') {
+                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" class="eliminar_proveedor btn btn-outline-danger btn-circle btn-lg">
+                                                            <i class="far fa-trash-alt mr-5"></i>
+                                                        </button>   
+                                                        <button 
+                                                            id="${datos.id}" 
+                                                            avatar="${datos.avatar}" 
+                                                            nombre="${datos.nombre}" 
+                                                            telefono="${datos.telefono}"
+                                                            correo="${datos.correo}"
+                                                            adicional="${datos.direccion}"
+                                                            data-toggle="modal"
+                                                            data-target="#editar_proveedor"
+                                                            class="editar_proveedor btn btn-outline-success btn-circle btn-lg"
+                                                        >
+                                                            <i class="fas fa-pencil-alt mr-5"></i>
+                                                        </button>`
+                                        }
+                                        else if(datos.estado == 'I') {
+                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" class="activar_proveedor btn btn-outline-primary btn-circle btn-lg">
+                                                            <i class="fas fa-plus mr-5"></i>
+                                                        </button>`;
+                                        }
+                               
+                            template +=`</div>
                                     </div>
                                 </div>
-                                `;
+                                `
                                 return template;
                             }
                         }
@@ -365,7 +359,7 @@ $(document).ready(function(){
                     "language": espanol,
                     "destroy": true
                 })
-                */
+                
             } catch (error) {
                 console.error(error);
                 console.log(response);
