@@ -8,13 +8,25 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Crear tipo</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Crear proveedor</h5>
             </div>
             <div class="modal-body">
-                <form id="form-crear_tipo" enctype="multipart/form-data">
+                <form id="form-crear_proveedor" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="">Nombre:</label>
                         <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese su nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Teléfono:</label>
+                        <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Ingrese su teléfono">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Correo:</label>
+                        <input type="text" class="form-control" name="correo" id="correo" placeholder="Ingrese su correo">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Dirección:</label>
+                        <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingrese su dirección">
                     </div>
             </div>
             <div class="modal-footer">

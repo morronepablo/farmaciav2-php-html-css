@@ -27,7 +27,9 @@ if($_POST['funcion']=='obtener_proveedores'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='crear_tipo'){
+else if($_POST['funcion']=='crear_proveedor'){
+	var_dump($_POST);
+	/*
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$nombre = $_POST['nombre'];
@@ -46,6 +48,7 @@ else if($_POST['funcion']=='crear_tipo'){
 	);
 
 	echo json_encode($json);
+	*/
 }
 
 else if($_POST['funcion']=='editar_tipo'){

@@ -378,8 +378,8 @@ $(document).ready(function(){
         }
     }
 
-    async function crear_tipo(datos) {
-        let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+    async function crear_proveedor(datos) {
+        let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
           method: "POST",
           body: datos
         });
@@ -387,6 +387,7 @@ $(document).ready(function(){
           let response = await data.text();
           try {
             let respuesta = JSON.parse(response);
+            /*
             if(respuesta.mensaje == 'success') {
                 toastr.success('Se ha creado el tipo correctamente', 'Éxito!', {timeOut: 2000});
                 obtener_tipos();
@@ -411,6 +412,7 @@ $(document).ready(function(){
                     location.href='/farmaciav2/index.php';
                   });
             }
+            */
           } catch (error) {
             console.error(error);
             console.log(response);
@@ -431,22 +433,60 @@ $(document).ready(function(){
     
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-crear_tipo')[0]);
-            let funcion = "crear_tipo";
+            let datos = new FormData($('#form-crear_proveedor')[0]);
+            let funcion = "crear_proveedor";
             datos.append('funcion', funcion);
-            crear_tipo(datos);
+            crear_proveedor(datos);
         },
     });
+
+    jQuery.validator.addMethod("letras", (value) => {
+        let campo = value.replace(/ /g, '');
+        let estado = /^[A-Za-z]+$/.test(campo);
+        return estado;
+    }, "* Este campo solo permite letras");
+
     
-    $("#form-crear_tipo").validate({
+    
+    $("#form-crear_proveedor").validate({
         rules: {
             nombre: {
+                required: true,
+                minlength: 3,
+                letras: true
+            },
+            telefono: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                number: true
+            },
+            correo: {
+                required: true,
+                email: true
+            },
+            direccion: {
                 required: true,
                 minlength: 3
             }
         },
         messages: {
             nombre: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo 3 caracteres",
+                letras: "* Solo se permite letras"
+            },
+            telefono: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo 10 caracteres",
+                maxlength: "* Se permite máximo 10 caracteres",
+                number: "* Solo se permite números"
+            },
+            correo: {
+                required: "* Dato requerido",
+                email: "* Solo se permite formato email"
+            },
+            direccion: {
                 required: "* Dato requerido",
                 minlength: "* Se permite mínimo 3 caracteres"
             }
@@ -465,6 +505,20 @@ $(document).ready(function(){
             $(element).addClass("is-valid");
         },
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     $(document).on('click','.editar_tipo', (e) => {
         let elemento    = $(this)[0].activeElement;
