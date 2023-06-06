@@ -15,9 +15,9 @@ class Proveedor {
 		return $this->objetos;
 	}
 
-	function encontrar_tipo($nombre){
+	function encontrar_proveedor($nombre){
 		$sql="SELECT *
-			  FROM tipo_producto
+			  FROM proveedor
 			  WHERE nombre=:nombre";
 		$variables = array(
 			':nombre' => $nombre
@@ -28,11 +28,14 @@ class Proveedor {
 		return $this->objetos;
 	}
 
-	function crear($nombre) {
-		$sql = "INSERT INTO tipo_producto(nombre)
-				VALUES(:nombre)";
+	function crear($nombre, $telefono, $correo, $direccion) {
+		$sql = "INSERT INTO proveedor(nombre, telefono, correo, direccion)
+				VALUES(:nombre, :telefono, :correo, :direccion)";
 		$variables = array(
-			':nombre' => $nombre,
+			':nombre' 		=> $nombre,
+			':telefono' 	=> $telefono,
+			':correo' 		=> $correo,
+			':direccion' 	=> $direccion
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);

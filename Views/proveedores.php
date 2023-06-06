@@ -3,7 +3,7 @@ session_start();
 include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
 ?>
 
-<!-- Modal Crear Tipos -->
+<!-- Modal Crear Proveedor -->
 <div class="modal fade" id="crear_proveedor">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content card card-success">
@@ -37,16 +37,16 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
         </div>
     </div>
 </div>
-<!-- Fin Modal Crear Tipos -->
-<!-- Modal Editar Tipos -->
-<div class="modal fade" id="editar_tipo">
+<!-- Fin Modal Crear Proveedor -->
+<!-- Modal Editar Proveedor -->
+<div class="modal fade" id="editar_proveedor">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Editar tipo</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Editar proveedor</h5>
             </div>
             <div class="modal-body p-0">
-                <form id="form-editar_tipo" enctype="multipart/form-data">
+                <form id="form-editar_proveedor" enctype="multipart/form-data">
                     <div class="card card-widget widget-user">
                         <div class="widget-user-header bg-success">
                             <h3 class="widget-user-username" id="nombre_card"></h3>
@@ -56,11 +56,32 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                         </div>
                         <div class="card-footer">
                             <div class="row">
-                                <input type="hidden" id="id_tipo" name="id_tipo">
+                                <input type="hidden" id="id_proveedor" name="id_proveedor">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="">Nombre:</label>
                                         <input type="text" class="form-control" name="nombre_edit" id="nombre_edit" placeholder="Ingrese nombre">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Telefono:</label>
+                                        <input type="text" class="form-control" name="telefono_edit" id="telefono_edit" placeholder="Ingrese teléfono">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Correo:</label>
+                                        <input type="text" class="form-control" name="correo_edit" id="correo_edit" placeholder="Ingrese correo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Dirección:</label>
+                                        <input type="text" class="form-control" name="direccion_edit" id="direccion_edit" placeholder="Ingrese dirección">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Avatar:</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" name="avatar_edit" id="avatar_edit">
+                                                <label for="" class="custom-file-label">Seleccione una imagen</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -75,7 +96,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
         </div>
     </div>
 </div>
-<!-- Fin Modal Editar Tipos -->
+<!-- Fin Modal Editar Proveedor -->
 
 <title>Gestión proveedor | Morrone</title>
 <div class="content-wrapper" style="min-height: 678.917px;">

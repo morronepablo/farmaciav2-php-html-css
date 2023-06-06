@@ -28,17 +28,18 @@ if($_POST['funcion']=='obtener_proveedores'){
 }
 
 else if($_POST['funcion']=='crear_proveedor'){
-	var_dump($_POST);
-	/*
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
-		$nombre = $_POST['nombre'];
-		$tipo->encontrar_tipo($nombre);
-		if(empty($tipo->objetos)) {
-			$tipo->crear($nombre);
+		$nombre 	= $_POST['nombre'];
+		$telefono 	= $_POST['telefono'];
+		$correo 	= $_POST['correo'];
+		$direccion 	= $_POST['direccion'];
+		$proveedor->encontrar_proveedor($nombre);
+		if(empty($proveedor->objetos)) {
+			$proveedor->crear($nombre, $telefono, $correo, $direccion);
 			$mensaje = 'success';
 		} else {
-			$mensaje = 'error_tip';
+			$mensaje = 'error_prov';
 		}
 	} else {
 		$mensaje = 'error_session';
@@ -48,7 +49,6 @@ else if($_POST['funcion']=='crear_proveedor'){
 	);
 
 	echo json_encode($json);
-	*/
 }
 
 else if($_POST['funcion']=='editar_tipo'){

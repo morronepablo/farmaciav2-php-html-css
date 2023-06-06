@@ -334,7 +334,7 @@ $(document).ready(function(){
                                                             nombre="${datos.nombre}" 
                                                             telefono="${datos.telefono}"
                                                             correo="${datos.correo}"
-                                                            adicional="${datos.direccion}"
+                                                            direccion="${datos.direccion}"
                                                             data-toggle="modal"
                                                             data-target="#editar_proveedor"
                                                             class="editar_proveedor btn btn-outline-success btn-circle btn-lg"
@@ -387,19 +387,18 @@ $(document).ready(function(){
           let response = await data.text();
           try {
             let respuesta = JSON.parse(response);
-            /*
             if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha creado el tipo correctamente', 'Éxito!', {timeOut: 2000});
-                obtener_tipos();
-                $('#crear_tipo').modal('hide');
-                $('#form-crear_tipo').trigger('reset');
-            } else if(respuesta.mensaje == 'error_tip') {
+                toastr.success('Se ha creado el proveedor correctamente', 'Éxito!', {timeOut: 2000});
+                obtener_proveedores();
+                $('#crear_proveedor').modal('hide');
+                $('#form-crear_proveedor').trigger('reset');
+            } else if(respuesta.mensaje == 'error_prov') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'El tipo ya existe...',
-                    text: 'El tipo ya existe, póngase en contacto con el administrador del sistema.'
+                    title: 'El proveedor ya existe...',
+                    text: 'El proveedor ya existe, póngase en contacto con el administrador del sistema.'
                   });
-                  $('#form-crear_tipo').trigger('reset');
+                  //$('#form-crear_proveedor').trigger('reset');
             } else if(respuesta.mensaje == 'error_session') {
                 Swal.fire({
                     position: "center",
@@ -412,7 +411,6 @@ $(document).ready(function(){
                     location.href='/farmaciav2/index.php';
                   });
             }
-            */
           } catch (error) {
             console.error(error);
             console.log(response);
@@ -445,8 +443,6 @@ $(document).ready(function(){
         let estado = /^[A-Za-z]+$/.test(campo);
         return estado;
     }, "* Este campo solo permite letras");
-
-    
     
     $("#form-crear_proveedor").validate({
         rules: {
@@ -520,14 +516,24 @@ $(document).ready(function(){
 
 
 
-    $(document).on('click','.editar_tipo', (e) => {
+    $(document).on('click','.editar_proveedor', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
         let nombre      = $(elemento).attr("nombre");
-        $('#id_tipo').val(id);
-        $('#nombre_edit').val(nombre);
+        let avatar      = $(elemento).attr("avatar");
+        let telefono    = $(elemento).attr("telefono");
+        let correo      = $(elemento).attr("correo");
+        let direccion   = $(elemento).attr("direccion");
+        console.log(avatar, telefono, correo, direccion);
+        
         $('#nombre_card').text(nombre);
-        $('#avatar_card').attr('src', '/farmaciav2/Util/img/presentacion.jpg'); 
+        $('#avatar_card').attr('src', '/farmaciav2/Util/img/proveedores/' + avatar); 
+        $('#id_proveedor').val(id);
+        $('#nombre_edit').val(nombre);
+        $('#telefono_edit').val(telefono);
+        $('#correo_edit').val(correo);
+        $('#direccion_edit').val(direccion);
+        
     });
 
     async function editar_tipo(datos) {
