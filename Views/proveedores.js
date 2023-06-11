@@ -440,7 +440,7 @@ $(document).ready(function(){
 
     jQuery.validator.addMethod("letras", (value) => {
         let campo = value.replace(/ /g, '');
-        let estado = /^[A-Za-z]+$/.test(campo);
+        let estado = /^[A-Za-z.]+$/.test(campo);
         return estado;
     }, "* Este campo solo permite letras");
     
@@ -502,20 +502,6 @@ $(document).ready(function(){
         },
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     $(document).on('click','.editar_proveedor', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
@@ -536,8 +522,8 @@ $(document).ready(function(){
         
     });
 
-    async function editar_tipo(datos) {
-        let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+    async function editar_proveedor(datos) {
+        let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
           method: "POST",
           body: datos
         });
@@ -546,15 +532,15 @@ $(document).ready(function(){
           try {
             let respuesta = JSON.parse(response);
             if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha editado el tipo correctamente', 'Exito!', {timeOut: 2000});
-                obtener_tipos();
-                $('#editar_tipo').modal('hide');
-                $('#form-editar_tipo').trigger('reset');
-            } else if(respuesta.mensaje == 'error_tip') {
+                toastr.success('Se ha editado el proveedor correctamente', 'Exito!', {timeOut: 2000});
+                obtener_proveedores();
+                $('#editar_proveedor').modal('hide');
+                $('#form-editar_proveedor').trigger('reset');
+            } else if(respuesta.mensaje == 'error_prov') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'El tipo ya existe...',
-                    text: 'El tipo ya existe, póngase en contacto con el administrador del sistema.'
+                    title: 'El proveedor ya existe...',
+                    text: 'El proveedor ya existe, póngase en contacto con el administrador del sistema.'
                   });
             } else if(respuesta.mensaje == 'error_decrypt') {
                 Swal.fire({
@@ -598,24 +584,60 @@ $(document).ready(function(){
     
     $.validator.setDefaults({
         submitHandler: function () {
-            let datos = new FormData($('#form-editar_tipo')[0]);
-            let funcion = "editar_tipo";
+            let datos = new FormData($('#form-editar_proveedor')[0]);
+            let funcion = "editar_proveedor";
             datos.append('funcion', funcion);
-            editar_tipo(datos);
+            editar_proveedor(datos);
         },
     });
     
-    $("#form-editar_tipo").validate({
+    $("#form-editar_proveedor").validate({
         rules: {
             nombre_edit: {
                 required: true,
+                minlength: 3,
+                letras: true
+            },
+            telefono_edit: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                number: true
+            },
+            correo_edit: {
+                required: true,
+                email: true
+            },
+            direccion_edit: {
+                required: true,
                 minlength: 3
+            },
+            avatar_edit: {
+                extension: "png|jpg|jpeg|img"
             }
         },
         messages: {
             nombre_edit: {
                 required: "* Dato requerido",
+                minlength: "* Se permite mínimo 3 caracteres",
+                letras: "* Solo se permite letras"
+            },
+            telefono_edit: {
+                required: "* Dato requerido",
+                minlength: "* Se permite mínimo 10 caracteres",
+                maxlength: "* Se permite máximo 10 caracteres",
+                number: "* Solo se permite números"
+            },
+            correo_edit: {
+                required: "* Dato requerido",
+                email: "* Solo se permite formato email"
+            },
+            direccion_edit: {
+                required: "* Dato requerido",
                 minlength: "* Se permite mínimo 3 caracteres"
+            },
+            avatar_edit: {
+                extension: "* Solo se permite formato (png, jpg, jpeg, img)"
             }
         },
         errorElement: "span",

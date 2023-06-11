@@ -51,17 +51,20 @@ else if($_POST['funcion']=='crear_proveedor'){
 	echo json_encode($json);
 }
 
-else if($_POST['funcion']=='editar_tipo'){
+else if($_POST['funcion']=='editar_proveedor'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
 		$nombre 	= $_POST['nombre_edit'];
-		$id 		= $_POST['id_tipo'];
+		$telefono 	= $_POST['telefono_edit'];
+		$correo 	= $_POST['correo_edit'];
+		$direccion 	= $_POST['direccion_edit'];
+		$id 		= $_POST['id_proveedor'];
 		$formateado	= str_replace(' ', '+', $id);
-		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_tipo)) {
-			$tipo->encontrar_tipo($nombre);
-			if(empty($tipo->objetos)) {
-				$tipo->editar($id_tipo, $nombre);
+		$id_proveedor = openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_proveedor)) {
+			$proveedor->encontrar_proveedor($nombre);
+			if(empty($proveedor->objetos)) {
+				$proveedor->editar($id_proveedor, $nombre);
 				$mensaje = 'success';
 			} else {
 				$mensaje = 'error_tip';
