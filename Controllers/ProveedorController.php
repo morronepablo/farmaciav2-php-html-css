@@ -54,20 +54,33 @@ else if($_POST['funcion']=='crear_proveedor'){
 else if($_POST['funcion']=='editar_proveedor'){
 	$mensaje = '';
 	if(!empty($_SESSION['id'])) {
-		$nombre 	= $_POST['nombre_edit'];
-		$telefono 	= $_POST['telefono_edit'];
-		$correo 	= $_POST['correo_edit'];
-		$direccion 	= $_POST['direccion_edit'];
-		$id 		= $_POST['id_proveedor'];
-		$formateado	= str_replace(' ', '+', $id);
-		$id_proveedor = openssl_decrypt($formateado, CODE, KEY);
+		$nombre 		= $_POST['nombre_edit'];
+		$telefono_edit 	= $_POST['telefono_edit'];
+		$correo_edit 	= $_POST['correo_edit'];
+		$direccion_edit = $_POST['direccion_edit'];
+		$avatar 		= $_FILES['avatar_edit']['name'];
+		$id 			= $_POST['id_proveedor'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_proveedor 	= openssl_decrypt($formateado, CODE, KEY);
 		if(is_numeric($id_proveedor)) {
-			$proveedor->encontrar_proveedor($nombre);
+			$proveedor->encontrar_proveedor_1($nombre, $id_proveedor);
 			if(empty($proveedor->objetos)) {
-				$proveedor->editar($id_proveedor, $nombre);
+				if($avatar != '') {
+					$nombre_avatar	= uniqid().'-'.$_FILES['avatar_edit']['name'];
+					$ruta			= $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/img/proveedores/'.$nombre_avatar;
+					move_uploaded_file($_FILES['avatar_edit']['tmp_name'],$ruta);
+					$proveedor->obtener_proveedor($id_proveedor);
+					$avatar_actual 	= $proveedor->objetos[0]->avatar;
+					if($avatar_actual != 'prov_default.png') {
+						unlink($_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Util/img/proveedores/'.$avatar_actual);
+					}
+					$proveedor->editar_avatar($id_proveedor, $nombre, $telefono_edit, $correo_edit, $direccion_edit, $nombre_avatar);
+				} else {
+					$proveedor->editar($id_proveedor, $nombre, $telefono_edit, $correo_edit, $direccion_edit);
+				}
 				$mensaje = 'success';
 			} else {
-				$mensaje = 'error_tip';
+				$mensaje = 'error_prov';
 			}
 		} else  {
 			$mensaje = 'error_decrypt';

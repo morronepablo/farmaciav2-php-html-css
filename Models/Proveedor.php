@@ -15,12 +15,37 @@ class Proveedor {
 		return $this->objetos;
 	}
 
+	function obtener_proveedor($id_proveedor){
+		$sql="SELECT * FROM proveedor WHERE id=:id_proveedor";
+		$variables = array(
+			':id_proveedor' => $id_proveedor
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
+	}
+
+	function encontrar_proveedor_1($nombre, $id_usuario){
+		$sql="SELECT *
+			  FROM proveedor
+			  WHERE nombre=:nombre AND id!=:id_usuario";
+		$variables = array(
+			':nombre' 		=> $nombre,
+			':id_usuario' 	=> $id_usuario,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
+	}
+
 	function encontrar_proveedor($nombre){
 		$sql="SELECT *
 			  FROM proveedor
 			  WHERE nombre=:nombre";
 		$variables = array(
-			':nombre' => $nombre
+			':nombre'	=> $nombre
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
@@ -41,11 +66,28 @@ class Proveedor {
 		$query->execute($variables);
 	}
 
-	function editar($id_tipo, $nombre) {
-		$sql = "UPDATE tipo_producto SET nombre=:nombre WHERE id=:id_tipo";
+	function editar($id_proveedor, $nombre, $telefono_edit, $correo_edit, $direccion_edit) {
+		$sql = "UPDATE proveedor SET nombre=:nombre, telefono=:telefono, correo=:correo, direccion=:direccion WHERE id=:id_proveedor";
 		$variables = array(
-			':nombre'	=> $nombre,
-			':id_tipo'	=> $id_tipo,
+			':nombre'		=> $nombre,
+			':telefono'		=> $telefono_edit,
+			':correo'		=> $correo_edit,
+			':direccion'	=> $direccion_edit,
+			':id_proveedor'	=> $id_proveedor
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+
+	function editar_avatar($id_proveedor, $nombre, $telefono_edit, $correo_edit, $direccion_edit, $avatar) {
+		$sql = "UPDATE proveedor SET nombre=:nombre, telefono=:telefono, correo=:correo, direccion=:direccion, avatar=:avatar WHERE id=:id_proveedor";
+		$variables = array(
+			':nombre'		=> $nombre,
+			':telefono'		=> $telefono_edit,
+			':correo'		=> $correo_edit,
+			':direccion'	=> $direccion_edit,
+			':avatar'		=> $avatar,
+			':id_proveedor'	=> $id_proveedor
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
