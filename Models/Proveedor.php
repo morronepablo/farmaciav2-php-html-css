@@ -93,24 +93,13 @@ class Proveedor {
 		$query->execute($variables);
 	}
 
-	function obtener_laboratorio_id($id){
-		$sql="SELECT * FROM laboratorio WHERE id=:id";
-		$variables = array(
-			':id' => $id
-		);
-		$query = $this->acceso->prepare($sql);
-		$query->execute($variables);
-		$this->objetos= $query->fetchall();
-		return $this->objetos;
-	}
-
-	function eliminar($id_tipo) {
-		$sql = "UPDATE tipo_producto 
+	function eliminar($id_proveedor) {
+		$sql = "UPDATE proveedor 
 				SET estado=:estado
-				WHERE id=:id_tipo";
+				WHERE id=:id_proveedor";
 		$variables = array(
-			':id_tipo'	=> $id_tipo,
-			':estado' 	=> 'I',
+			':id_proveedor'	=> $id_proveedor,
+			':estado' 		=> 'I',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
@@ -126,6 +115,17 @@ class Proveedor {
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
+	}
+
+	function obtener_laboratorio_id($id){
+		$sql="SELECT * FROM laboratorio WHERE id=:id";
+		$variables = array(
+			':id' => $id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos= $query->fetchall();
+		return $this->objetos;
 	}
 	
 }

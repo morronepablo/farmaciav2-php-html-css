@@ -102,9 +102,9 @@ else if($_POST['funcion']=='eliminar'){
 		$id_usuario 	= $_SESSION['id'];
 		$id				= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_tipo)) {
-			$tipo->eliminar($id_tipo);
+		$id_proveedor	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_proveedor)) {
+			$proveedor->eliminar($id_proveedor);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';

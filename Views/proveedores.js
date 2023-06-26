@@ -325,7 +325,12 @@ $(document).ready(function(){
                                     <div class="card-footer">
                                         <div class="text-right">`
                                         if(datos.estado == 'A') {
-                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" class="eliminar_proveedor btn btn-outline-danger btn-circle btn-lg">
+                                            template +=`<button 
+                                                            id="${datos.id}" 
+                                                            avatar="${datos.avatar}" 
+                                                            nombre="${datos.nombre}" 
+                                                            class="eliminar_proveedor btn btn-outline-danger btn-circle btn-lg"
+                                                        >
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
                                                         <button 
@@ -343,7 +348,12 @@ $(document).ready(function(){
                                                         </button>`
                                         }
                                         else if(datos.estado == 'I') {
-                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" class="activar_proveedor btn btn-outline-primary btn-circle btn-lg">
+                                            template +=`<button 
+                                                            id="${datos.id}" 
+                                                            avatar="${datos.avatar}" 
+                                                            nombre="${datos.nombre}" 
+                                                            class="activar_proveedor btn btn-outline-primary btn-circle btn-lg"
+                                                        >
                                                             <i class="fas fa-plus mr-5"></i>
                                                         </button>`;
                                         }
@@ -659,7 +669,7 @@ $(document).ready(function(){
     async function eliminar(id) {
         let funcion = 'eliminar';
         let respuesta = '';
-        let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+        let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
             method: "POST",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion + '&&id=' + id
@@ -688,11 +698,12 @@ $(document).ready(function(){
         return respuesta;
     }
 
-    $(document).on('click', '.eliminar_tipo', (e) => {
+    $(document).on('click', '.eliminar_proveedor', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
-        let avatar      = 'presentacion.jpg';
+        let avatar      = $(elemento).attr("avatar");
         let nombre      = $(elemento).attr("nombre");
+        console.log(id, avatar, nombre);
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
               confirmButton: 'btn btn-success ml-2',
@@ -702,8 +713,8 @@ $(document).ready(function(){
         })
           
         swalWithBootstrapButtons.fire({
-            title: `Desea eliminar el tipo ${nombre} ?`,
-            imageUrl: '/farmaciav2/Util/img/' + avatar,
+            title: `Desea eliminar el proveedor ${nombre} ?`,
+            imageUrl: '/farmaciav2/Util/img/proveedores/' + avatar,
             imageWidth: 200,
             imageHeight: 200,
             showCancelButton: true,
@@ -714,10 +725,10 @@ $(document).ready(function(){
             if (result.isConfirmed) {
                 eliminar(id).then(respuesta => {
                     if(respuesta.mensaje == 'success') {
-                        obtener_tipos();
+                        obtener_proveedores();
                         swalWithBootstrapButtons.fire(
                             'Eliminado!',
-                            'El tipo fue eliminado correctamente',
+                            'El proveedor fue eliminado correctamente',
                             'success'
                         ) 
                     } else if(respuesta.mensaje == 'error_decrypt') {
@@ -750,7 +761,7 @@ $(document).ready(function(){
             ) {
                 swalWithBootstrapButtons.fire(
                     'Cancelado',
-                    'canceló la eliminación del tipo',
+                    'canceló la eliminación del proveedor',
                     'error'
                 )
             }
