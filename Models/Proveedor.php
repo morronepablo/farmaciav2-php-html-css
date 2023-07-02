@@ -105,13 +105,13 @@ class Proveedor {
 		$query->execute($variables);
 	}
 
-	function activar($id_tipo) {
-		$sql = "UPDATE tipo_producto 
+	function activar($id_proveedor) {
+		$sql = "UPDATE proveedor 
 				SET estado=:estado
-				WHERE id=:id_tipo";
+				WHERE id=:id_proveedor";
 		$variables = array(
-			':id_tipo'	=> $id_tipo,
-			':estado' 	=> 'A',
+			':id_proveedor'	=> $id_proveedor,
+			':estado' 		=> 'A',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);

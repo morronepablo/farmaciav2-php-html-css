@@ -125,9 +125,9 @@ else if($_POST['funcion']=='activar'){
 		$id_usuario 	= $_SESSION['id'];
 		$id				= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
-		if(is_numeric($id_tipo)) {
-			$tipo->activar($id_tipo);
+		$id_proveedor	= openssl_decrypt($formateado, CODE, KEY);
+		if(is_numeric($id_proveedor)) {
+			$proveedor->activar($id_proveedor);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';

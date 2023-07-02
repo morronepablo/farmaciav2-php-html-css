@@ -771,7 +771,7 @@ $(document).ready(function(){
     async function activar(id) {
         let funcion = 'activar';
         let respuesta = '';
-        let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+        let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
             method: "POST",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'funcion=' + funcion + '&&id=' + id
@@ -800,11 +800,12 @@ $(document).ready(function(){
         return respuesta;
     }
 
-    $(document).on('click', '.activar_tipo', (e) => {
+    $(document).on('click', '.activar_proveedor', (e) => {
         let elemento    = $(this)[0].activeElement;
         let id          = $(elemento).attr("id");
-        let avatar      = 'presentacion.jpg';
+        let avatar      = $(elemento).attr("avatar");
         let nombre      = $(elemento).attr("nombre");
+        console.log(id, avatar, nombre);
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
               confirmButton: 'btn btn-success ml-2',
@@ -814,8 +815,8 @@ $(document).ready(function(){
         })
           
         swalWithBootstrapButtons.fire({
-            title: `Desea volver activar el tipo ${nombre} ?`,
-            imageUrl: '/farmaciav2/Util/img/' + avatar,
+            title: `Desea volver activar el proveedor ${nombre} ?`,
+            imageUrl: '/farmaciav2/Util/img/proveedores/' + avatar,
             imageWidth: 200,
             imageHeight: 200,
             showCancelButton: true,
@@ -826,10 +827,10 @@ $(document).ready(function(){
             if (result.isConfirmed) {
                 activar(id).then(respuesta => {
                     if(respuesta.mensaje == 'success') {
-                        obtener_tipos();
+                        obtener_proveedores();
                         swalWithBootstrapButtons.fire(
                             'Activado!',
-                            'El tipo fue activado correctamente',
+                            'El proveedor fue activado correctamente',
                             'success'
                         ) 
                     } else if(respuesta.mensaje == 'error_decrypt') {
