@@ -1,64 +1,64 @@
-$(document).ready(function(){
-	Loader();
-    //setTimeout(verificar_sesion, 2000);
-    
-    verificar_sesion();
+$(document).ready(function () {
+  Loader();
+  //setTimeout(verificar_sesion, 2000);
 
-    toastr.options = {
-        "preventDuplicates": true
-    }
+  verificar_sesion();
 
-    $("#residencia").select2({
-        placeholder: "Seleccione una residencia",
-        language: {
-          noResult: function () {
-            return "No hay resultados.";
-          },
-          searching: function () {
-            return "Buscando...";
-          },
-        },
+  toastr.options = {
+    preventDuplicates: true,
+  };
+
+  $("#residencia").select2({
+    placeholder: "Seleccione una residencia",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  async function obtener_residencias() {
+    let funcion = "obtener_residencias";
+    let data = await fetch("/farmaciav2/Controllers/LocalidadController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
     });
-
-    async function obtener_residencias() {
-        let funcion = "obtener_residencias";
-        let data = await fetch("/farmaciav2/Controllers/LocalidadController.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "funcion=" + funcion,
-        });
-        if (data.ok) {
-          let response = await data.text();
-          try {
-            let residencias = JSON.parse(response);
-            let template = ``;
-            residencias.forEach((residencia) => {
-              template += `
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let residencias = JSON.parse(response);
+        let template = ``;
+        residencias.forEach((residencia) => {
+          template += `
                         <option value="${residencia.id}">${residencia.residencia}</option>
                         `;
-            });
-            $("#residencia").html(template);
-            $("#residencia").val("").trigger("change");
-          } catch (error) {
-            console.error(error);
-            console.log(response);
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-            });
-          }
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: data.statusText,
-            text: "Hubo confilcto de código: " + data.status,
-          });
-        }
+        });
+        $("#residencia").html(template);
+        $("#residencia").val("").trigger("change");
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
     }
+  }
 
-    function llenar_menu_superior(usuario) {
-        let template= `
+  function llenar_menu_superior(usuario) {
+    let template = `
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -161,8 +161,10 @@ $(document).ready(function(){
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    <img src="/farmaciav2/Util/img/user/${usuario.avatar}" class="img-circle elevation-2" width="30" height="30">
-                    <span>${usuario.nombre + ' ' + usuario.apellido}</span>
+                    <img src="/farmaciav2/Util/img/user/${
+                      usuario.avatar
+                    }" class="img-circle elevation-2" width="30" height="30">
+                    <span>${usuario.nombre + " " + usuario.apellido}</span>
                 </a>
                 <ul class="dropdown-menu">
                     <li>
@@ -172,17 +174,21 @@ $(document).ready(function(){
             </li>
         </ul>
         `;
-        $('#menu_superior').html(template);
-    }
+    $("#menu_superior").html(template);
+  }
 
-    function llenar_menu_lateral(usuario) {
-        let template = `
+  function llenar_menu_lateral(usuario) {
+    let template = `
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="/farmaciav2/Util/img/user/${usuario.avatar}" class="img-circle elevation-2" alt="User Image">
+                <img src="/farmaciav2/Util/img/user/${
+                  usuario.avatar
+                }" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">${usuario.nombre + ' ' + usuario.apellido}</a>
+                <a href="#" class="d-block">${
+                  usuario.nombre + " " + usuario.apellido
+                }</a>
             </div>
         </div>
         <nav class="mt-2">
@@ -246,6 +252,14 @@ $(document).ready(function(){
                         </p>
                     </a>
                 </li>
+                <li id="" class="nav-item">
+                    <a href="/farmaciav2/Views/subtipos.php" class="nav-link">
+                        <i class="nav-icon fas fa-tablets"></i>
+                        <p>
+                            Subtipos
+                        </p>
+                    </a>
+                </li>
                 <li id="gestion_producto" class="nav-item">
                     <a href="adm_producto.php" class="nav-link">
                         <i class="nav-icon fas fa-pills"></i>
@@ -282,89 +296,89 @@ $(document).ready(function(){
             </ul>
         </nav>
         `;
-        $('#menu_lateral').html(template);
-    }
+    $("#menu_lateral").html(template);
+  }
 
-    async function verificar_sesion() {
-        let funcion = "verificar_sesion";
-        let data = await fetch('/farmaciav2/Controllers/UsuarioController.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'funcion=' + funcion
-        })
-        if(data.ok) {
-            let response = await data.text();
-            try {
-                let usuario = JSON.parse(response);
-                if(usuario.length != 0 && usuario.id_tipo != 3) {
-                    llenar_menu_superior(usuario);
-                    llenar_menu_lateral(usuario);
-                    obtener_residencias();
-                    obtener_usuarios();
-                    CloseLoader();
-                } else {
-                    location.href = "/farmaciav2/";
-                }
-            } catch (error) {
-                console.error(error);
-                console.log(response);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo confilcto en el sistema, póngase en contacto con el administrador'
-                })
-            }
+  async function verificar_sesion() {
+    let funcion = "verificar_sesion";
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let usuario = JSON.parse(response);
+        if (usuario.length != 0 && usuario.id_tipo != 3) {
+          llenar_menu_superior(usuario);
+          llenar_menu_lateral(usuario);
+          obtener_residencias();
+          obtener_usuarios();
+          CloseLoader();
         } else {
-            Swal.fire({
-                icon: 'error',
-                title: data.statusText,
-                text: 'Hubo confilcto de código: ' + data.status
-            })
+          location.href = "/farmaciav2/";
         }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
     }
+  }
 
-	async function obtener_usuarios() {
-        let funcion = "obtener_usuarios";
-        let data = await fetch('/farmaciav2/Controllers/UsuarioController.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'funcion=' + funcion
-        })
-        if(data.ok) {
-            let response = await data.text();
-            try {
-                let usuarios = JSON.parse(response);
-                $('#usuarios').DataTable({
-                    data: usuarios,
-                    "aaSorting": [],
-                    "searching": true,
-                    "scrollX": false,
-                    "autoWidth": false,
-                    columns: [
-                        {
-                            "render": function(data, type, datos, meta) {
-                                let template = '';
-                                template += `
+  async function obtener_usuarios() {
+    let funcion = "obtener_usuarios";
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let usuarios = JSON.parse(response);
+        $("#usuarios").DataTable({
+          data: usuarios,
+          aaSorting: [],
+          searching: true,
+          scrollX: false,
+          autoWidth: false,
+          columns: [
+            {
+              render: function (data, type, datos, meta) {
+                let template = "";
+                template += `
                                 <div class="card bg-light">
-                                    <div class="h5 card-header text-muted border-bottom-0">`
-                                    if(datos.id_tipo == 1) {
-                                        template += `<span class="badge badge-danger">${datos.tipo}</span>`;
-                                    } 
-                                    if(datos.id_tipo == 2) {
-                                        if(datos.estado == 'A') {
-                                            template += `<span class="badge badge-success">${datos.tipo}</span>`;
-                                        } else {
-                                            template += `<span class="badge badge-success">${datos.tipo}</span> - <span class="badge badge-secondary">Inactivo</span>`;
-                                        }
-                                    } 
-                                    if(datos.id_tipo == 3) {
-                                        if(datos.estado == 'A') {
-                                            template += `<span class="badge badge-info">${datos.tipo}</span>`;
-                                        } else {
-                                            template += `<span class="badge badge-info">${datos.tipo}</span> - <span class="badge badge-secondary">Inactivo</span>`;
-                                        }
-                                    } 
-                        template +=`</div>
+                                    <div class="h5 card-header text-muted border-bottom-0">`;
+                if (datos.id_tipo == 1) {
+                  template += `<span class="badge badge-danger">${datos.tipo}</span>`;
+                }
+                if (datos.id_tipo == 2) {
+                  if (datos.estado == "A") {
+                    template += `<span class="badge badge-success">${datos.tipo}</span>`;
+                  } else {
+                    template += `<span class="badge badge-success">${datos.tipo}</span> - <span class="badge badge-secondary">Inactivo</span>`;
+                  }
+                }
+                if (datos.id_tipo == 3) {
+                  if (datos.estado == "A") {
+                    template += `<span class="badge badge-info">${datos.tipo}</span>`;
+                  } else {
+                    template += `<span class="badge badge-info">${datos.tipo}</span> - <span class="badge badge-secondary">Inactivo</span>`;
+                  }
+                }
+                template += `</div>
                                     <div class="card-body pt-0">
                                         <div class="row">
                                             <div class="col-md-4">
@@ -390,411 +404,434 @@ $(document).ready(function(){
                                         </div>
                                     </div>
                                     <div class="card-footer">
-                                        <div class="text-right">`
-                                        if(datos.id_tipo_sesion == 1 && datos.id_tipo != 1 &&  datos.estado == 'A') {
-                                            if(datos.id_tipo == 2) {
-                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
+                                        <div class="text-right">`;
+                if (
+                  datos.id_tipo_sesion == 1 &&
+                  datos.id_tipo != 1 &&
+                  datos.estado == "A"
+                ) {
+                  if (datos.id_tipo == 2) {
+                    template += `<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
                                                         <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="descender_usuario" class="confirmar btn btn-outline-secondary btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="fas fa-sort-amount-down mr-5"></i>
-                                                        </button>`
-                                            } else if(datos.id_tipo == 3) {
-                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
+                                                        </button>`;
+                  } else if (datos.id_tipo == 3) {
+                    template += `<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
                                                         <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="ascender_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="fas fa-sort-amount-up mr-5"></i>
-                                                        </button>`
-                                            }
-                                        }
-                                        else if(datos.id_tipo_sesion == 2 && datos.id_tipo != 1 && datos.id_tipo != 2 &&  datos.estado == 'A') {
-                                            if(datos.id_tipo == 3) {
-                                                template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
+                                                        </button>`;
+                  }
+                } else if (
+                  datos.id_tipo_sesion == 2 &&
+                  datos.id_tipo != 1 &&
+                  datos.id_tipo != 2 &&
+                  datos.estado == "A"
+                ) {
+                  if (datos.id_tipo == 3) {
+                    template += `<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="eliminar_usuario" class="confirmar btn btn-outline-danger btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="far fa-trash-alt mr-5"></i>
                                                         </button>   
                                                         <button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="ascender_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="fas fa-sort-amount-up mr-5"></i>
-                                                        </button>`
-                                            }
-                                        }
-                                        else if(datos.estado == 'I') {
-                                            template +=`<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="activar_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
+                                                        </button>`;
+                  }
+                } else if (datos.estado == "I") {
+                  template += `<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" funcion="activar_usuario" class="confirmar btn btn-outline-success btn-circle btn-lg" data-toggle="modal" data-target="#confirmar">
                                                             <i class="fas fa-plus mr-5"></i>
-                                                        </button>`
-                                        }
-                               
-                            template +=`</div>
+                                                        </button>`;
+                }
+
+                template += `</div>
                                     </div>
                                 </div>
-                                `
-                                return template;
-                            }
-                        }
-                    ],
-                    "language": espanol,
-                    "destroy": true
-                })
-            } catch (error) {
-                console.error(error);
-                console.log(response);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo confilcto en el sistema, póngase en contacto con el administrador'
-                })
-            }
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: data.statusText,
-                text: 'Hubo confilcto de código: ' + data.status
-            })
-        }
-    }
-
-    async function crear_usuario(datos) {
-        let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
-          method: "POST",
-          body: datos
+                                `;
+                return template;
+              },
+            },
+          ],
+          language: espanol,
+          destroy: true,
         });
-        if (data.ok) {
-          let response = await data.text();
-          try {
-            let respuesta = JSON.parse(response);
-            if(respuesta.mensaje == 'success') {
-                toastr.success('Se ha creado el usuario correctamente', 'Exito!', {timeOut: 2000});
-                obtener_usuarios();
-                $('#crear_usuario').modal('hide');
-                $('#form-crear_usuario').trigger('reset');
-                $('#residencia').val('').trigger('change');
-            } else if(respuesta.mensaje == 'error_decrypt') {
-                Swal.fire({
-                    position: "center",
-                    icon: 'error',
-                    title: 'No vulnere los datos...',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(function() {
-                    //refresca la pagina (F5)
-                    location.reload();
-                  });
-            } else if(respuesta.mensaje == 'error_usuario') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'El usuario ya existe...',
-                    text: 'El usuario ya existe, póngase en contacto con el administrador del sistema.'
-                  });
-                  $('#form-crear_usuario').trigger('reset');
-                  $('#residencia').val('').trigger('change');
-            } else if(respuesta.mensaje == 'error_session') {
-                Swal.fire({
-                    position: "center",
-                    icon: 'error',
-                    title: 'Sesión finalizada...',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(function() {
-                    //refresca la pagina (F5)
-                    location.href='/farmaciav2/index.php';
-                  });
-            }
-          } catch (error) {
-            console.error(error);
-            console.log(response);
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-            });
-          }
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: data.statusText,
-            text: "Hubo confilcto de código: " + data.status,
-          });
-        }
-    }
-    
-    $.validator.setDefaults({
-        submitHandler: function () {
-            let datos = new FormData($('#form-crear_usuario')[0]);
-            let funcion = "crear_usuario";
-            datos.append('funcion', funcion);
-            crear_usuario(datos);
-        },
-    });
-
-    jQuery.validator.addMethod("letras", (value) => {
-        let campo = value.replace(/ /g, '');
-        let estado = /^[A-Za-z]+$/.test(campo);
-        return estado;
-    }, "* Este campo solo permite letras");
-    
-    $("#form-crear_usuario").validate({
-        rules: {
-            nombre: {
-                required: true,
-                minlength: 3,
-                letras: true
-            },
-            apellido: {
-                required: true,
-                minlength: 3,
-                letras: true
-            },
-            nacimiento: {
-                required: true
-            },
-            dni: {
-                required: true,
-                minlength: 7,
-                maxlength: 8,
-                number: true
-            },
-            password: {
-                required: true
-            },
-            telefono: {
-                required: true,
-                minlength: 10,
-                maxlength: 10,
-                number: true
-            },
-            residencia: {
-                required: true,
-            },
-            direccion: {
-                required: true,
-                minlength: 2,
-                maxlength: 100,
-            },
-            sexo: {
-                required: true,
-                letras: true
-            },
-            correo: {
-                required: true,
-                email: true,
-            },
-            adicional: {
-                maxlength: 100,
-            },
-        },
-        messages: {
-            nombre: {
-                required: "* Dato requerido",
-                minlength: "* Se permite mínimo 3 caracteres"
-            },
-            apellido: {
-                required: "* Dato requerido",
-                minlength: "* Se permite mínimo 3 caracteres"
-            },
-            nacimiento: {
-                required: "* Dato requerido",
-            },
-            dni: {
-                required: "* Dato requerido",
-                number: "* El dato debe ser numérico",
-                minlength: "* Se permite mínimo 7 caracteres",
-                maxlength: "* Se permite máximo 8 caracteres",
-            },
-            password: {
-                required: "* Dato requerido",
-            },
-            telefono: {
-                required: "* Dato requerido",
-                number: "* El dato debe ser numérico",
-                minlength: "* Se permite mínimo 10 caracteres",
-                maxlength: "* Se permite máximo 10 caracteres",
-            },
-            residencia: {
-                required: "* Dato requerido",
-            },
-            direccion: {
-                required: "* Dato requerido",
-                minlength: "* Se permite mínimo 2 caracteres",
-                maxlength: "* Se permite máximo 100 caracteres",
-            },
-            sexo: {
-                required: "* Dato requerido",
-            },
-            correo: {
-                required: "* Dato requerido",
-                email: "* Ingrese un correo de formato válido",
-            },
-            adicional: {
-                maxlength: "* Se permite máximo 100 caracteres",
-            },
-        },
-        errorElement: "span",
-        errorPlacement: function (error, element) {
-            error.addClass("invalid-feedback");
-            element.closest(".form-group").append(error);
-        },
-        highlight: function (element, errorClass, validClass) {
-            $(element).addClass("is-invalid");
-            $(element).removeClass("is-valid");
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $(element).removeClass("is-invalid");
-            $(element).addClass("is-valid");
-        },
-    });
-
-    $(document).on('click','.confirmar', (e) => {
-        let elemento    = $(this)[0].activeElement;
-        let id          = $(elemento).attr("id");
-        let avatar      = $(elemento).attr("avatar");
-        let nombre      = $(elemento).attr("nombre");
-        let apellido    = $(elemento).attr("apellido");
-        let funcion     = $(elemento).attr("funcion");
-        console.log(funcion);
-        $('#nombre_confirmar').text(nombre);
-        $('#apellido_confirmar').text(apellido);
-        $('#avatar_confirmar').attr('src', '/farmaciav2/Util/img/user/' + avatar);
-        $('#id_usuario').val(id);
-        $('#funcion').val(funcion);
-    });
-
-    async function confirmar(datos) {
-        let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
-          method: "POST",
-          body: datos
-        });
-        if (data.ok) {
-          let response = await data.text();
-          try {
-            let respuesta = JSON.parse(response);
-            if(respuesta.mensaje == 'success') {
-                if(respuesta.funcion == 'eliminar usuario') {
-                    toastr.success('Se elimino al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'activar usuario') {
-                    toastr.success('Se activó al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'ascender usuario') {
-                    toastr.success('Se ascendió al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-                else if(respuesta.funcion == 'descender usuario') {
-                    toastr.success('Se descendió al usuario correctamente', 'Éxito!', {timeOut: 2000});
-                    obtener_usuarios();
-                    $('#confirmar').modal('hide');
-                    $('#form-confirmar').trigger('reset');
-                }
-            } else if(respuesta.mensaje == 'error_decrypt') {
-                Swal.fire({
-                    position: "center",
-                    icon: 'error',
-                    title: 'No vulnere los datos...',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(function() {
-                    //refresca la pagina (F5)
-                    location.reload();
-                  });
-            } else if(respuesta.mensaje == 'error_pass') {
-                toastr.error('No se puedo ' + respuesta.funcion + ' Porque su contraseña actual no coincide con nuestros registros, intente de nuevo', 'Error!', {timeOut: 2500});
-            } else if(respuesta.mensaje == 'error_session') {
-                Swal.fire({
-                    position: "center",
-                    icon: 'error',
-                    title: 'Sesión finalizada...',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then(function() {
-                    //refresca la pagina (F5)
-                    location.href='/farmaciav2/index.php';
-                  });
-            }
-          } catch (error) {
-            console.error(error);
-            console.log(response);
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-            });
-          }
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: data.statusText,
-            text: "Hubo confilcto de código: " + data.status,
-          });
-        }
-    }
-
-    $.validator.setDefaults({
-        submitHandler: function () {
-            let datos = new FormData($('#form-confirmar')[0]);
-            confirmar(datos);
-        },
-    });
-    
-    $("#form-confirmar").validate({
-        rules: {
-            pass: {
-                required: true
-            }
-        },
-        messages: {
-            pass: {
-                required: "* Dato requerido"
-            }
-        },
-        errorElement: "span",
-        errorPlacement: function (error, element) {
-            error.addClass("invalid-feedback");
-            element.closest(".form-group").append(error);
-        },
-        highlight: function (element, errorClass, validClass) {
-            $(element).addClass("is-invalid");
-            $(element).removeClass("is-valid");
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $(element).removeClass("is-invalid");
-            $(element).addClass("is-valid");
-        },
-    });
-
-	function Loader(mensaje) {
-        if(mensaje == '' || mensaje == null) {
-            mensaje = "Cargando datos..."
-        }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
         Swal.fire({
-            position: 'center',
-            html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
-            title: mensaje,
-            showConfirmButton: false
-        })
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
     }
+  }
 
-    function CloseLoader(mensaje, tipo) {
-        if(mensaje == '' || mensaje == null) {
-            Swal.close();
-        } else {
-            Swal.fire({
-                position: 'center',
-                icon: tipo,
-                title: mensaje,
-                showConfirmButton: false
-            })
+  async function crear_usuario(datos) {
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      body: datos,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        if (respuesta.mensaje == "success") {
+          toastr.success("Se ha creado el usuario correctamente", "Exito!", {
+            timeOut: 2000,
+          });
+          obtener_usuarios();
+          $("#crear_usuario").modal("hide");
+          $("#form-crear_usuario").trigger("reset");
+          $("#residencia").val("").trigger("change");
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_usuario") {
+          Swal.fire({
+            icon: "error",
+            title: "El usuario ya existe...",
+            text: "El usuario ya existe, póngase en contacto con el administrador del sistema.",
+          });
+          $("#form-crear_usuario").trigger("reset");
+          $("#residencia").val("").trigger("change");
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
         }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
     }
+  }
 
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($("#form-crear_usuario")[0]);
+      let funcion = "crear_usuario";
+      datos.append("funcion", funcion);
+      crear_usuario(datos);
+    },
+  });
 
-	/*var tipo_usuario = $('#tipo_usuario').val();
+  jQuery.validator.addMethod(
+    "letras",
+    (value) => {
+      let campo = value.replace(/ /g, "");
+      let estado = /^[A-Za-z]+$/.test(campo);
+      return estado;
+    },
+    "* Este campo solo permite letras"
+  );
+
+  $("#form-crear_usuario").validate({
+    rules: {
+      nombre: {
+        required: true,
+        minlength: 3,
+        letras: true,
+      },
+      apellido: {
+        required: true,
+        minlength: 3,
+        letras: true,
+      },
+      nacimiento: {
+        required: true,
+      },
+      dni: {
+        required: true,
+        minlength: 7,
+        maxlength: 8,
+        number: true,
+      },
+      password: {
+        required: true,
+      },
+      telefono: {
+        required: true,
+        minlength: 10,
+        maxlength: 10,
+        number: true,
+      },
+      residencia: {
+        required: true,
+      },
+      direccion: {
+        required: true,
+        minlength: 2,
+        maxlength: 100,
+      },
+      sexo: {
+        required: true,
+        letras: true,
+      },
+      correo: {
+        required: true,
+        email: true,
+      },
+      adicional: {
+        maxlength: 100,
+      },
+    },
+    messages: {
+      nombre: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 3 caracteres",
+      },
+      apellido: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 3 caracteres",
+      },
+      nacimiento: {
+        required: "* Dato requerido",
+      },
+      dni: {
+        required: "* Dato requerido",
+        number: "* El dato debe ser numérico",
+        minlength: "* Se permite mínimo 7 caracteres",
+        maxlength: "* Se permite máximo 8 caracteres",
+      },
+      password: {
+        required: "* Dato requerido",
+      },
+      telefono: {
+        required: "* Dato requerido",
+        number: "* El dato debe ser numérico",
+        minlength: "* Se permite mínimo 10 caracteres",
+        maxlength: "* Se permite máximo 10 caracteres",
+      },
+      residencia: {
+        required: "* Dato requerido",
+      },
+      direccion: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+        maxlength: "* Se permite máximo 100 caracteres",
+      },
+      sexo: {
+        required: "* Dato requerido",
+      },
+      correo: {
+        required: "* Dato requerido",
+        email: "* Ingrese un correo de formato válido",
+      },
+      adicional: {
+        maxlength: "* Se permite máximo 100 caracteres",
+      },
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
+  $(document).on("click", ".confirmar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let avatar = $(elemento).attr("avatar");
+    let nombre = $(elemento).attr("nombre");
+    let apellido = $(elemento).attr("apellido");
+    let funcion = $(elemento).attr("funcion");
+    console.log(funcion);
+    $("#nombre_confirmar").text(nombre);
+    $("#apellido_confirmar").text(apellido);
+    $("#avatar_confirmar").attr("src", "/farmaciav2/Util/img/user/" + avatar);
+    $("#id_usuario").val(id);
+    $("#funcion").val(funcion);
+  });
+
+  async function confirmar(datos) {
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      body: datos,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        if (respuesta.mensaje == "success") {
+          if (respuesta.funcion == "eliminar usuario") {
+            toastr.success("Se elimino al usuario correctamente", "Éxito!", {
+              timeOut: 2000,
+            });
+            obtener_usuarios();
+            $("#confirmar").modal("hide");
+            $("#form-confirmar").trigger("reset");
+          } else if (respuesta.funcion == "activar usuario") {
+            toastr.success("Se activó al usuario correctamente", "Éxito!", {
+              timeOut: 2000,
+            });
+            obtener_usuarios();
+            $("#confirmar").modal("hide");
+            $("#form-confirmar").trigger("reset");
+          } else if (respuesta.funcion == "ascender usuario") {
+            toastr.success("Se ascendió al usuario correctamente", "Éxito!", {
+              timeOut: 2000,
+            });
+            obtener_usuarios();
+            $("#confirmar").modal("hide");
+            $("#form-confirmar").trigger("reset");
+          } else if (respuesta.funcion == "descender usuario") {
+            toastr.success("Se descendió al usuario correctamente", "Éxito!", {
+              timeOut: 2000,
+            });
+            obtener_usuarios();
+            $("#confirmar").modal("hide");
+            $("#form-confirmar").trigger("reset");
+          }
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_pass") {
+          toastr.error(
+            "No se puedo " +
+              respuesta.funcion +
+              " Porque su contraseña actual no coincide con nuestros registros, intente de nuevo",
+            "Error!",
+            { timeOut: 2500 }
+          );
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($("#form-confirmar")[0]);
+      confirmar(datos);
+    },
+  });
+
+  $("#form-confirmar").validate({
+    rules: {
+      pass: {
+        required: true,
+      },
+    },
+    messages: {
+      pass: {
+        required: "* Dato requerido",
+      },
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
+  function Loader(mensaje) {
+    if (mensaje == "" || mensaje == null) {
+      mensaje = "Cargando datos...";
+    }
+    Swal.fire({
+      position: "center",
+      html: '<i class="fas fa-2x fa-sync-alt fa-spin"></i>',
+      title: mensaje,
+      showConfirmButton: false,
+    });
+  }
+
+  function CloseLoader(mensaje, tipo) {
+    if (mensaje == "" || mensaje == null) {
+      Swal.close();
+    } else {
+      Swal.fire({
+        position: "center",
+        icon: tipo,
+        title: mensaje,
+        showConfirmButton: false,
+      });
+    }
+  }
+
+  /*var tipo_usuario = $('#tipo_usuario').val();
 	if(tipo_usuario==2){
 		$('#button-crear').hide();
 	}
@@ -959,247 +996,239 @@ $(document).ready(function(){
 		});
 		e.preventDefault();
 	});*/
-})
+});
 
 let espanol = {
-    "processing": "Procesando...",
-    "lengthMenu": "Mostrar _MENU_ registros",
-    "zeroRecords": "No se encontraron resultados",
-    "emptyTable": "Ningún dato disponible en esta tabla",
-    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
-    "search": "Buscar:",
-    "infoThousands": ",",
-    "loadingRecords": "Cargando...",
-    "paginate": {
-        "first": "Primero",
-        "last": "Último",
-        "next": "Siguiente",
-        "previous": "Anterior"
+  processing: "Procesando...",
+  lengthMenu: "Mostrar _MENU_ registros",
+  zeroRecords: "No se encontraron resultados",
+  emptyTable: "Ningún dato disponible en esta tabla",
+  infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+  infoFiltered: "(filtrado de un total de _MAX_ registros)",
+  search: "Buscar:",
+  infoThousands: ",",
+  loadingRecords: "Cargando...",
+  paginate: {
+    first: "Primero",
+    last: "Último",
+    next: "Siguiente",
+    previous: "Anterior",
+  },
+  aria: {
+    sortAscending: ": Activar para ordenar la columna de manera ascendente",
+    sortDescending: ": Activar para ordenar la columna de manera descendente",
+  },
+  buttons: {
+    copy: "Copiar",
+    colvis: "Visibilidad",
+    collection: "Colección",
+    colvisRestore: "Restaurar visibilidad",
+    copyKeys:
+      "Presione ctrl o u2318 + C para copiar los datos de la tabla al portapapeles del sistema. <br /> <br /> Para cancelar, haga clic en este mensaje o presione escape.",
+    copySuccess: {
+      1: "Copiada 1 fila al portapapeles",
+      _: "Copiadas %ds fila al portapapeles",
     },
-    "aria": {
-        "sortAscending": ": Activar para ordenar la columna de manera ascendente",
-        "sortDescending": ": Activar para ordenar la columna de manera descendente"
+    copyTitle: "Copiar al portapapeles",
+    csv: "CSV",
+    excel: "Excel",
+    pageLength: {
+      "-1": "Mostrar todas las filas",
+      _: "Mostrar %d filas",
     },
-    "buttons": {
-        "copy": "Copiar",
-        "colvis": "Visibilidad",
-        "collection": "Colección",
-        "colvisRestore": "Restaurar visibilidad",
-        "copyKeys": "Presione ctrl o u2318 + C para copiar los datos de la tabla al portapapeles del sistema. <br \/> <br \/> Para cancelar, haga clic en este mensaje o presione escape.",
-        "copySuccess": {
-            "1": "Copiada 1 fila al portapapeles",
-            "_": "Copiadas %ds fila al portapapeles"
-        },
-        "copyTitle": "Copiar al portapapeles",
-        "csv": "CSV",
-        "excel": "Excel",
-        "pageLength": {
-            "-1": "Mostrar todas las filas",
-            "_": "Mostrar %d filas"
-        },
-        "pdf": "PDF",
-        "print": "Imprimir",
-        "renameState": "Cambiar nombre",
-        "updateState": "Actualizar",
-        "createState": "Crear Estado",
-        "removeAllStates": "Remover Estados",
-        "removeState": "Remover",
-        "savedStates": "Estados Guardados",
-        "stateRestore": "Estado %d"
+    pdf: "PDF",
+    print: "Imprimir",
+    renameState: "Cambiar nombre",
+    updateState: "Actualizar",
+    createState: "Crear Estado",
+    removeAllStates: "Remover Estados",
+    removeState: "Remover",
+    savedStates: "Estados Guardados",
+    stateRestore: "Estado %d",
+  },
+  autoFill: {
+    cancel: "Cancelar",
+    fill: "Rellene todas las celdas con <i>%d</i>",
+    fillHorizontal: "Rellenar celdas horizontalmente",
+    fillVertical: "Rellenar celdas verticalmentemente",
+  },
+  decimal: ",",
+  searchBuilder: {
+    add: "Añadir condición",
+    button: {
+      0: "Constructor de búsqueda",
+      _: "Constructor de búsqueda (%d)",
     },
-    "autoFill": {
-        "cancel": "Cancelar",
-        "fill": "Rellene todas las celdas con <i>%d<\/i>",
-        "fillHorizontal": "Rellenar celdas horizontalmente",
-        "fillVertical": "Rellenar celdas verticalmentemente"
+    clearAll: "Borrar todo",
+    condition: "Condición",
+    conditions: {
+      date: {
+        after: "Despues",
+        before: "Antes",
+        between: "Entre",
+        empty: "Vacío",
+        equals: "Igual a",
+        notBetween: "No entre",
+        notEmpty: "No Vacio",
+        not: "Diferente de",
+      },
+      number: {
+        between: "Entre",
+        empty: "Vacio",
+        equals: "Igual a",
+        gt: "Mayor a",
+        gte: "Mayor o igual a",
+        lt: "Menor que",
+        lte: "Menor o igual que",
+        notBetween: "No entre",
+        notEmpty: "No vacío",
+        not: "Diferente de",
+      },
+      string: {
+        contains: "Contiene",
+        empty: "Vacío",
+        endsWith: "Termina en",
+        equals: "Igual a",
+        notEmpty: "No Vacio",
+        startsWith: "Empieza con",
+        not: "Diferente de",
+        notContains: "No Contiene",
+        notStarts: "No empieza con",
+        notEnds: "No termina con",
+      },
+      array: {
+        not: "Diferente de",
+        equals: "Igual",
+        empty: "Vacío",
+        contains: "Contiene",
+        notEmpty: "No Vacío",
+        without: "Sin",
+      },
     },
-    "decimal": ",",
-    "searchBuilder": {
-        "add": "Añadir condición",
-        "button": {
-            "0": "Constructor de búsqueda",
-            "_": "Constructor de búsqueda (%d)"
-        },
-        "clearAll": "Borrar todo",
-        "condition": "Condición",
-        "conditions": {
-            "date": {
-                "after": "Despues",
-                "before": "Antes",
-                "between": "Entre",
-                "empty": "Vacío",
-                "equals": "Igual a",
-                "notBetween": "No entre",
-                "notEmpty": "No Vacio",
-                "not": "Diferente de"
-            },
-            "number": {
-                "between": "Entre",
-                "empty": "Vacio",
-                "equals": "Igual a",
-                "gt": "Mayor a",
-                "gte": "Mayor o igual a",
-                "lt": "Menor que",
-                "lte": "Menor o igual que",
-                "notBetween": "No entre",
-                "notEmpty": "No vacío",
-                "not": "Diferente de"
-            },
-            "string": {
-                "contains": "Contiene",
-                "empty": "Vacío",
-                "endsWith": "Termina en",
-                "equals": "Igual a",
-                "notEmpty": "No Vacio",
-                "startsWith": "Empieza con",
-                "not": "Diferente de",
-                "notContains": "No Contiene",
-                "notStarts": "No empieza con",
-                "notEnds": "No termina con"
-            },
-            "array": {
-                "not": "Diferente de",
-                "equals": "Igual",
-                "empty": "Vacío",
-                "contains": "Contiene",
-                "notEmpty": "No Vacío",
-                "without": "Sin"
-            }
-        },
-        "data": "Data",
-        "deleteTitle": "Eliminar regla de filtrado",
-        "leftTitle": "Criterios anulados",
-        "logicAnd": "Y",
-        "logicOr": "O",
-        "rightTitle": "Criterios de sangría",
-        "title": {
-            "0": "Constructor de búsqueda",
-            "_": "Constructor de búsqueda (%d)"
-        },
-        "value": "Valor"
+    data: "Data",
+    deleteTitle: "Eliminar regla de filtrado",
+    leftTitle: "Criterios anulados",
+    logicAnd: "Y",
+    logicOr: "O",
+    rightTitle: "Criterios de sangría",
+    title: {
+      0: "Constructor de búsqueda",
+      _: "Constructor de búsqueda (%d)",
     },
-    "searchPanes": {
-        "clearMessage": "Borrar todo",
-        "collapse": {
-            "0": "Paneles de búsqueda",
-            "_": "Paneles de búsqueda (%d)"
-        },
-        "count": "{total}",
-        "countFiltered": "{shown} ({total})",
-        "emptyPanes": "Sin paneles de búsqueda",
-        "loadMessage": "Cargando paneles de búsqueda",
-        "title": "Filtros Activos - %d",
-        "showMessage": "Mostrar Todo",
-        "collapseMessage": "Colapsar Todo"
+    value: "Valor",
+  },
+  searchPanes: {
+    clearMessage: "Borrar todo",
+    collapse: {
+      0: "Paneles de búsqueda",
+      _: "Paneles de búsqueda (%d)",
     },
-    "select": {
-        "cells": {
-            "1": "1 celda seleccionada",
-            "_": "%d celdas seleccionadas"
-        },
-        "columns": {
-            "1": "1 columna seleccionada",
-            "_": "%d columnas seleccionadas"
-        },
-        "rows": {
-            "1": "1 fila seleccionada",
-            "_": "%d filas seleccionadas"
-        }
+    count: "{total}",
+    countFiltered: "{shown} ({total})",
+    emptyPanes: "Sin paneles de búsqueda",
+    loadMessage: "Cargando paneles de búsqueda",
+    title: "Filtros Activos - %d",
+    showMessage: "Mostrar Todo",
+    collapseMessage: "Colapsar Todo",
+  },
+  select: {
+    cells: {
+      1: "1 celda seleccionada",
+      _: "%d celdas seleccionadas",
     },
-    "thousands": ".",
-    "datetime": {
-        "previous": "Anterior",
-        "next": "Proximo",
-        "hours": "Horas",
-        "minutes": "Minutos",
-        "seconds": "Segundos",
-        "unknown": "-",
-        "amPm": [
-            "AM",
-            "PM"
-        ],
-        "months": {
-            "0": "Enero",
-            "1": "Febrero",
-            "10": "Noviembre",
-            "11": "Diciembre",
-            "2": "Marzo",
-            "3": "Abril",
-            "4": "Mayo",
-            "5": "Junio",
-            "6": "Julio",
-            "7": "Agosto",
-            "8": "Septiembre",
-            "9": "Octubre"
-        },
-        "weekdays": [
-            "Dom",
-            "Lun",
-            "Mar",
-            "Mie",
-            "Jue",
-            "Vie",
-            "Sab"
-        ]
+    columns: {
+      1: "1 columna seleccionada",
+      _: "%d columnas seleccionadas",
     },
-    "editor": {
-        "close": "Cerrar",
-        "create": {
-            "button": "Nuevo",
-            "title": "Crear Nuevo Registro",
-            "submit": "Crear"
-        },
-        "edit": {
-            "button": "Editar",
-            "title": "Editar Registro",
-            "submit": "Actualizar"
-        },
-        "remove": {
-            "button": "Eliminar",
-            "title": "Eliminar Registro",
-            "submit": "Eliminar",
-            "confirm": {
-                "_": "¿Está seguro que desea eliminar %d filas?",
-                "1": "¿Está seguro que desea eliminar 1 fila?"
-            }
-        },
-        "error": {
-            "system": "Ha ocurrido un error en el sistema (<a target=\"\\\" rel=\"\\ nofollow\" href=\"\\\">Más información&lt;\\\/a&gt;).<\/a>"
-        },
-        "multi": {
-            "title": "Múltiples Valores",
-            "info": "Los elementos seleccionados contienen diferentes valores para este registro. Para editar y establecer todos los elementos de este registro con el mismo valor, hacer click o tap aquí, de lo contrario conservarán sus valores individuales.",
-            "restore": "Deshacer Cambios",
-            "noMulti": "Este registro puede ser editado individualmente, pero no como parte de un grupo."
-        }
+    rows: {
+      1: "1 fila seleccionada",
+      _: "%d filas seleccionadas",
     },
-    "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
-    "stateRestore": {
-        "creationModal": {
-            "button": "Crear",
-            "name": "Nombre:",
-            "order": "Clasificación",
-            "paging": "Paginación",
-            "search": "Busqueda",
-            "select": "Seleccionar",
-            "columns": {
-                "search": "Búsqueda de Columna",
-                "visible": "Visibilidad de Columna"
-            },
-            "title": "Crear Nuevo Estado",
-            "toggleLabel": "Incluir:"
-        },
-        "emptyError": "El nombre no puede estar vacio",
-        "removeConfirm": "¿Seguro que quiere eliminar este %s?",
-        "removeError": "Error al eliminar el registro",
-        "removeJoiner": "y",
-        "removeSubmit": "Eliminar",
-        "renameButton": "Cambiar Nombre",
-        "renameLabel": "Nuevo nombre para %s",
-        "duplicateError": "Ya existe un Estado con este nombre.",
-        "emptyStates": "No hay Estados guardados",
-        "removeTitle": "Remover Estado",
-        "renameTitle": "Cambiar Nombre Estado"
-    }
-} 
+  },
+  thousands: ".",
+  datetime: {
+    previous: "Anterior",
+    next: "Proximo",
+    hours: "Horas",
+    minutes: "Minutos",
+    seconds: "Segundos",
+    unknown: "-",
+    amPm: ["AM", "PM"],
+    months: {
+      0: "Enero",
+      1: "Febrero",
+      10: "Noviembre",
+      11: "Diciembre",
+      2: "Marzo",
+      3: "Abril",
+      4: "Mayo",
+      5: "Junio",
+      6: "Julio",
+      7: "Agosto",
+      8: "Septiembre",
+      9: "Octubre",
+    },
+    weekdays: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+  },
+  editor: {
+    close: "Cerrar",
+    create: {
+      button: "Nuevo",
+      title: "Crear Nuevo Registro",
+      submit: "Crear",
+    },
+    edit: {
+      button: "Editar",
+      title: "Editar Registro",
+      submit: "Actualizar",
+    },
+    remove: {
+      button: "Eliminar",
+      title: "Eliminar Registro",
+      submit: "Eliminar",
+      confirm: {
+        _: "¿Está seguro que desea eliminar %d filas?",
+        1: "¿Está seguro que desea eliminar 1 fila?",
+      },
+    },
+    error: {
+      system:
+        'Ha ocurrido un error en el sistema (<a target="\\" rel="\\ nofollow" href="\\">Más información&lt;\\/a&gt;).</a>',
+    },
+    multi: {
+      title: "Múltiples Valores",
+      info: "Los elementos seleccionados contienen diferentes valores para este registro. Para editar y establecer todos los elementos de este registro con el mismo valor, hacer click o tap aquí, de lo contrario conservarán sus valores individuales.",
+      restore: "Deshacer Cambios",
+      noMulti:
+        "Este registro puede ser editado individualmente, pero no como parte de un grupo.",
+    },
+  },
+  info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+  stateRestore: {
+    creationModal: {
+      button: "Crear",
+      name: "Nombre:",
+      order: "Clasificación",
+      paging: "Paginación",
+      search: "Busqueda",
+      select: "Seleccionar",
+      columns: {
+        search: "Búsqueda de Columna",
+        visible: "Visibilidad de Columna",
+      },
+      title: "Crear Nuevo Estado",
+      toggleLabel: "Incluir:",
+    },
+    emptyError: "El nombre no puede estar vacio",
+    removeConfirm: "¿Seguro que quiere eliminar este %s?",
+    removeError: "Error al eliminar el registro",
+    removeJoiner: "y",
+    removeSubmit: "Eliminar",
+    renameButton: "Cambiar Nombre",
+    renameLabel: "Nuevo nombre para %s",
+    duplicateError: "Ya existe un Estado con este nombre.",
+    emptyStates: "No hay Estados guardados",
+    removeTitle: "Remover Estado",
+    renameTitle: "Cambiar Nombre Estado",
+  },
+};

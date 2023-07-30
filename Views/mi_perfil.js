@@ -160,7 +160,9 @@ $(document).ready(function () {
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    <img id="avatar_1" src="/farmaciav2/Util/img/user/${usuario.avatar}" class="img-circle elevation-2" width="30" height="30">
+                    <img id="avatar_1" src="/farmaciav2/Util/img/user/${
+                      usuario.avatar
+                    }" class="img-circle elevation-2" width="30" height="30">
                     <span>${usuario.nombre + " " + usuario.apellido}</span>
                 </a>
                 <ul class="dropdown-menu">
@@ -178,10 +180,14 @@ $(document).ready(function () {
     let template = `
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-            <img src="/farmaciav2/Util/img/user/${usuario.avatar}" class="img-circle elevation-2" alt="User Image">
+            <img src="/farmaciav2/Util/img/user/${
+              usuario.avatar
+            }" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-            <a href="#" class="d-block">${usuario.nombre + ' ' + usuario.apellido}</a>
+            <a href="#" class="d-block">${
+              usuario.nombre + " " + usuario.apellido
+            }</a>
         </div>
     </div>
     <nav class="mt-2">
@@ -245,6 +251,14 @@ $(document).ready(function () {
                     </p>
                 </a>
             </li>
+            <li id="" class="nav-item">
+                <a href="/farmaciav2/Views/subtipos.php" class="nav-link">
+                    <i class="nav-icon fas fa-tablets"></i>
+                    <p>
+                        Subtipos
+                    </p>
+                </a>
+            </li>
             <li id="gestion_producto" class="nav-item">
                 <a href="adm_producto.php" class="nav-link">
                     <i class="nav-icon fas fa-pills"></i>
@@ -281,8 +295,8 @@ $(document).ready(function () {
         </ul>
     </nav>
     `;
-    $('#menu_lateral').html(template);
-}
+    $("#menu_lateral").html(template);
+  }
 
   async function verificar_sesion() {
     let funcion = "verificar_sesion";
@@ -449,38 +463,40 @@ $(document).ready(function () {
   async function editar_datos(datos) {
     let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
       method: "POST",
-      body: datos
+      body: datos,
     });
     if (data.ok) {
       let response = await data.text();
       try {
         let respuesta = JSON.parse(response);
-        if(respuesta.mensaje == 'success') {
-            toastr.success('Sus datos fueron actualizados', 'Exito!', {timeOut: 2000});
-            obtener_usuario();
-            $('#editar_datos_personales').modal('hide');
-        } else if(respuesta.mensaje == 'error_decrypt') {
-            Swal.fire({
-                position: "center",
-                icon: 'error',
-                title: 'No vulnere los datos...',
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function() {
-                //refresca la pagina (F5)
-                location.reload();
-              });
-        } else if(respuesta.mensaje == 'error_session') {
-            Swal.fire({
-                position: "center",
-                icon: 'error',
-                title: 'Sesión finalizada...',
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function() {
-                //refresca la pagina (F5)
-                location.href='/farmaciav2/index.php';
-              });
+        if (respuesta.mensaje == "success") {
+          toastr.success("Sus datos fueron actualizados", "Exito!", {
+            timeOut: 2000,
+          });
+          obtener_usuario();
+          $("#editar_datos_personales").modal("hide");
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
         }
       } catch (error) {
         console.error(error);
@@ -502,9 +518,9 @@ $(document).ready(function () {
 
   $.validator.setDefaults({
     submitHandler: function () {
-      let datos = new FormData($('#form-editar_datos_personales')[0]);
+      let datos = new FormData($("#form-editar_datos_personales")[0]);
       let funcion = "editar_datos";
-      datos.append('funcion', funcion);
+      datos.append("funcion", funcion);
       editar_datos(datos);
     },
   });
@@ -577,43 +593,51 @@ $(document).ready(function () {
     },
   });
 
-  $(document).on("click", ".editar_avatar", function() {
-    let elemento  = $(this) ;
-    let nombre    = $(elemento).data("nombre");
-    let apellido  = $(elemento).data("apellido");
-    let avatar    = $(elemento).data("avatar");
+  $(document).on("click", ".editar_avatar", function () {
+    let elemento = $(this);
+    let nombre = $(elemento).data("nombre");
+    let apellido = $(elemento).data("apellido");
+    let avatar = $(elemento).data("avatar");
     $("#nombre_avatar").text(nombre);
     $("#apellido_avatar").text(apellido);
-    $("#avatar").attr('src', '/farmaciav2/Util/img/user/' + avatar);
+    $("#avatar").attr("src", "/farmaciav2/Util/img/user/" + avatar);
   });
 
   async function editar_avatar(datos) {
     let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
       method: "POST",
-      body: datos
+      body: datos,
     });
     if (data.ok) {
       let response = await data.text();
       try {
         let respuesta = JSON.parse(response);
-        if(respuesta.mensaje == 'success') {
-            toastr.success('Su avatar fué actualizado', 'Exito!', {timeOut: 2000});
-            obtener_usuario();
-            $('#avatar_1').attr('src', '/farmaciav2/Util/img/user/' + respuesta.img);
-            $('#avatar_2').attr('src', '/farmaciav2/Util/img/user/' + respuesta.img);
-            $('#editar_avatar').modal('hide');
-            $('#form-editar_avatar').trigger('reset');
-        } else if(respuesta.mensaje == 'error_session') {
-            Swal.fire({
-                position: "center",
-                icon: 'error',
-                title: 'Sesión finalizada...',
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function() {
-                //refresca la pagina (F5)
-                location.href='/farmaciav2/index.php';
-              });
+        if (respuesta.mensaje == "success") {
+          toastr.success("Su avatar fué actualizado", "Exito!", {
+            timeOut: 2000,
+          });
+          obtener_usuario();
+          $("#avatar_1").attr(
+            "src",
+            "/farmaciav2/Util/img/user/" + respuesta.img
+          );
+          $("#avatar_2").attr(
+            "src",
+            "/farmaciav2/Util/img/user/" + respuesta.img
+          );
+          $("#editar_avatar").modal("hide");
+          $("#form-editar_avatar").trigger("reset");
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
         }
       } catch (error) {
         console.error(error);
@@ -635,9 +659,9 @@ $(document).ready(function () {
 
   $.validator.setDefaults({
     submitHandler: function () {
-      let datos = new FormData($('#form-editar_avatar')[0]);
+      let datos = new FormData($("#form-editar_avatar")[0]);
       let funcion = "editar_avatar";
-      datos.append('funcion', funcion);
+      datos.append("funcion", funcion);
       editar_avatar(datos);
     },
   });
@@ -646,14 +670,14 @@ $(document).ready(function () {
     rules: {
       avatar_mod: {
         required: true,
-        extension: "png|jpg|jpeg|webp"
-      }
+        extension: "png|jpg|jpeg|webp",
+      },
     },
     messages: {
       avatar_mod: {
         required: "* Dato requerido",
-        extension: "* Solo se permite formato (png|jpg|jpeg|webp)"
-      }
+        extension: "* Solo se permite formato (png|jpg|jpeg|webp)",
+      },
     },
     errorElement: "span",
     errorPlacement: function (error, element) {
@@ -670,43 +694,49 @@ $(document).ready(function () {
     },
   });
 
-  $(document).on("click", ".editar_password", function() {
-    let elemento  = $(this) ;
-    let nombre    = $(elemento).data("nombre");
-    let apellido  = $(elemento).data("apellido");
-    let avatar    = $(elemento).data("avatar");
+  $(document).on("click", ".editar_password", function () {
+    let elemento = $(this);
+    let nombre = $(elemento).data("nombre");
+    let apellido = $(elemento).data("apellido");
+    let avatar = $(elemento).data("avatar");
     $("#nombre_password").text(nombre);
     $("#apellido_password").text(apellido);
-    $("#avatar_password").attr('src', '/farmaciav2/Util/img/user/' + avatar);
+    $("#avatar_password").attr("src", "/farmaciav2/Util/img/user/" + avatar);
   });
 
   async function editar_password(datos) {
     let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
       method: "POST",
-      body: datos
+      body: datos,
     });
     if (data.ok) {
       let response = await data.text();
       try {
         let respuesta = JSON.parse(response);
         console.log(respuesta);
-        if(respuesta.mensaje == 'success') {
-            toastr.success('Su contraseña fué actualizada', 'Exito!', {timeOut: 2000});
-            $('#editar_password').modal('hide');
-            $('#form-editar_password').trigger('reset');
-        } else if(respuesta.mensaje == 'error_pass') {
-          toastr.error('Su contraseña actual no coincide con nuestros registros, intente de nuevo', 'Error!', {timeOut: 2000});
-        } else if(respuesta.mensaje == 'error_session') {
-            Swal.fire({
-                position: "center",
-                icon: 'error',
-                title: 'Sesión finalizada...',
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function() {
-                //refresca la pagina (F5)
-                location.href='/farmaciav2/index.php';
-              });
+        if (respuesta.mensaje == "success") {
+          toastr.success("Su contraseña fué actualizada", "Exito!", {
+            timeOut: 2000,
+          });
+          $("#editar_password").modal("hide");
+          $("#form-editar_password").trigger("reset");
+        } else if (respuesta.mensaje == "error_pass") {
+          toastr.error(
+            "Su contraseña actual no coincide con nuestros registros, intente de nuevo",
+            "Error!",
+            { timeOut: 2000 }
+          );
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
         }
       } catch (error) {
         console.error(error);
@@ -728,9 +758,9 @@ $(document).ready(function () {
 
   $.validator.setDefaults({
     submitHandler: function () {
-      let datos = new FormData($('#form-editar_password')[0]);
+      let datos = new FormData($("#form-editar_password")[0]);
       let funcion = "editar_password";
-      datos.append('funcion', funcion);
+      datos.append("funcion", funcion);
       editar_password(datos);
     },
   });
@@ -738,19 +768,19 @@ $(document).ready(function () {
   $("#form-editar_password").validate({
     rules: {
       oldpass: {
-        required: true
+        required: true,
       },
       newpass: {
-        required: true
-      }
+        required: true,
+      },
     },
     messages: {
       oldpass: {
-        required: "* Dato requerido"
+        required: "* Dato requerido",
       },
       newpass: {
-        required: "* Dato requerido"
-      }
+        required: "* Dato requerido",
+      },
     },
     errorElement: "span",
     errorPlacement: function (error, element) {
