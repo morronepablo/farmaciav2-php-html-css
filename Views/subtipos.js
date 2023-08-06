@@ -318,7 +318,7 @@ $(document).ready(function () {
                                             <img class="img-circle elevation-2" src="/farmaciav2/Util/img/presentacion.jpg" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                         <div>
-                                            <h3 class="widget-user-username" style="margin: 0 20px;">${datos.nombre}</h3>`;
+                                            <h3 class="widget-user-username" style="margin: 0 20px;">${datos.nombre} (${datos.tipo})</h3>`;
                 if (datos.estado == "A") {
                   template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-warning">Activo</span></h5>`;
                 } else {
@@ -335,11 +335,13 @@ $(document).ready(function () {
                   template += `
                                                         <span style="margin-right: 5px;">
                                                             <button 
-                                                                class="btn btn-outline-primary btn-circle btn-lg editar_tipo" 
+                                                                class="btn btn-outline-primary btn-circle btn-lg editar_subtipo" 
                                                                 data-toggle="modal" 
-                                                                data-target="#editar_tipo" 
+                                                                data-target="#editar_subtipo" 
                                                                 id="${datos.id}"
                                                                 nombre="${datos.nombre}"
+                                                                tipo="${datos.tipo}"
+                                                                id_tipo="${datos.id_tipo}"
                                                             >
                                                                 <i class="fas fa-pencil-alt"></i>
                                                             </button>
@@ -347,9 +349,10 @@ $(document).ready(function () {
                                                         
                                                         <span style="margin-right: 5px;">
                                                             <button 
-                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar_tipo"
+                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar_subtipo"
                                                                 id="${datos.id}"
                                                                 nombre="${datos.nombre}"
+                                                                tipo="${datos.tipo}"
                                                             >
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
@@ -358,9 +361,10 @@ $(document).ready(function () {
                 } else {
                   template += `<span>
                                                                         <button 
-                                                                            class="btn btn-outline-success btn-circle btn-lg activar_tipo"
+                                                                            class="btn btn-outline-success btn-circle btn-lg activar_subtipo"
                                                                             id="${datos.id}"
                                                                             nombre="${datos.nombre}"
+                                                                            tipo="${datos.tipo}"
                                                                         >
                                                                             <i class="fas fa-plus"></i>
                                                                         </button>
