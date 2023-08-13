@@ -9,6 +9,58 @@ $(document).ready(function () {
     preventDuplicates: true,
   };
 
+  $("#tipo").select2({
+    placeholder: "Seleccione un tipo",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  obtener_tipos().then((respuesta) => {
+    let template = "";
+    respuesta.forEach((tipo) => {
+      template += `<option value="${tipo.id}">${tipo.nombre}</option>`;
+    });
+    $("#tipo").html(template);
+    $("#tipo").val("").trigger("change");
+  });
+
+  async function obtener_tipos() {
+    let funcion = "obtener_tipos";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
   function llenar_menu_superior(usuario) {
     let template = `
         <ul class="navbar-nav">
@@ -401,7 +453,7 @@ $(document).ready(function () {
     }
   }
 
-  async function crear_tipo(datos) {
+  async function crear_subtipo(datos) {
     let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
       method: "POST",
       body: datos,
@@ -456,24 +508,31 @@ $(document).ready(function () {
 
   $.validator.setDefaults({
     submitHandler: function () {
-      let datos = new FormData($("#form-crear_tipo")[0]);
-      let funcion = "crear_tipo";
+      let datos = new FormData($("#form-crear_subtipo")[0]);
+      let funcion = "crear_subtipo";
       datos.append("funcion", funcion);
-      crear_tipo(datos);
+      alert("validado");
+      //crear_subtipo(datos);
     },
   });
 
-  $("#form-crear_tipo").validate({
+  $("#form-crear_subtipo").validate({
     rules: {
       nombre: {
         required: true,
         minlength: 3,
+      },
+      tipo: {
+        required: true,
       },
     },
     messages: {
       nombre: {
         required: "* Dato requerido",
         minlength: "* Se permite mínimo 3 caracteres",
+      },
+      tipo: {
+        required: "* Dato requerido",
       },
     },
     errorElement: "span",
