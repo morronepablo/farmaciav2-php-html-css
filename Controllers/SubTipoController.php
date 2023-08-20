@@ -19,16 +19,23 @@ if ($_POST['funcion'] == 'obtener_subtipos') {
 		);
 	}
 	echo json_encode($json);
-} else if ($_POST['funcion'] == 'crear_tipo') {
+} else if ($_POST['funcion'] == 'crear_subtipo') {
 	$mensaje = '';
 	if (!empty($_SESSION['id'])) {
 		$nombre = $_POST['nombre'];
-		$tipo->encontrar_tipo($nombre);
-		if (empty($tipo->objetos)) {
-			$tipo->crear($nombre);
-			$mensaje = 'success';
+		$tipo 	= $_POST['tipo'];
+		$formateado	= str_replace(' ', '+', $tipo);
+		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
+		if (is_numeric($id_tipo)) {
+			$subtipo->encontrar_subtipo($nombre);
+			if (empty($subtipo->objetos)) {
+				$subtipo->crear($nombre, $id_tipo);
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_subtip';
+			}
 		} else {
-			$mensaje = 'error_tip';
+			$mensaje = 'error_decrypt';
 		}
 	} else {
 		$mensaje = 'error_session';

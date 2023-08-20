@@ -454,7 +454,7 @@ $(document).ready(function () {
   }
 
   async function crear_subtipo(datos) {
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+    let data = await fetch("/farmaciav2/Controllers/SubTipoController.php", {
       method: "POST",
       body: datos,
     });
@@ -463,19 +463,31 @@ $(document).ready(function () {
       try {
         let respuesta = JSON.parse(response);
         if (respuesta.mensaje == "success") {
-          toastr.success("Se ha creado el tipo correctamente", "Éxito!", {
+          toastr.success("Se ha creado el subtipo correctamente", "Éxito!", {
             timeOut: 2000,
           });
-          obtener_tipos();
-          $("#crear_tipo").modal("hide");
-          $("#form-crear_tipo").trigger("reset");
-        } else if (respuesta.mensaje == "error_tip") {
+          obtener_subtipos();
+          $("#crear_subtipo").modal("hide");
+          $("#form-crear_subtipo").trigger("reset");
+          $("#tipo").val("").trigger("change");
+        } else if (respuesta.mensaje == "error_subtip") {
           Swal.fire({
             icon: "error",
-            title: "El tipo ya existe...",
-            text: "El tipo ya existe, póngase en contacto con el administrador del sistema.",
+            title: "El subtipo ya existe...",
+            text: "El subtipo ya existe, póngase en contacto con el administrador del sistema.",
           });
-          $("#form-crear_tipo").trigger("reset");
+          $("#form-crear_subtipo").trigger("reset");
+          $("#tipo").val("").trigger("change");
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            location.reload();
+          });
         } else if (respuesta.mensaje == "error_session") {
           Swal.fire({
             position: "center",
@@ -511,8 +523,7 @@ $(document).ready(function () {
       let datos = new FormData($("#form-crear_subtipo")[0]);
       let funcion = "crear_subtipo";
       datos.append("funcion", funcion);
-      alert("validado");
-      //crear_subtipo(datos);
+      crear_subtipo(datos);
     },
   });
 

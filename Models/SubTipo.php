@@ -24,10 +24,10 @@ class SubTipo
 		return $this->objetos;
 	}
 
-	function encontrar_tipo($nombre)
+	function encontrar_subtipo($nombre)
 	{
 		$sql = "SELECT *
-			  FROM tipo_producto
+			  FROM subtipo_producto
 			  WHERE nombre=:nombre";
 		$variables = array(
 			':nombre' => $nombre
@@ -38,12 +38,13 @@ class SubTipo
 		return $this->objetos;
 	}
 
-	function crear($nombre)
+	function crear($nombre, $id_tipo)
 	{
-		$sql = "INSERT INTO tipo_producto(nombre)
-				VALUES(:nombre)";
+		$sql = "INSERT INTO subtipo_producto(nombre, id_tipo_producto)
+				VALUES(:nombre, :id_tipo_producto)";
 		$variables = array(
 			':nombre' => $nombre,
+			':id_tipo_producto' => $id_tipo,
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
