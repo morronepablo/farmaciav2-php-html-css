@@ -45,21 +45,26 @@ if ($_POST['funcion'] == 'obtener_subtipos') {
 	);
 
 	echo json_encode($json);
-} else if ($_POST['funcion'] == 'editar_tipo') {
+} else if ($_POST['funcion'] == 'editar_subtipo') {
 	$mensaje = '';
 	if (!empty($_SESSION['id'])) {
+		$id_subtipo	= $_POST['id_subtipo'];
+		$formateado	= str_replace(' ', '+', $id_subtipo);
+		$id_subtipo	= openssl_decrypt($formateado, CODE, KEY);
 		$nombre 	= $_POST['nombre_edit'];
-		$id 		= $_POST['id_tipo'];
-		$formateado	= str_replace(' ', '+', $id);
+		$id_tipo	= $_POST['tipo_edit'];
+		$formateado	= str_replace(' ', '+', $id_tipo);
 		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
-		if (is_numeric($id_tipo)) {
-			$tipo->encontrar_tipo($nombre);
-			if (empty($tipo->objetos)) {
-				$tipo->editar($id_tipo, $nombre);
+		if (is_numeric($id_subtipo) && is_numeric($id_tipo)) {
+			$mensaje = 'success';
+			//$tipo->encontrar_tipo($nombre);
+
+			/*if (empty($tipo->objetos)) {
+				//$tipo->editar($id_tipo, $nombre);
 				$mensaje = 'success';
 			} else {
 				$mensaje = 'error_tip';
-			}
+			}*/
 		} else {
 			$mensaje = 'error_decrypt';
 		}

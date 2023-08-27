@@ -21,6 +21,18 @@ $(document).ready(function () {
     },
   });
 
+  $("#tipo_edit").select2({
+    placeholder: "Seleccione un tipo",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
   obtener_tipos().then((respuesta) => {
     let template = "";
     respuesta.forEach((tipo) => {
@@ -28,6 +40,8 @@ $(document).ready(function () {
     });
     $("#tipo").html(template);
     $("#tipo").val("").trigger("change");
+    $("#tipo_edit").html(template);
+    $("#tipo_edit").val("").trigger("change");
   });
 
   async function obtener_tipos() {
@@ -561,18 +575,22 @@ $(document).ready(function () {
     },
   });
 
-  $(document).on("click", ".editar_tipo", (e) => {
+  $(document).on("click", ".editar_subtipo", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
     let nombre = $(elemento).attr("nombre");
-    $("#id_tipo").val(id);
+    let tipo = $(elemento).attr("tipo");
+    let id_tipo = $(elemento).attr("id_tipo");
+    //console.log(id, nombre, tipo, id_tipo);
+    $("#id_subtipo").val(id);
     $("#nombre_edit").val(nombre);
-    $("#nombre_card").text(nombre);
+    $("#nombre_card").text(`${nombre} (${tipo})`);
+    $("#tipo_edit").val(id_tipo).trigger("change");
     $("#avatar_card").attr("src", "/farmaciav2/Util/img/presentacion.jpg");
   });
 
-  async function editar_tipo(datos) {
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+  async function editar_subtipo(datos) {
+    let data = await fetch("/farmaciav2/Controllers/SubTipoController.php", {
       method: "POST",
       body: datos,
     });
@@ -581,17 +599,18 @@ $(document).ready(function () {
       try {
         let respuesta = JSON.parse(response);
         if (respuesta.mensaje == "success") {
-          toastr.success("Se ha editado el tipo correctamente", "Exito!", {
+          toastr.success("Se ha editado el subtipo correctamente", "Exito!", {
             timeOut: 2000,
           });
-          obtener_tipos();
-          $("#editar_tipo").modal("hide");
-          $("#form-editar_tipo").trigger("reset");
-        } else if (respuesta.mensaje == "error_tip") {
+          obtener_subtipos();
+          $("#editar_subtipo").modal("hide");
+          $("#form-editar_subtipo").trigger("reset");
+          $("#tipo_edit").val("").trigger("change");
+        } else if (respuesta.mensaje == "error_subtip") {
           Swal.fire({
             icon: "error",
-            title: "El tipo ya existe...",
-            text: "El tipo ya existe, póngase en contacto con el administrador del sistema.",
+            title: "El subtipo ya existe...",
+            text: "El subtipo ya existe, póngase en contacto con el administrador del sistema.",
           });
         } else if (respuesta.mensaje == "error_decrypt") {
           Swal.fire({
@@ -635,24 +654,31 @@ $(document).ready(function () {
 
   $.validator.setDefaults({
     submitHandler: function () {
-      let datos = new FormData($("#form-editar_tipo")[0]);
-      let funcion = "editar_tipo";
+      let datos = new FormData($("#form-editar_subtipo")[0]);
+      let funcion = "editar_subtipo";
       datos.append("funcion", funcion);
-      editar_tipo(datos);
+      //alert("validado");
+      editar_subtipo(datos);
     },
   });
 
-  $("#form-editar_tipo").validate({
+  $("#form-editar_subtipo").validate({
     rules: {
       nombre_edit: {
         required: true,
         minlength: 3,
+      },
+      tipo_edit: {
+        required: true,
       },
     },
     messages: {
       nombre_edit: {
         required: "* Dato requerido",
         minlength: "* Se permite mínimo 3 caracteres",
+      },
+      tipo_edit: {
+        required: "* Dato requerido",
       },
     },
     errorElement: "span",
