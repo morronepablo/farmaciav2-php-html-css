@@ -56,15 +56,13 @@ if ($_POST['funcion'] == 'obtener_subtipos') {
 		$formateado	= str_replace(' ', '+', $id_tipo);
 		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
 		if (is_numeric($id_subtipo) && is_numeric($id_tipo)) {
-			$mensaje = 'success';
-			//$tipo->encontrar_tipo($nombre);
-
-			/*if (empty($tipo->objetos)) {
-				//$tipo->editar($id_tipo, $nombre);
+			$subtipo->encontrar_subtipo_editar($nombre, $id_subtipo);
+			if (empty($subtipo->objetos)) {
+				$subtipo->editar($id_subtipo, $nombre, $id_tipo);
 				$mensaje = 'success';
 			} else {
-				$mensaje = 'error_tip';
-			}*/
+				$mensaje = 'error_subtip';
+			}
 		} else {
 			$mensaje = 'error_decrypt';
 		}

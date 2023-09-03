@@ -38,6 +38,21 @@ class SubTipo
 		return $this->objetos;
 	}
 
+	function encontrar_subtipo_editar($nombre, $id_subtipo)
+	{
+		$sql = "SELECT *
+			  FROM subtipo_producto
+			  WHERE nombre=:nombre AND id!=:id";
+		$variables = array(
+			':nombre'	=> $nombre,
+			':id' 		=> $id_subtipo
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
+
 	function crear($nombre, $id_tipo)
 	{
 		$sql = "INSERT INTO subtipo_producto(nombre, id_tipo_producto)
@@ -50,12 +65,13 @@ class SubTipo
 		$query->execute($variables);
 	}
 
-	function editar($id_tipo, $nombre)
+	function editar($id_subtipo, $nombre, $id_tipo)
 	{
-		$sql = "UPDATE tipo_producto SET nombre=:nombre WHERE id=:id_tipo";
+		$sql = "UPDATE subtipo_producto SET nombre=:nombre, id_tipo_producto=:id_tipo WHERE id=:id_subtipo";
 		$variables = array(
-			':nombre'	=> $nombre,
-			':id_tipo'	=> $id_tipo,
+			':nombre'		=> $nombre,
+			':id_tipo'		=> $id_tipo,
+			':id_subtipo'	=> $id_subtipo
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
