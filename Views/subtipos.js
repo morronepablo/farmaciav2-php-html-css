@@ -699,7 +699,7 @@ $(document).ready(function () {
   async function eliminar(id) {
     let funcion = "eliminar";
     let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+    let data = await fetch("/farmaciav2/Controllers/SubTipoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion + "&&id=" + id,
@@ -727,7 +727,7 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  $(document).on("click", ".eliminar_tipo", (e) => {
+  $(document).on("click", ".eliminar_subtipo", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
     let avatar = "presentacion.jpg";
@@ -742,7 +742,7 @@ $(document).ready(function () {
 
     swalWithBootstrapButtons
       .fire({
-        title: `Desea eliminar el tipo ${nombre} ?`,
+        title: `Desea eliminar el subtipo ${nombre} ?`,
         imageUrl: "/farmaciav2/Util/img/" + avatar,
         imageWidth: 200,
         imageHeight: 200,
@@ -755,10 +755,10 @@ $(document).ready(function () {
         if (result.isConfirmed) {
           eliminar(id).then((respuesta) => {
             if (respuesta.mensaje == "success") {
-              obtener_tipos();
+              obtener_subtipos();
               swalWithBootstrapButtons.fire(
                 "Eliminado!",
-                "El tipo fue eliminado correctamente",
+                "El subtipo fue eliminado correctamente",
                 "success"
               );
             } else if (respuesta.mensaje == "error_decrypt") {
@@ -791,7 +791,7 @@ $(document).ready(function () {
         ) {
           swalWithBootstrapButtons.fire(
             "Cancelado",
-            "canceló la eliminación del tipo",
+            "canceló la eliminación del subtipo",
             "error"
           );
         }
@@ -801,7 +801,7 @@ $(document).ready(function () {
   async function activar(id) {
     let funcion = "activar";
     let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+    let data = await fetch("/farmaciav2/Controllers/SubTipoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion + "&&id=" + id,
@@ -829,7 +829,7 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  $(document).on("click", ".activar_tipo", (e) => {
+  $(document).on("click", ".activar_subtipo", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
     let avatar = "presentacion.jpg";
@@ -844,7 +844,7 @@ $(document).ready(function () {
 
     swalWithBootstrapButtons
       .fire({
-        title: `Desea volver activar el tipo ${nombre} ?`,
+        title: `Desea volver activar el subtipo ${nombre} ?`,
         imageUrl: "/farmaciav2/Util/img/" + avatar,
         imageWidth: 200,
         imageHeight: 200,
@@ -857,10 +857,10 @@ $(document).ready(function () {
         if (result.isConfirmed) {
           activar(id).then((respuesta) => {
             if (respuesta.mensaje == "success") {
-              obtener_tipos();
+              obtener_subtipos();
               swalWithBootstrapButtons.fire(
                 "Activado!",
-                "El tipo fue activado correctamente",
+                "El subtipo fue activado correctamente",
                 "success"
               );
             } else if (respuesta.mensaje == "error_decrypt") {
@@ -893,7 +893,7 @@ $(document).ready(function () {
         ) {
           swalWithBootstrapButtons.fire(
             "Cancelado",
-            "canceló la activación del tipo",
+            "canceló la activación del subtipo",
             "error"
           );
         }

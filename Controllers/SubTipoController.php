@@ -80,9 +80,9 @@ if ($_POST['funcion'] == 'obtener_subtipos') {
 		$id_usuario 	= $_SESSION['id'];
 		$id				= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
-		if (is_numeric($id_tipo)) {
-			$tipo->eliminar($id_tipo);
+		$id_subtipo		= openssl_decrypt($formateado, CODE, KEY);
+		if (is_numeric($id_subtipo)) {
+			$subtipo->eliminar($id_subtipo);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
@@ -101,9 +101,9 @@ if ($_POST['funcion'] == 'obtener_subtipos') {
 		$id_usuario 	= $_SESSION['id'];
 		$id				= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_tipo	= openssl_decrypt($formateado, CODE, KEY);
-		if (is_numeric($id_tipo)) {
-			$tipo->activar($id_tipo);
+		$id_subtipo		= openssl_decrypt($formateado, CODE, KEY);
+		if (is_numeric($id_subtipo)) {
+			$subtipo->activar($id_subtipo);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';

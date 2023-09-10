@@ -89,27 +89,27 @@ class SubTipo
 		return $this->objetos;
 	}
 
-	function eliminar($id_tipo)
+	function eliminar($id_subtipo)
 	{
-		$sql = "UPDATE tipo_producto 
+		$sql = "UPDATE subtipo_producto 
 				SET estado=:estado
-				WHERE id=:id_tipo";
+				WHERE id=:id_subtipo";
 		$variables = array(
-			':id_tipo'	=> $id_tipo,
-			':estado' 	=> 'I',
+			':id_subtipo'	=> $id_subtipo,
+			':estado' 		=> 'I',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
 
-	function activar($id_tipo)
+	function activar($id_subtipo)
 	{
-		$sql = "UPDATE tipo_producto 
+		$sql = "UPDATE subtipo_producto 
 				SET estado=:estado
-				WHERE id=:id_tipo";
+				WHERE id=:id_subtipo";
 		$variables = array(
-			':id_tipo'	=> $id_tipo,
-			':estado' 	=> 'A',
+			':id_subtipo'	=> $id_subtipo,
+			':estado' 		=> 'A',
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
