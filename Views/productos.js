@@ -1,5 +1,4 @@
 $(document).ready(function () {
-  bsCustomFileInput.init();
   Loader();
   //setTimeout(verificar_sesion, 2000);
 
@@ -172,7 +171,7 @@ $(document).ready(function () {
                 </li>
                 <li id="gestion_ventas" class="nav-header">Ventas</li>
                 <li id="gestion_listar_ventas" class="nav-item">
-                    <a href="adm_venta.php" class="nav-link">
+                    <a href="/farmaciav2/Views/adm_venta.php" class="nav-link">
                         <i class="nav-icon fas fa-notes-medical"></i>
                         <p>
                             Listar Ventas
@@ -197,7 +196,7 @@ $(document).ready(function () {
                     </a>
                 </li>
                 <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/tipos.php" class="active nav-link">
+                    <a href="/farmaciav2/Views/tipos.php" class="nav-link">
                         <i class="nav-icon fas fa-vials"></i>
                         <p>
                             Tipos
@@ -213,7 +212,7 @@ $(document).ready(function () {
                     </a>
                 </li>
                 <li id="gestion_producto" class="nav-item">
-                    <a href="/farmaciav2/Views/productos.php" class="nav-link">
+                    <a href="/farmaciav2/Views/productos.php" class="active nav-link">
                         <i class="nav-icon fas fa-pills"></i>
                         <p>
                             Gestión producto
@@ -261,11 +260,13 @@ $(document).ready(function () {
     if (data.ok) {
       let response = await data.text();
       try {
-        let usuario = JSON.parse(response);
-        if (usuario.length != 0 && usuario.id_tipo != 3) {
-          llenar_menu_superior(usuario);
-          llenar_menu_lateral(usuario);
-          obtener_tipos();
+        let respuesta = JSON.parse(response);
+        if (respuesta.length != 0) {
+          llenar_menu_superior(respuesta);
+          llenar_menu_lateral(respuesta);
+          $("#carrito").show();
+          Contar_productos();
+          obtener_productos();
           CloseLoader();
         } else {
           location.href = "/farmaciav2/";
@@ -288,9 +289,9 @@ $(document).ready(function () {
     }
   }
 
-  async function obtener_tipos() {
-    let funcion = "obtener_tipos";
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
+  async function obtener_productos() {
+    let funcion = "obtener_productos";
+    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion,
@@ -298,81 +299,83 @@ $(document).ready(function () {
     if (data.ok) {
       let response = await data.text();
       try {
-        let tipos = JSON.parse(response);
-        console.log(tipos);
-
-        $("#tipos").DataTable({
-          data: tipos,
+        let productos = JSON.parse(response);
+        $("#productos").DataTable({
+          data: productos,
           aaSorting: [],
           searching: true,
-          scrollX: false,
+          scrollX: true,
           autoWidth: false,
           columns: [
             {
               render: function (data, type, datos, meta) {
-                let template = "";
-                template += `
-                                <div class="card card-widget widget-user-2">
-                                    <div class="widget-user-header bg-success d-flex" >
-                                        <div class="widget-user-image" style="width: 80px; height: 80px; object-fit: cover;">
-                                            <img class="img-circle elevation-2" src="/farmaciav2/Util/img/presentacion.jpg" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                let stock = "";
+                if (datos.stock == null || datos.stock == "") {
+                  stock = "Sin Stock";
+                } else {
+                  stock = datos.stock;
+                }
+                let reg_sanitario = "";
+                if (
+                  datos.registro_sanitario == null ||
+                  datos.registro_sanitario == ""
+                ) {
+                  reg_sanitario = "Sin Registro Sanitario";
+                } else {
+                  reg_sanitario = datos.registro_sanitario;
+                }
+                return `
+                                <div class="">
+                                    <div class="card bg-light">
+                                        <div class="h5 card-header text-muted border-bottom-0">
+                                            <i class="fas fa-lg fa-cubes mr-1"></i>${stock}
                                         </div>
-                                        <div>
-                                            <h3 class="widget-user-username" style="margin: 0 20px;">${datos.nombre}</h3>`;
-                if (datos.estado == "A") {
-                  template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-warning">Activo</span></h5>`;
-                } else {
-                  template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-secondary">Inactivo</span></h5>`;
-                }
-
-                template += `</div>
-                                    </div>
-                                    <div class="card-footer p-0">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a href="#" class="nav-link">`;
-                if (datos.estado == "A") {
-                  template += `
-                                                        <span style="margin-right: 5px;">
-                                                            <button 
-                                                                class="btn btn-outline-primary btn-circle btn-lg editar_tipo" 
-                                                                data-toggle="modal" 
-                                                                data-target="#editar_tipo" 
-                                                                id="${datos.id}"
-                                                                nombre="${datos.nombre}"
-                                                            >
-                                                                <i class="fas fa-pencil-alt"></i>
-                                                            </button>
-                                                        </span>
-                                                        
-                                                        <span style="margin-right: 5px;">
-                                                            <button 
-                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar_tipo"
-                                                                id="${datos.id}"
-                                                                nombre="${datos.nombre}"
-                                                            >
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </span>
-                                                        `;
-                } else {
-                  template += `<span>
-                                                                        <button 
-                                                                            class="btn btn-outline-success btn-circle btn-lg activar_tipo"
-                                                                            id="${datos.id}"
-                                                                            nombre="${datos.nombre}"
-                                                                        >
-                                                                            <i class="fas fa-plus"></i>
-                                                                        </button>
-                                                                    </span>`;
-                }
-                template += `</a>
-                                            </li>
-                                        </ul>
+                                        <div class="card-body pt-0">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <h4 class=""><b>${datos.nombre}</b></h4>
+                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Código: ${datos.codigo}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-coins"></i></span> Precio: ${datos.precio}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Fracciones: ${datos.fracciones}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Reg. Sanitario: ${reg_sanitario}</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-4 text-center">
+                                                    <img src="/farmaciav2/Util/img/productos/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="text-right">
+                                                <button id="${datos.id}" 
+                                                        codigo="${datos.codigo}"
+                                                        nombre="${datos.nombre}"
+                                                        concentracion="${datos.concentracion}"
+                                                        adicional="${datos.adicional}"
+                                                        laboratorio="${datos.laboratorio}"
+                                                        presentacion="${datos.presentacion}"
+                                                        tipo="${datos.tipo}"
+                                                        stock="${datos.stock}"
+                                                        precio="${datos.precio}"
+                                                        class="agregar-carrito btn btn-sm bg-gradient-primary"
+                                                >
+                                                    <i class="fas fa-plus mr-1"></i>Agregar al carrito
+                                                </button>   
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 `;
-                return template;
               },
             },
           ],
@@ -397,408 +400,194 @@ $(document).ready(function () {
     }
   }
 
-  async function crear_tipo(datos) {
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      body: datos,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        let respuesta = JSON.parse(response);
-        if (respuesta.mensaje == "success") {
-          toastr.success("Se ha creado el tipo correctamente", "Éxito!", {
-            timeOut: 2000,
-          });
-          obtener_tipos();
-          $("#crear_tipo").modal("hide");
-          $("#form-crear_tipo").trigger("reset");
-        } else if (respuesta.mensaje == "error_tip") {
-          Swal.fire({
-            icon: "error",
-            title: "El tipo ya existe...",
-            text: "El tipo ya existe, póngase en contacto con el administrador del sistema.",
-          });
-          $("#form-crear_tipo").trigger("reset");
-        } else if (respuesta.mensaje == "error_session") {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Sesión finalizada...",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(function () {
-            //refresca la pagina (F5)
-            location.href = "/farmaciav2/index.php";
-          });
+  $(document).on("click", ".agregar-carrito", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+    let nombre = $(elemento).attr("nombre");
+    let concentracion = $(elemento).attr("concentracion");
+    let adicional = $(elemento).attr("adicional");
+    let laboratorio = $(elemento).attr("laboratorio");
+    let presentacion = $(elemento).attr("presentacion");
+    let tipo = $(elemento).attr("tipo");
+    let stock = $(elemento).attr("stock");
+    let precio = $(elemento).attr("precio");
+    if (stock != "null") {
+      let producto = {
+        id: id,
+        nombre: nombre,
+        concentracion: concentracion,
+        adicional: adicional,
+        precio: precio,
+        laboratorio: laboratorio,
+        tipo: tipo,
+        presentacion: presentacion,
+        stock: stock,
+        cantidad: 1,
+      };
+      let bandera = false;
+      let productos = RecuperarLS();
+      productos.forEach((prod) => {
+        if (prod.id === producto.id) {
+          bandera = true;
         }
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo conflicto en el sistema, póngase en contacto con el administrador",
-        });
+      });
+      if (bandera) {
+        toastr.error(
+          "El producto " + nombre + " # " + codigo + " ya fué agregado",
+          "Error!",
+          { timeOut: 2000 }
+        );
+      } else {
+        AgregarLS(producto);
+        Contar_productos();
+        toastr.success(
+          "Producto " + nombre + " # " + codigo + " agregado",
+          "Exito!",
+          { timeOut: 2000 }
+        );
       }
     } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo conflicto de código: " + data.status,
+      toastr.warning(
+        "El producto " + nombre + " # " + codigo + " no tiene stock",
+        "No se pudo agregar!",
+        { timeOut: 2000 }
+      );
+    }
+  });
+
+  function abrir_carrito() {
+    let productos = RecuperarLS();
+    if (productos.length != 0) {
+      $("#abrir_carrito").modal("show");
+      $("#carrito_compras").DataTable({
+        data: productos,
+        aaSorting: [],
+        searching: true,
+        scrollX: false,
+        autoWidth: false,
+        paging: false,
+        bInfo: false,
+        columns: [
+          {
+            render: function (data, type, datos, meta) {
+              let template = `
+                            <div class="card bg-secondary">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <ul class="ml-4 mb-0 fa-ul">
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-heading"></i></span> Nombre: ${datos.nombre}</li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-5 mt-1">
+                                            <ul class="ml-4 mb-0 fa-ul">
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
+                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-2 mt-1 text-center">
+                                            <button 
+                                                id="${datos.id}" 
+                                                nombre="${datos.nombre}"
+                                                type="button" 
+                                                class="borrar_producto btn btn-outline-danger btn-circle btn-lg mt-3"
+                                            >
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+              return template;
+            },
+          },
+        ],
+        language: espanol,
+        destroy: true,
       });
+    } else {
+      toastr.warning("El carrito está vacio", "No se pudo abrir!", {
+        timeOut: 2000,
+      });
+      $("#abrir_carrito").modal("hide");
     }
   }
 
-  $.validator.setDefaults({
-    submitHandler: function () {
-      let datos = new FormData($("#form-crear_tipo")[0]);
-      let funcion = "crear_tipo";
-      datos.append("funcion", funcion);
-      crear_tipo(datos);
-    },
+  $(document).on("click", "#carrito", (e) => {
+    abrir_carrito();
   });
 
-  $("#form-crear_tipo").validate({
-    rules: {
-      nombre: {
-        required: true,
-        minlength: 3,
-      },
-    },
-    messages: {
-      nombre: {
-        required: "* Dato requerido",
-        minlength: "* Se permite mínimo 3 caracteres",
-      },
-    },
-    errorElement: "span",
-    errorPlacement: function (error, element) {
-      error.addClass("invalid-feedback");
-      element.closest(".form-group").append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass("is-invalid");
-      $(element).removeClass("is-valid");
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass("is-invalid");
-      $(element).addClass("is-valid");
-    },
+  $(document).on("click", ".vaciar_carrito", (e) => {
+    EliminarLS();
+    toastr.success("El carrito fué vaciado", "Éxito!", { timeOut: 2000 });
+    Contar_productos();
+    $("#abrir_carrito").modal("hide");
   });
 
-  $(document).on("click", ".editar_tipo", (e) => {
+  $(document).on("click", ".borrar_producto", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
     let nombre = $(elemento).attr("nombre");
-    $("#id_tipo").val(id);
-    $("#nombre_edit").val(nombre);
-    $("#nombre_card").text(nombre);
-    $("#avatar_card").attr("src", "/farmaciav2/Util/img/presentacion.jpg");
+    toastr.success(
+      "El producto " + nombre + " fué eliminado del carrito!",
+      "Éxito!",
+      { timeOut: 2000 }
+    );
+    Eliminar_producto_LS(id);
+    Contar_productos();
+    abrir_carrito();
   });
 
-  async function editar_tipo(datos) {
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      body: datos,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        let respuesta = JSON.parse(response);
-        if (respuesta.mensaje == "success") {
-          toastr.success("Se ha editado el tipo correctamente", "Exito!", {
-            timeOut: 2000,
-          });
-          obtener_tipos();
-          $("#editar_tipo").modal("hide");
-          $("#form-editar_tipo").trigger("reset");
-        } else if (respuesta.mensaje == "error_tip") {
-          Swal.fire({
-            icon: "error",
-            title: "El tipo ya existe...",
-            text: "El tipo ya existe, póngase en contacto con el administrador del sistema.",
-          });
-        } else if (respuesta.mensaje == "error_decrypt") {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "No vulnere los datos",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(function () {
-            location.reload();
-          });
-        } else if (respuesta.mensaje == "error_session") {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Sesión finalizada...",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(function () {
-            //refresca la pagina (F5)
-            location.href = "/farmaciav2/index.php";
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
+  function RecuperarLS() {
+    let productos;
+    if (localStorage.getItem("productos") === null) {
+      productos = [];
     } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
+      productos = JSON.parse(localStorage.getItem("productos"));
+    }
+    return productos;
+  }
+
+  function AgregarLS(producto) {
+    let productos;
+    productos = RecuperarLS();
+    productos.push(producto);
+    localStorage.setItem("productos", JSON.stringify(productos));
+  }
+
+  function Contar_productos() {
+    let productos;
+    let contador = 0;
+    productos = RecuperarLS();
+    productos.forEach((producto) => {
+      contador++;
+    });
+    if (contador == 0) {
+      $("#contador").html("");
+    } else {
+      $("#contador").html(contador);
     }
   }
 
-  $.validator.setDefaults({
-    submitHandler: function () {
-      let datos = new FormData($("#form-editar_tipo")[0]);
-      let funcion = "editar_tipo";
-      datos.append("funcion", funcion);
-      editar_tipo(datos);
-    },
-  });
-
-  $("#form-editar_tipo").validate({
-    rules: {
-      nombre_edit: {
-        required: true,
-        minlength: 3,
-      },
-    },
-    messages: {
-      nombre_edit: {
-        required: "* Dato requerido",
-        minlength: "* Se permite mínimo 3 caracteres",
-      },
-    },
-    errorElement: "span",
-    errorPlacement: function (error, element) {
-      error.addClass("invalid-feedback");
-      element.closest(".form-group").append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass("is-invalid");
-      $(element).removeClass("is-valid");
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass("is-invalid");
-      $(element).addClass("is-valid");
-    },
-  });
-
-  async function eliminar(id) {
-    let funcion = "eliminar";
-    let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
+  function EliminarLS() {
+    localStorage.clear();
   }
 
-  $(document).on("click", ".eliminar_tipo", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let avatar = "presentacion.jpg";
-    let nombre = $(elemento).attr("nombre");
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success ml-2",
-        cancelButton: "btn btn-danger",
-      },
-      buttonsStyling: false,
-    });
-
-    swalWithBootstrapButtons
-      .fire({
-        title: `Desea eliminar el tipo ${nombre} ?`,
-        imageUrl: "/farmaciav2/Util/img/" + avatar,
-        imageWidth: 200,
-        imageHeight: 200,
-        showCancelButton: true,
-        confirmButtonText: "Si, eliminar !",
-        cancelButtonText: "No, cancelar !",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          eliminar(id).then((respuesta) => {
-            if (respuesta.mensaje == "success") {
-              obtener_tipos();
-              swalWithBootstrapButtons.fire(
-                "Eliminado!",
-                "El tipo fue eliminado correctamente",
-                "success"
-              );
-            } else if (respuesta.mensaje == "error_decrypt") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "No vulnere los datos...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.reload();
-              });
-            } else if (respuesta.mensaje == "error_session") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Sesión finalizada...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.href = "/farmaciav2/index.php";
-              });
-            }
-          });
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-            "Cancelado",
-            "canceló la eliminación del tipo",
-            "error"
-          );
-        }
-      });
-  });
-
-  async function activar(id) {
-    let funcion = "activar";
-    let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
+  function Eliminar_producto_LS(id) {
+    let productos;
+    productos = RecuperarLS();
+    productos.forEach(function (producto, indice) {
+      if (producto.id === id) {
+        productos.splice(indice, 1);
       }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
-  }
-
-  $(document).on("click", ".activar_tipo", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let avatar = "presentacion.jpg";
-    let nombre = $(elemento).attr("nombre");
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success ml-2",
-        cancelButton: "btn btn-danger",
-      },
-      buttonsStyling: false,
     });
-
-    swalWithBootstrapButtons
-      .fire({
-        title: `Desea volver activar el tipo ${nombre} ?`,
-        imageUrl: "/farmaciav2/Util/img/" + avatar,
-        imageWidth: 200,
-        imageHeight: 200,
-        showCancelButton: true,
-        confirmButtonText: "Si, activar !",
-        cancelButtonText: "No, cancelar !",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          activar(id).then((respuesta) => {
-            if (respuesta.mensaje == "success") {
-              obtener_tipos();
-              swalWithBootstrapButtons.fire(
-                "Activado!",
-                "El tipo fue activado correctamente",
-                "success"
-              );
-            } else if (respuesta.mensaje == "error_decrypt") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "No vulnere los datos...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.reload();
-              });
-            } else if (respuesta.mensaje == "error_session") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Sesión finalizada...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.href = "/farmaciav2/index.php";
-              });
-            }
-          });
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-            "Cancelado",
-            "canceló la activación del tipo",
-            "error"
-          );
-        }
-      });
-  });
+    localStorage.setItem("productos", JSON.stringify(productos));
+  }
 
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {

@@ -260,13 +260,13 @@ $(document).ready(function () {
                 </a>
             </li>
             <li id="gestion_producto" class="nav-item">
-                <a href="adm_producto.php" class="nav-link">
-                    <i class="nav-icon fas fa-pills"></i>
-                    <p>
-                        Gestión producto
-                    </p>
-                </a>
-            </li>
+                    <a href="/farmaciav2/Views/productos.php" class="nav-link">
+                        <i class="nav-icon fas fa-pills"></i>
+                        <p>
+                            Gestión producto
+                        </p>
+                    </a>
+                </li>
             <li id="gestion_lote" class="nav-item">
                 <a href="adm_lote.php" class="nav-link">
                     <i class="nav-icon fas fa-cubes"></i>
