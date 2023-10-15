@@ -40,6 +40,40 @@ class Producto
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+	function obtener_gestion_productos()
+	{
+		$sql = "SELECT 
+			  p.id as id,
+			  p.codigo,
+			  p.nombre as nombre,
+			  p.concentracion,
+			  p.fracciones,
+			  p.registro_sanitario,
+			  p.precio,
+			  p.avatar as avatar,
+			  p.estado as estado,
+			  p.fecha_creacion as fecha_creacion,
+			  p.fecha_edicion as fecha_edicion,
+			  l.nombre as laboratorio,
+			  l.id as id_laboratorio,
+			  t.nombre as subtipo,
+			  t.id as id_subtipo,
+			  pre.nombre as presentacion,
+			  pre.id as id_presentacion
+			  FROM producto p
+			  JOIN laboratorio l ON p.id_laboratorio=l.id
+			  JOIN subtipo_producto t ON p.id_subtipo_producto=t.id
+			  JOIN presentacion pre ON p.id_presentacion=pre.id
+			  WHERE p.estado='A' ORDER BY p.nombre
+		";
+		/*$variables = array(
+			':dni' => $dni
+		);*/
+		$query = $this->acceso->prepare($sql);
+		$query->execute();
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 	function obtener_stock($id)
 	{
 		$sql = "SELECT SUM(cantidad_lote) as total FROM lote where id_producto=:id and estado = 'A'";

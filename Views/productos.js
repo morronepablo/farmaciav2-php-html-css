@@ -1,7 +1,5 @@
 $(document).ready(function () {
   Loader();
-  //setTimeout(verificar_sesion, 2000);
-
   verificar_sesion();
 
   toastr.options = {
@@ -264,8 +262,6 @@ $(document).ready(function () {
         if (respuesta.length != 0) {
           llenar_menu_superior(respuesta);
           llenar_menu_lateral(respuesta);
-          $("#carrito").show();
-          Contar_productos();
           obtener_productos();
           CloseLoader();
         } else {
@@ -290,7 +286,7 @@ $(document).ready(function () {
   }
 
   async function obtener_productos() {
-    let funcion = "obtener_productos";
+    let funcion = "obtener_gestion_productos";
     let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -398,195 +394,6 @@ $(document).ready(function () {
         text: "Hubo confilcto de código: " + data.status,
       });
     }
-  }
-
-  $(document).on("click", ".agregar-carrito", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let codigo = $(elemento).attr("codigo");
-    let nombre = $(elemento).attr("nombre");
-    let concentracion = $(elemento).attr("concentracion");
-    let adicional = $(elemento).attr("adicional");
-    let laboratorio = $(elemento).attr("laboratorio");
-    let presentacion = $(elemento).attr("presentacion");
-    let tipo = $(elemento).attr("tipo");
-    let stock = $(elemento).attr("stock");
-    let precio = $(elemento).attr("precio");
-    if (stock != "null") {
-      let producto = {
-        id: id,
-        nombre: nombre,
-        concentracion: concentracion,
-        adicional: adicional,
-        precio: precio,
-        laboratorio: laboratorio,
-        tipo: tipo,
-        presentacion: presentacion,
-        stock: stock,
-        cantidad: 1,
-      };
-      let bandera = false;
-      let productos = RecuperarLS();
-      productos.forEach((prod) => {
-        if (prod.id === producto.id) {
-          bandera = true;
-        }
-      });
-      if (bandera) {
-        toastr.error(
-          "El producto " + nombre + " # " + codigo + " ya fué agregado",
-          "Error!",
-          { timeOut: 2000 }
-        );
-      } else {
-        AgregarLS(producto);
-        Contar_productos();
-        toastr.success(
-          "Producto " + nombre + " # " + codigo + " agregado",
-          "Exito!",
-          { timeOut: 2000 }
-        );
-      }
-    } else {
-      toastr.warning(
-        "El producto " + nombre + " # " + codigo + " no tiene stock",
-        "No se pudo agregar!",
-        { timeOut: 2000 }
-      );
-    }
-  });
-
-  function abrir_carrito() {
-    let productos = RecuperarLS();
-    if (productos.length != 0) {
-      $("#abrir_carrito").modal("show");
-      $("#carrito_compras").DataTable({
-        data: productos,
-        aaSorting: [],
-        searching: true,
-        scrollX: false,
-        autoWidth: false,
-        paging: false,
-        bInfo: false,
-        columns: [
-          {
-            render: function (data, type, datos, meta) {
-              let template = `
-                            <div class="card bg-secondary">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <ul class="ml-4 mb-0 fa-ul">
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-heading"></i></span> Nombre: ${datos.nombre}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-5 mt-1">
-                                            <ul class="ml-4 mb-0 fa-ul">
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-2 mt-1 text-center">
-                                            <button 
-                                                id="${datos.id}" 
-                                                nombre="${datos.nombre}"
-                                                type="button" 
-                                                class="borrar_producto btn btn-outline-danger btn-circle btn-lg mt-3"
-                                            >
-                                                <i class="far fa-trash-alt"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-              return template;
-            },
-          },
-        ],
-        language: espanol,
-        destroy: true,
-      });
-    } else {
-      toastr.warning("El carrito está vacio", "No se pudo abrir!", {
-        timeOut: 2000,
-      });
-      $("#abrir_carrito").modal("hide");
-    }
-  }
-
-  $(document).on("click", "#carrito", (e) => {
-    abrir_carrito();
-  });
-
-  $(document).on("click", ".vaciar_carrito", (e) => {
-    EliminarLS();
-    toastr.success("El carrito fué vaciado", "Éxito!", { timeOut: 2000 });
-    Contar_productos();
-    $("#abrir_carrito").modal("hide");
-  });
-
-  $(document).on("click", ".borrar_producto", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let nombre = $(elemento).attr("nombre");
-    toastr.success(
-      "El producto " + nombre + " fué eliminado del carrito!",
-      "Éxito!",
-      { timeOut: 2000 }
-    );
-    Eliminar_producto_LS(id);
-    Contar_productos();
-    abrir_carrito();
-  });
-
-  function RecuperarLS() {
-    let productos;
-    if (localStorage.getItem("productos") === null) {
-      productos = [];
-    } else {
-      productos = JSON.parse(localStorage.getItem("productos"));
-    }
-    return productos;
-  }
-
-  function AgregarLS(producto) {
-    let productos;
-    productos = RecuperarLS();
-    productos.push(producto);
-    localStorage.setItem("productos", JSON.stringify(productos));
-  }
-
-  function Contar_productos() {
-    let productos;
-    let contador = 0;
-    productos = RecuperarLS();
-    productos.forEach((producto) => {
-      contador++;
-    });
-    if (contador == 0) {
-      $("#contador").html("");
-    } else {
-      $("#contador").html(contador);
-    }
-  }
-
-  function EliminarLS() {
-    localStorage.clear();
-  }
-
-  function Eliminar_producto_LS(id) {
-    let productos;
-    productos = RecuperarLS();
-    productos.forEach(function (producto, indice) {
-      if (producto.id === id) {
-        productos.splice(indice, 1);
-      }
-    });
-    localStorage.setItem("productos", JSON.stringify(productos));
   }
 
   function Loader(mensaje) {
