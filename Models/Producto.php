@@ -64,7 +64,7 @@ class Producto
 			  JOIN laboratorio l ON p.id_laboratorio=l.id
 			  JOIN subtipo_producto t ON p.id_subtipo_producto=t.id
 			  JOIN presentacion pre ON p.id_presentacion=pre.id
-			  WHERE p.estado='A' ORDER BY p.nombre
+			  ORDER BY p.nombre
 		";
 		/*$variables = array(
 			':dni' => $dni

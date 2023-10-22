@@ -38,9 +38,8 @@ if ($_POST['funcion'] == 'obtener_productos') {
 }
 if ($_POST['funcion'] == 'obtener_gestion_productos') {
 	$producto->obtener_gestion_productos();
-	var_dump($producto->objetos);
 	$json = array();
-	/*foreach ($producto->objetos as $objeto) {
+	foreach ($producto->objetos as $objeto) {
 		$producto->obtener_stock($objeto->id);
 		$stock = $producto->objetos[0]->total;
 		$json[] = array(
@@ -50,8 +49,12 @@ if ($_POST['funcion'] == 'obtener_gestion_productos') {
 			'precio'			 => $objeto->precio,
 			'stock'				 => $stock,
 			'laboratorio'		 => $objeto->laboratorio,
+			'id_laboratorio'	 => openssl_encrypt($objeto->id_laboratorio, CODE, KEY),
 			'subtipo'			 => $objeto->subtipo,
+			'id_subtipo'	 	 => openssl_encrypt($objeto->id_subtipo, CODE, KEY),
 			'presentacion'		 => $objeto->presentacion,
+			'id_presentacion'	 => openssl_encrypt($objeto->id_presentacion, CODE, KEY),
+			'estado'			 => $objeto->estado,
 			'avatar'			 => $objeto->avatar,
 			'fracciones'		 => $objeto->fracciones,
 			'codigo'			 => $objeto->codigo,
@@ -59,7 +62,7 @@ if ($_POST['funcion'] == 'obtener_gestion_productos') {
 			'fecha_creacion'	 => $objeto->fecha_creacion,
 			'fecha_edicion'		 => $objeto->fecha_edicion
 		);
-	}*/
+	}
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
 }
