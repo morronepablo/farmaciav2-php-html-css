@@ -312,7 +312,7 @@ $(document).ready(function () {
                     "<span class='badge badge-pill badge-success'>Activo</span>";
                 } else {
                   estado_span =
-                    "<span class='badge badge-pill badge-secondary'>Activo</span>";
+                    "<span class='badge badge-pill badge-secondary'>Inactivo</span>";
                 }
                 let stock = "";
                 if (datos.stock == null || datos.stock == "") {
@@ -361,8 +361,51 @@ $(document).ready(function () {
                                         </div>
                                         <div class="card-footer">
                                             <div class="text-right">`;
+                if (datos.estado == "A") {
+                  template += `<button 
+                                                              class="btn btn-outline-secondary btn-circle btn-lg editar_avatar"
+                                                              id="${datos.id}"
+                                                            >
+                                                                <i class="fas fa-camera"></i>
+                                                            </button>
+                                                            <button 
+                                                              class="btn btn-outline-info btn-circle btn-lg editar_producto"
+                                                              id="${datos.id}"
+                                                              nombre="${datos.nombre}"
+                                                              codigo="${datos.codigo}"
+                                                              avatar="${datos.avatar}"
+                                                              concentracion="${datos.concentracion}"
+                                                              fracciones="${datos.fracciones}"
+                                                              laboratorio="${datos.id_laboratorio}"
+                                                              precio="${datos.precio}"
+                                                              registro_sanitario="${datos.registro_sanitario}"
+                                                              presentacion="${datos.id_presentacion}"
+                                                              subtipo="${datos.id_subtipo}"
+                                                            >
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button 
+                                                              class="btn btn-outline-danger btn-circle btn-lg eliminar_producto"
+                                                              id="${datos.id}"
+                                                              nombre="${datos.nombre}"
+                                                              codigo="${datos.codigo}"
+                                                              avatar="${datos.avatar}"
+                                                            >
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>`;
+                } else {
+                  template += `<button 
+                                                              class="btn btn-outline-success btn-circle btn-lg activar_subtipo"
+                                                              id="${datos.id}"
+                                                              nombre="${datos.nombre}"
+                                                              codigo="${datos.codigo}"
+                                                              avatar="${datos.avatar}"
+                                                            >
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>`;
+                }
 
-                template = +`</div>
+                template += `</div>
                                         </div>
                                     </div>
                                 </div>

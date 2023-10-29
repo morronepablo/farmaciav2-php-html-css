@@ -8,7 +8,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Productos</h1>
+                    <h1>Productos <button data-toggle='modal' data-target='#crear_producto' class="btn btn-primary">Crear producto</button></h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
