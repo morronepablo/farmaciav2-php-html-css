@@ -6,6 +6,42 @@ $(document).ready(function () {
     preventDuplicates: true,
   };
 
+  $("#subtipo").select2({
+    placeholder: "Seleccione un subtipo",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  $("#presentacion").select2({
+    placeholder: "Seleccione una presentación",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  $("#laboratorio").select2({
+    placeholder: "Seleccione un laboratorio",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
   function llenar_menu_superior(usuario) {
     let template = `
         <ul class="navbar-nav">
