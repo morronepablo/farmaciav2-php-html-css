@@ -18,6 +18,48 @@ $(document).ready(function () {
     },
   });
 
+  obtener_subtipos().then((respuesta) => {
+    let template = "";
+    respuesta.forEach((subtipo) => {
+      template += `
+        <option value="${subtipo.id}">${subtipo.nombre} [${subtipo.tipo}]</option>
+      `;
+    });
+    $("#subtipo").html(template);
+    $("#subtipo").val("").trigger("change");
+  });
+
+  async function obtener_subtipos() {
+    let funcion = "obtener_subtipos";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/SubTipoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
   $("#presentacion").select2({
     placeholder: "Seleccione una presentación",
     language: {
