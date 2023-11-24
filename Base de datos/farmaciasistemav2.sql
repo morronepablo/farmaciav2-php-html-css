@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-05-2023 a las 21:06:33
+-- Tiempo de generación: 24-11-2023 a las 17:50:18
 -- Versión del servidor: 10.1.26-MariaDB
 -- Versión de PHP: 7.1.9
 
@@ -42,17 +42,6 @@ CREATE TABLE `cliente` (
   `estado` varchar(10) COLLATE utf8_spanish_ci NOT NULL DEFAULT 'A'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
---
--- Volcado de datos para la tabla `cliente`
---
-
-INSERT INTO `cliente` (`id`, `nombre`, `apellido`, `dni`, `edad`, `telefono`, `correo`, `sexo`, `adicional`, `avatar`, `estado`) VALUES
-(1, 'Diego Martin', 'Trinidad', 24556789, '1975-01-25', 1144785268, 'diegotrinidad@gmail.com', 'Masculino', 'usuario nuevo', 'avatar.png', 'A'),
-(2, 'Pedro', 'Galindez', 24876445, '0000-00-00', 1144189399, 'galindezpedro@gmail.com', 'Masculino', 'ya algo', 'avatar.png', 'A'),
-(3, 'Walter Fernando', 'Trinidad', 22187456, '0000-00-00', 1134881243, 'trinidadwalter@gmail.com', 'Masculino', 'nuevo usuario', 'avatar.png', 'A'),
-(4, 'Natalia Elvira', 'Oduber Andara', 94654750, '0000-00-00', 1138661609, 'nataliaoduber@gmail.com', 'Femenino', 'usuario nuevo', 'avatar.png', 'A'),
-(5, 'Maximiliano', 'Hoeffler', 25889997, '1975-06-04', 1144189384, 'maxi@gmail.com', 'Masculino', '', 'avatar.png', 'A');
-
 -- --------------------------------------------------------
 
 --
@@ -68,22 +57,6 @@ CREATE TABLE `compra` (
   `id_estado_pago` int(11) NOT NULL,
   `id_proveedor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
---
--- Volcado de datos para la tabla `compra`
---
-
-INSERT INTO `compra` (`id`, `codigo`, `fecha_compra`, `fecha_entrega`, `total`, `id_estado_pago`, `id_proveedor`) VALUES
-(1, '10001', '2021-03-26', '2021-03-27', 3000, 1, 1),
-(2, '10005', '2021-04-02', '2021-04-03', 10000, 1, 3),
-(3, '10005', '2021-04-05', '2021-04-06', 34842, 1, 2),
-(4, '10006', '2021-04-05', '2021-04-06', 9450, 1, 7),
-(5, '10006', '2021-04-06', '2021-04-07', 8442, 1, 1),
-(6, '10007', '2021-04-06', '2021-04-07', 8442, 1, 3),
-(7, '10007', '2021-04-18', '2021-04-19', 5000, 1, 3),
-(8, '10008', '2021-04-28', '2021-04-28', 3000, 1, 7),
-(9, '10009', '2021-04-28', '2021-04-29', 1000, 1, 1),
-(10, '1009', '2021-06-27', '2021-06-28', 30000, 1, 7);
 
 -- --------------------------------------------------------
 
@@ -128,7 +101,7 @@ INSERT INTO `estado_pago` (`id`, `nombre`) VALUES
 
 CREATE TABLE `laboratorio` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(45) NOT NULL,
+  `nombre` varchar(250) NOT NULL,
   `avatar` varchar(255) DEFAULT 'lab_default.png',
   `estado` varchar(10) NOT NULL DEFAULT 'A',
   `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -140,38 +113,19 @@ CREATE TABLE `laboratorio` (
 --
 
 INSERT INTO `laboratorio` (`id`, `nombre`, `avatar`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
-(1, 'Portugal', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(2, 'Novartis', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(3, 'Bayer S.A.', '5f80db167b6e2-Bayer.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(4, 'Roemmers', '5f80df56336b1-laboratorio-roemmers.jpg', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(5, 'Abbott', '5f80e19b6801a-Abbott.png', 'A', '2022-06-11 18:29:06', '2023-01-29 16:47:17'),
-(6, 'Biotenk', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(7, 'DroFAr', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(8, 'Eli Lilly Interamérica Inc. ', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(9, 'Elisium S.A.', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(10, 'Omega', '5f80e1e8e3938-Omega.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(11, 'Eurolab', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(12, 'Gador S.A.', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(13, 'GlaxoSmithKline', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(14, 'Laboratorios Andrómaco S.A.I.C.I.', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(15, 'Laboratorios Bagó S.A.', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(16, 'Laboratorios Bernabó S.A.', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(17, 'Laboratorios CRAVERI', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(18, 'Laboratorio Elea', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(19, 'Laboratorios Felipe Bajer', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(20, 'Laboratorios Lafedar', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(21, 'Laboratorio Nutrilab', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(22, 'Laboratorios Oriental Farmacéutica', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(23, 'LABORATORIO VARIFARMA S.A.', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(24, 'Merck Química Argentina S.A.I.C.', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(25, 'Novartis Argentina S.A.', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(26, 'Pfizer', '60032e518c968-Pfizer.jpg', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(27, 'Productos Roche S.A.Q.e I.', '60032ef90c3b9-Roche.jpg', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(28, 'Rigecin', 'lab_default.png', 'A', '2022-06-11 18:29:06', '2022-12-10 16:37:39'),
-(29, 'Sanofi-aventis', '607c729e8d6b5-Sanofi.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(30, 'Isa', '607c705746bc8-ISA.png', 'A', '2022-06-11 18:29:06', '2022-06-11 18:29:06'),
-(31, 'Andrómaco Argentina', 'lab_default.png', 'A', '2022-12-26 21:04:24', '2022-12-26 21:04:24'),
-(32, 'Alcon Argentina', '63cd84af11ec8-Alcon-logo.png', 'A', '2023-01-14 11:33:28', '2023-01-29 16:47:22');
+(1, 'Laboratorio Prueba', 'lab_default.png', 'A', '2023-10-15 17:58:28', '2023-10-15 17:58:28'),
+(2, 'Portugal', 'lab_default.png', 'A', '2023-11-05 13:48:40', '2023-11-05 13:48:40'),
+(3, 'Novartis', 'lab_default.png', 'A', '2023-11-05 13:48:57', '2023-11-05 13:48:57'),
+(4, 'Bayer S.A.', '6547c7a9c42b1-5f80db167b6e2-Bayer.png', 'A', '2023-11-05 13:49:08', '2023-11-05 13:49:45'),
+(5, 'Roemmers', '6547c7c3aba03-5f80df56336b1-laboratorio-roemmers.jpg', 'A', '2023-11-05 13:50:01', '2023-11-05 13:50:11'),
+(6, 'Abbott', '6547c7e4d4a75-5f80e19b6801a-Abbott.png', 'A', '2023-11-05 13:50:30', '2023-11-05 13:50:44'),
+(7, 'Biotenk', 'lab_default.png', 'A', '2023-11-05 13:51:03', '2023-11-05 13:51:03'),
+(8, 'DroFAr', 'lab_default.png', 'A', '2023-11-05 13:51:16', '2023-11-05 13:51:16'),
+(9, 'Omega', '6547c835bee4b-5f80e1e8e3938-Omega.png', 'A', '2023-11-05 13:51:57', '2023-11-05 13:52:05'),
+(10, 'Pfizer', '6547c85c6e331-60032e518c968-Pfizer.jpg', 'A', '2023-11-05 13:52:34', '2023-11-05 13:52:44'),
+(11, 'Productos Roche S.A.Q.e I.', '6547c874c68f8-60032ef90c3b9-Roche.jpg', 'A', '2023-11-05 13:52:56', '2023-11-05 13:53:08'),
+(12, 'Sanofi-aventis', '6547c8947c5e5-607c729e8d6b5-Sanofi.png', 'A', '2023-11-05 13:53:24', '2023-11-05 13:53:40'),
+(13, 'Isa', '6547c8a9596fb-607c705746bc8-ISA.png', 'A', '2023-11-05 13:53:52', '2023-11-05 13:54:01');
 
 -- --------------------------------------------------------
 
@@ -2592,24 +2546,6 @@ CREATE TABLE `lote` (
   `id_producto` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
---
--- Volcado de datos para la tabla `lote`
---
-
-INSERT INTO `lote` (`id`, `codigo`, `cantidad`, `cantidad_lote`, `vencimiento`, `precio_compra`, `estado`, `id_compra`, `id_producto`) VALUES
-(1, '9999', 20, 0, '2021-04-28', 100, 'I', 1, 5),
-(2, '9998', 14, 0, '2021-04-13', 100, 'I', 1, 5),
-(3, '9997', 10, 0, '2021-03-27', 100, 'I', 1, 5),
-(4, '9995', 100, 0, '2021-10-02', 100, 'I', 2, 7),
-(5, '9997', 100, 72, '2021-10-05', 348.42, 'I', 3, 6),
-(6, '9996', 100, 76, '2021-10-05', 94.5, 'I', 4, 8),
-(7, '9994', 100, 74, '2021-11-06', 84.42, 'I', 5, 9),
-(8, '9993', 103, 77, '2022-04-30', 84.42, 'A', 6, 4),
-(9, '9990', 105, 95, '2022-04-18', 50, 'A', 7, 26),
-(10, '9990', 10, 0, '2021-04-28', 300, 'I', 8, 6),
-(11, '9989', 10, 0, '2021-04-29', 100, 'I', 9, 7),
-(12, '9100', 50, 48, '2022-06-27', 600, 'A', 10, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -2618,7 +2554,7 @@ INSERT INTO `lote` (`id`, `codigo`, `cantidad`, `cantidad_lote`, `vencimiento`, 
 
 CREATE TABLE `presentacion` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(45) NOT NULL,
+  `nombre` varchar(250) NOT NULL,
   `estado` varchar(10) NOT NULL DEFAULT 'A',
   `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -2629,19 +2565,19 @@ CREATE TABLE `presentacion` (
 --
 
 INSERT INTO `presentacion` (`id`, `nombre`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
-(1, 'Ampolla', 'A', '2022-06-11 18:31:32', '2023-03-20 19:38:33'),
-(3, 'Crema', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(4, 'Aerosol', 'A', '2022-06-11 18:31:32', '2023-03-20 19:38:28'),
-(5, 'Anillo', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(6, 'Champu', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(7, 'Emulsion', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(8, 'Enema', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(9, 'Capsula', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(10, 'Comprimidos', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(11, 'Inyectable', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(12, 'Suspensión', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(13, 'Sobres Efervescentes ', 'A', '2022-06-11 18:31:32', '2022-06-11 18:31:32'),
-(14, 'Gel', 'A', '2023-03-05 16:09:16', '2023-03-05 16:09:16');
+(1, 'Pastillas', 'A', '2023-10-15 18:43:01', '2023-10-15 18:43:01'),
+(2, 'Ampolla', 'A', '2023-11-05 13:40:05', '2023-11-05 13:40:05'),
+(3, 'Crema', 'A', '2023-11-05 13:40:17', '2023-11-05 13:40:17'),
+(4, 'Aerosol', 'A', '2023-11-05 13:40:35', '2023-11-05 13:40:35'),
+(5, 'Anillo', 'A', '2023-11-05 13:40:47', '2023-11-05 13:40:47'),
+(6, 'Champu', 'A', '2023-11-05 13:41:04', '2023-11-05 13:41:04'),
+(7, 'Emulsion', 'A', '2023-11-05 13:41:17', '2023-11-05 13:41:17'),
+(8, 'Enema', 'A', '2023-11-05 13:41:28', '2023-11-05 13:41:28'),
+(9, 'Capsula', 'A', '2023-11-05 13:41:38', '2023-11-05 13:41:38'),
+(10, 'Comprimidos', 'A', '2023-11-05 13:41:49', '2023-11-05 13:41:49'),
+(11, 'Inyectable', 'A', '2023-11-05 13:41:58', '2023-11-05 13:41:58'),
+(12, 'Suspensión', 'A', '2023-11-05 13:42:08', '2023-11-05 13:42:08'),
+(13, 'Sobres Efervescentes ', 'A', '2023-11-05 13:42:18', '2023-11-05 13:42:18');
 
 -- --------------------------------------------------------
 
@@ -2654,7 +2590,6 @@ CREATE TABLE `producto` (
   `codigo` int(11) NOT NULL,
   `nombre` varchar(45) NOT NULL,
   `concentracion` varchar(255) DEFAULT NULL,
-  `adicional` varchar(255) DEFAULT NULL,
   `fracciones` int(11) NOT NULL,
   `registro_sanitario` varchar(10) NOT NULL,
   `precio` float NOT NULL,
@@ -2663,7 +2598,7 @@ CREATE TABLE `producto` (
   `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `id_laboratorio` int(11) NOT NULL,
-  `id_tipo_producto` int(11) NOT NULL,
+  `id_subtipo_producto` int(11) NOT NULL,
   `id_presentacion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2671,31 +2606,8 @@ CREATE TABLE `producto` (
 -- Volcado de datos para la tabla `producto`
 --
 
-INSERT INTO `producto` (`id`, `codigo`, `nombre`, `concentracion`, `adicional`, `fracciones`, `registro_sanitario`, `precio`, `avatar`, `estado`, `fecha_creacion`, `fecha_edicion`, `id_laboratorio`, `id_tipo_producto`, `id_presentacion`) VALUES
-(1, 0, 'AMOXIDAL DÚO - AMOXICILINA', '750 mg. / 5 ml.', 'Vía oral  x 120', 0, '', 769.5, '5f87b505b20a8-amoxidal duo 750 suspx120.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 12),
-(2, 0, 'AMOXICILINA', '500 mg.', 'Caja Env. Blister  Caps.', 0, '', 10, '5f8386582298e-amoxicilina2.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 28, 2, 9),
-(3, 0, 'AMOXICILINA', '500 mg.', 'Caja Envase ', 0, '', 250, 'prod_default.png', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 26, 3, 4),
-(4, 0, 'AMOXIDAL 500 - AMOXICILINA', '500 mg.', 'Via Oral - 16 comp.', 0, '', 120.6, '5f838dfe57289-amixicilina.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 10),
-(5, 0, 'AMOXIDAL 1g. - AMOXICILINA', '1000 mg.', 'Via Oral - x16', 0, '', 524.7, '5f838ac5c87b4-Amoxidal1g..jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 10),
-(6, 0, 'AMOXIDAL 1000 - AMOXICILINA', '1000 mg.', 'Vía intramuscular', 0, '', 540.6, 'prod_default.png', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 11),
-(7, 0, 'AMOXIDAL 250 - AMOXICILINA', '250 mg.', 'Vía oral  ped. x 90', 0, '', 170, '5f838faa0096c-Amoxidal250x60.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 12),
-(8, 0, 'AMOXIDAL 500 - AMOXICILINA', '500 mg.', 'Via Oral - x 21', 0, '', 135, 'prod_default.png', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 10),
-(9, 0, 'AMOXIDAL 500 - AMOXICILINA', '500 mg.', 'Vía oral ped. x 90', 0, '', 230.8, '5f8393250d1b7-Amoxicilina 500 suspension 90.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 12),
-(10, 0, 'AMOXIDAL 500 - AMOXICILINA', '500 mg.', 'Vía oral ped. x 120', 0, '', 675.8, '5f8394507e4ba-Amoxidal 500 suspension x120.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 5, 3, 12),
-(11, 0, 'AMOXIDAL DÚO - AMOXICILINA', '875 mg.', 'Vía oral - 875 mg x 14', 0, '', 167.2, '5f83ac644f87d-Amxidal Duo_875mg_x_14.png', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 10),
-(12, 0, 'AMOXIDAL RESP. DÚO - AMOXICILINA', '750 mg. / 15 mg.', 'Vía oral x70', 0, '', 360, '5f87b8dd9ca1c-amoxidal respiratorio duo suspx70.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 12),
-(13, 0, 'AMOXIDAL RESP. DÚO - AMOXICILINA', '875 mg. / 60 mg.', 'Vía oral Comp. x 14', 0, '', 150, '5f87b779ed242-amoxidal Respiratorio Dúox14.png', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 10),
-(17, 0, 'AMOXIDAL DÚO - AMOXICILINA', '750 mg. / 5 ml.', 'Vía oral x70', 0, '', 534.3, '5f87b39356a9b-amoxidal duo 750 susp.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 4, 3, 12),
-(18, 0, 'BAYASPIRINA - Acetilsalicílico ácido', '500mg Comp. X 30', 'Via Oral', 0, '', 161, '5f9ca4046a11f-Bayaspirina.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 3, 3, 10),
-(19, 0, 'BAYASPIRINA - Acetilsalicílico ácido', '500mg Comp. X 40 -Promo', 'Via Oral', 0, '', 187.83, '5f9ca6a0d196c-Bayaspirina.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 3, 3, 10),
-(20, 0, 'BAYASPIRINA C CALIENTE- Acetilsalicílico ácid', 'Asp. 500 mg; Ascó.200 mg.', 'Via Oral', 0, '', 760, '5f9cb451a56af-BayaspirinaC-Caliente.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 3, 3, 13),
-(21, 0, 'BAYASPIRINA C LIMON- Acetilsalicílico ácido', '240 ml.', 'Via Oral x 12', 0, '', 270, '5f9cb5602478d-BayaspirinaC-Limon.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 5, 3, 4),
-(22, 0, 'BAYASPIRINA C LIMON- Acetilsalicílico ácido', '240 mg.', 'Via Oral x 24', 0, '', 530, '5f9cb5de1a45e-BayaspirinaC-Limon.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 5, 3, 4),
-(23, 0, 'BAYASPIRINA FORTE - Acetilsalicílico ácido', '650 mg .', 'Via Oral x 20', 0, '', 144, '5f9cb698e1749-Bayaspirina-Forte.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 5, 3, 10),
-(24, 0, 'CAFISPIRINA - Acetilsalicílico ácido', '500 mg. / 40 mg.', 'Via Oral x30', 0, '', 190, '5f9cbc803a01d-Cafiaspirina.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 3, 3, 10),
-(25, 0, 'CAFISPIRINA PLUS - Acetilsalicílico ácido', '500 mg. / 40 mg.', 'Via Oral - x 20', 0, '', 161, '5f9cbd3f489f5-Cafiaspirina-plus.jpg', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 5, 3, 4),
-(26, 0, 'ISASPIRINA  PREVNTIVA  - ASPININA', '100 mg.', 'Antiagregante Plaquetario X 60 comp.', 0, '', 84.5, '607c7169dcaed-Isaspirina.png', 'A', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 30, 2, 10),
-(27, 0, 'RIVOTRIL', '250 mg.', 'Vía oral  x 120', 0, '', 800, 'prod_default.png', 'I', '2022-06-11 18:26:43', '2022-06-11 18:26:43', 3, 3, 10);
+INSERT INTO `producto` (`id`, `codigo`, `nombre`, `concentracion`, `fracciones`, `registro_sanitario`, `precio`, `avatar`, `estado`, `fecha_creacion`, `fecha_edicion`, `id_laboratorio`, `id_subtipo_producto`, `id_presentacion`) VALUES
+(1, 123, 'prueba', 'prueba mg', 1, '32131', 1, 'prod_default.png', 'I', '2023-10-15 18:44:59', '2023-11-12 11:29:11', 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -2714,17 +2626,6 @@ CREATE TABLE `proveedor` (
   `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `proveedor`
---
-
-INSERT INTO `proveedor` (`id`, `nombre`, `telefono`, `correo`, `direccion`, `avatar`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
-(1, 'Beta Medical S.R.L.', 43530054, 'ventas@betamedical.com.ar', 'Suipacha 544 - Avellaneda - Buenos Aires', '5f852544cd0d0-logo-beta-medical.png', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53'),
-(2, 'SCIENZA Argentina', 55547890, '213@gmail.com', 'Av. Juan de Garay 437 - CABA', '5f8524305cf01-SCIENZA.jpg', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53'),
-(3, 'Generia Drogueria', 44887778, '1@gmail.com', 'Pueyrredon 3881 - Ciudadela - Bs. As.', '5f85220456aa5-logo dorgueria.jpg', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53'),
-(7, 'Disprofarma', 1111, 'info@disprofarma.com.ar', 'Av. Castañares 3222 - Haedo - Buenos Aires', '5f852270860aa-disprofarma.jpg', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53'),
-(9, 'Droguería Nueva Era', 2147483647, 'comercial2@droguerianuevaera.com.ar', 'Corvalan 554, Rosario, Santa Fe ', 'prov_default.png', 'A', '2023-04-30 17:54:53', '2023-04-30 17:54:53');
 
 -- --------------------------------------------------------
 
@@ -2771,6 +2672,39 @@ INSERT INTO `provincia` (`id`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `subtipo_producto`
+--
+
+CREATE TABLE `subtipo_producto` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(250) NOT NULL,
+  `estado` varchar(10) NOT NULL DEFAULT 'A',
+  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id_tipo_producto` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `subtipo_producto`
+--
+
+INSERT INTO `subtipo_producto` (`id`, `nombre`, `estado`, `fecha_creacion`, `fecha_edicion`, `id_tipo_producto`) VALUES
+(1, 'Comprimido', 'A', '2023-07-30 13:47:12', '2023-09-10 13:59:47', 1),
+(2, 'Tableta recubierta', 'A', '2023-08-20 14:24:12', '2023-09-10 13:59:50', 1),
+(3, 'Jarabe', 'A', '2023-08-20 14:26:35', '2023-09-10 13:59:43', 2),
+(4, 'Suspención para Inhalación', 'A', '2023-09-24 15:15:02', '2023-09-24 15:15:02', 3),
+(5, 'Solución para pulverización transdermica', 'A', '2023-09-24 15:15:57', '2023-09-24 15:15:57', 3),
+(6, 'Solución para Pulverización Nasal', 'A', '2023-09-24 15:16:50', '2023-09-24 15:16:50', 3),
+(7, 'Solución para Pulverización Bucal', 'A', '2023-09-24 15:17:32', '2023-09-24 15:17:32', 3),
+(8, 'Solución para Nebulización', 'A', '2023-09-24 15:18:02', '2023-09-24 15:18:02', 3),
+(9, 'Solución Nasal', 'A', '2023-09-24 15:19:19', '2023-09-24 15:19:19', 3),
+(10, 'Polvo para Inhalación en Cápsula Dura', 'A', '2023-09-24 15:20:11', '2023-09-24 15:20:11', 3),
+(11, 'Aerosol Tópico', 'A', '2023-09-24 15:20:50', '2023-09-24 15:20:50', 3),
+(12, 'Aerosol para Inhalación', 'A', '2023-09-24 15:21:33', '2023-09-24 15:21:33', 3);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipo`
 --
 
@@ -2796,7 +2730,7 @@ INSERT INTO `tipo` (`id`, `nombre`) VALUES
 
 CREATE TABLE `tipo_producto` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(45) NOT NULL,
+  `nombre` varchar(250) NOT NULL,
   `estado` varchar(10) NOT NULL DEFAULT 'A',
   `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -2807,10 +2741,9 @@ CREATE TABLE `tipo_producto` (
 --
 
 INSERT INTO `tipo_producto` (`id`, `nombre`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
-(2, 'Genericos', 'A', '2022-06-11 18:30:29', '2022-06-11 18:30:29'),
-(3, 'Comerciales', 'A', '2022-06-11 18:30:29', '2023-04-16 15:16:59'),
-(4, 'Regalos', 'I', '2022-06-11 18:30:29', '2022-06-11 18:30:29'),
-(5, 'Joyeria', 'A', '2023-04-02 14:34:08', '2023-04-02 14:34:08');
+(1, 'TABLETA', 'A', '2023-07-30 13:44:53', '2023-07-30 13:44:53'),
+(2, 'SUSPENCION', 'A', '2023-08-20 14:25:21', '2023-08-20 14:25:21'),
+(3, 'AEROSOL', 'A', '2023-09-24 15:14:16', '2023-09-24 15:14:16');
 
 -- --------------------------------------------------------
 
@@ -2941,7 +2874,7 @@ ALTER TABLE `presentacion`
 ALTER TABLE `producto`
   ADD PRIMARY KEY (`id`),
   ADD KEY `prod_lab_idx` (`id_laboratorio`),
-  ADD KEY `prod_tip_prod_idx` (`id_tipo_producto`),
+  ADD KEY `prod_tip_prod_idx` (`id_subtipo_producto`),
   ADD KEY `prod_present_idx` (`id_presentacion`);
 
 --
@@ -2955,6 +2888,13 @@ ALTER TABLE `proveedor`
 --
 ALTER TABLE `provincia`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `subtipo_producto`
+--
+ALTER TABLE `subtipo_producto`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_tipo_producto` (`id_tipo_producto`);
 
 --
 -- Indices de la tabla `tipo`
@@ -3000,13 +2940,13 @@ ALTER TABLE `venta_producto`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
@@ -3024,7 +2964,7 @@ ALTER TABLE `estado_pago`
 -- AUTO_INCREMENT de la tabla `laboratorio`
 --
 ALTER TABLE `laboratorio`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `localidad`
@@ -3036,31 +2976,37 @@ ALTER TABLE `localidad`
 -- AUTO_INCREMENT de la tabla `lote`
 --
 ALTER TABLE `lote`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `presentacion`
 --
 ALTER TABLE `presentacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `provincia`
 --
 ALTER TABLE `provincia`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT de la tabla `subtipo_producto`
+--
+ALTER TABLE `subtipo_producto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo`
@@ -3072,7 +3018,7 @@ ALTER TABLE `tipo`
 -- AUTO_INCREMENT de la tabla `tipo_producto`
 --
 ALTER TABLE `tipo_producto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
@@ -3128,7 +3074,13 @@ ALTER TABLE `lote`
 ALTER TABLE `producto`
   ADD CONSTRAINT `prod_lab` FOREIGN KEY (`id_laboratorio`) REFERENCES `laboratorio` (`id`),
   ADD CONSTRAINT `prod_present` FOREIGN KEY (`id_presentacion`) REFERENCES `presentacion` (`id`),
-  ADD CONSTRAINT `prod_tip_prod` FOREIGN KEY (`id_tipo_producto`) REFERENCES `tipo_producto` (`id`);
+  ADD CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`id_subtipo_producto`) REFERENCES `subtipo_producto` (`id`);
+
+--
+-- Filtros para la tabla `subtipo_producto`
+--
+ALTER TABLE `subtipo_producto`
+  ADD CONSTRAINT `subtipo_producto_ibfk_1` FOREIGN KEY (`id_tipo_producto`) REFERENCES `tipo_producto` (`id`);
 
 --
 -- Filtros para la tabla `usuario`

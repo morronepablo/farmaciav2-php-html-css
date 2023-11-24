@@ -72,6 +72,51 @@ $(document).ready(function () {
     },
   });
 
+  obtener_presentaciones().then((respuesta) => {
+    let template = "";
+    respuesta.forEach((presentacion) => {
+      template += `
+        <option value="${presentacion.id}">${presentacion.nombre}</option>
+      `;
+    });
+    $("#presentacion").html(template);
+    $("#presentacion").val("").trigger("change");
+  });
+
+  async function obtener_presentaciones() {
+    let funcion = "obtener_presentaciones";
+    let respuesta = "";
+    let data = await fetch(
+      "/farmaciav2/Controllers/PresentacionController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion,
+      }
+    );
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
   $("#laboratorio").select2({
     placeholder: "Seleccione un laboratorio",
     language: {
@@ -83,6 +128,51 @@ $(document).ready(function () {
       },
     },
   });
+
+  obtener_laboratorios().then((respuesta) => {
+    let template = "";
+    respuesta.forEach((laboratorio) => {
+      template += `
+        <option value="${laboratorio.id}">${laboratorio.nombre}</option>
+      `;
+    });
+    $("#laboratorio").html(template);
+    $("#laboratorio").val("").trigger("change");
+  });
+
+  async function obtener_laboratorios() {
+    let funcion = "obtener_laboratorios";
+    let respuesta = "";
+    let data = await fetch(
+      "/farmaciav2/Controllers/LaboratorioController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion,
+      }
+    );
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
 
   function llenar_menu_superior(usuario) {
     let template = `
