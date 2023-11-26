@@ -603,6 +603,168 @@ $(document).ready(function () {
     }
   }
 
+  async function crear_usuario(datos) {
+    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+      method: "POST",
+      body: datos,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        if (respuesta.mensaje == "success") {
+          toastr.success("Se ha creado el usuario correctamente", "Exito!", {
+            timeOut: 2000,
+          });
+          obtener_usuarios();
+          $("#crear_usuario").modal("hide");
+          $("#form-crear_usuario").trigger("reset");
+          $("#residencia").val("").trigger("change");
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_usuario") {
+          Swal.fire({
+            icon: "error",
+            title: "El usuario ya existe...",
+            text: "El usuario ya existe, póngase en contacto con el administrador del sistema.",
+          });
+          $("#form-crear_usuario").trigger("reset");
+          $("#residencia").val("").trigger("change");
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($("#form-crear_producto")[0]);
+      let funcion = "crear_producto";
+      datos.append("funcion", funcion);
+      //crear_usuario(datos);
+      alert("validado");
+    },
+  });
+
+  $("#form-crear_producto").validate({
+    rules: {
+      codigo: {
+        required: true,
+        minlength: 2,
+      },
+      nombre: {
+        required: true,
+        minlength: 2,
+      },
+      concentracion: {
+        required: true,
+        minlength: 2,
+      },
+      subtipo: {
+        required: true,
+      },
+      presentacion: {
+        required: true,
+      },
+      fraccion: {
+        required: true,
+        number: true,
+      },
+      sanitario: {
+        required: true,
+        minlength: 2,
+      },
+      precio: {
+        required: true,
+        number: true,
+      },
+      laboratorio: {
+        required: true,
+      },
+    },
+    messages: {
+      codigo: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+      },
+      nombre: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+      },
+      concentracion: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+      },
+      subtipo: {
+        required: "* Dato requerido",
+      },
+      presentacion: {
+        required: "* Dato requerido",
+      },
+      fraccion: {
+        required: "* Dato requerido",
+        number: "* El dato debe ser numérico",
+      },
+      sanitario: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+      },
+      precio: {
+        required: "* Dato requerido",
+        number: "* El dato debe ser numérico",
+      },
+      laboratorio: {
+        required: "* Dato requerido",
+      },
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {
       mensaje = "Cargando datos...";

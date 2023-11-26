@@ -42,7 +42,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                             </div>
                             <div class="form-group">
                                 <label for="">Reg. Sanitario:</label>
-                                <input type="text" class="form-control" name="correo" id="correo" placeholder="Ingrese su correo">
+                                <input type="text" class="form-control" name="sanitario" id="sanitario" placeholder="Ingrese Registro Sanitario">
                             </div>
                             <div class="form-group">
                                 <label for="">Precio:</label>
