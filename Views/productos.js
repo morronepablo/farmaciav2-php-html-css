@@ -603,8 +603,8 @@ $(document).ready(function () {
     }
   }
 
-  async function crear_usuario(datos) {
-    let data = await fetch("/farmaciav2/Controllers/UsuarioController.php", {
+  async function crear_producto(datos) {
+    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
       method: "POST",
       body: datos,
     });
@@ -613,13 +613,15 @@ $(document).ready(function () {
       try {
         let respuesta = JSON.parse(response);
         if (respuesta.mensaje == "success") {
-          toastr.success("Se ha creado el usuario correctamente", "Exito!", {
+          toastr.success("Se ha creado el producto correctamente", "Exito!", {
             timeOut: 2000,
           });
-          obtener_usuarios();
-          $("#crear_usuario").modal("hide");
-          $("#form-crear_usuario").trigger("reset");
-          $("#residencia").val("").trigger("change");
+          obtener_productos();
+          $("#crear_producto").modal("hide");
+          $("#form-crear_producto").trigger("reset");
+          $("#subtipo").val("").trigger("change");
+          $("#presentacion").val("").trigger("change");
+          $("#laboratorio").val("").trigger("change");
         } else if (respuesta.mensaje == "error_decrypt") {
           Swal.fire({
             position: "center",
@@ -631,14 +633,16 @@ $(document).ready(function () {
             //refresca la pagina (F5)
             location.reload();
           });
-        } else if (respuesta.mensaje == "error_usuario") {
+        } else if (respuesta.mensaje == "error_prod") {
           Swal.fire({
             icon: "error",
-            title: "El usuario ya existe...",
-            text: "El usuario ya existe, póngase en contacto con el administrador del sistema.",
+            title: "El producto ya existe...",
+            text: "El producto ya existe, póngase en contacto con el administrador del sistema.",
           });
-          $("#form-crear_usuario").trigger("reset");
-          $("#residencia").val("").trigger("change");
+          $("#form-crear_producto").trigger("reset");
+          $("#subtipo").val("").trigger("change");
+          $("#presentacion").val("").trigger("change");
+          $("#laboratorio").val("").trigger("change");
         } else if (respuesta.mensaje == "error_session") {
           Swal.fire({
             position: "center",
@@ -674,8 +678,7 @@ $(document).ready(function () {
       let datos = new FormData($("#form-crear_producto")[0]);
       let funcion = "crear_producto";
       datos.append("funcion", funcion);
-      //crear_usuario(datos);
-      alert("validado");
+      crear_producto(datos);
     },
   });
 
