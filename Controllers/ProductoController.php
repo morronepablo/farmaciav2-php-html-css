@@ -9,8 +9,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-session_start();
 $producto = new Producto();
+session_start();
 if ($_POST['funcion'] == 'obtener_productos') {
 	$producto->obtener_productos();
 	$json = array();
@@ -84,18 +84,21 @@ if ($_POST['funcion'] == 'obtener_productos') {
 		$formateado			= str_replace(' ', '+', $laboratorio);
 		$id_laboratorio		= openssl_decrypt($formateado, CODE, KEY);
 		if (is_numeric($id_subtipo) && is_numeric($id_presentacion) && is_numeric($id_laboratorio)) {
-			/*if (empty($proveedor->objetos)) {
-				$proveedor->crear($nombre, $telefono, $correo, $direccion);
+			$producto->encontrar_producto($codigo);
+
+			if (empty($producto->objetos)) {
+				$producto->crear($codigo, $nombre, $concentracion, $fraccion, $sanitario, $precio, $id_subtipo, $id_presentacion, $id_laboratorio);
 				$mensaje = 'success';
 			} else {
-				$mensaje = 'error_prov';
-			}*/
+				$mensaje = 'error_prod';
+			}
 		} else {
 			$mensaje = 'error_decrypt';
 		}
 	} else {
 		$mensaje = 'error_session';
 	}
+
 	$json = array(
 		'mensaje'	=>	$mensaje
 	);
