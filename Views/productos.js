@@ -538,6 +538,8 @@ $(document).ready(function () {
                                                             </button>
                                                             <button 
                                                               class="btn btn-outline-info btn-circle btn-lg editar_producto"
+                                                              data-toggle="modal"
+                                                              data-target="#editar_producto"
                                                               id="${datos.id}"
                                                               nombre="${datos.nombre}"
                                                               codigo="${datos.codigo}"
@@ -766,6 +768,22 @@ $(document).ready(function () {
       $(element).removeClass("is-invalid");
       $(element).addClass("is-valid");
     },
+  });
+
+  $(document).on("click", ".editar_producto", (e) => {
+    let elemento = $(this)[0].activeElement;
+
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+    let nombre = $(elemento).attr("nombre");
+    let concentracion = $(elemento).attr("concentracion");
+    let subtipo = $(elemento).attr("subtipo");
+    let presentacion = $(elemento).attr("presentacion");
+    let fracciones = $(elemento).attr("fracciones");
+    let registro_sanitario = $(elemento).attr("registro_sanitario");
+    let precio = $(elemento).attr("precio");
+    let laboratorio = $(elemento).attr("laboratorio");
+    let avatar = $(elemento).attr("avatar");
   });
 
   function Loader(mensaje) {
