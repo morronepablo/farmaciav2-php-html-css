@@ -18,6 +18,18 @@ $(document).ready(function () {
     },
   });
 
+  $("#subtipo_edit").select2({
+    placeholder: "Seleccione un subtipo",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
   obtener_subtipos().then((respuesta) => {
     let template = "";
     respuesta.forEach((subtipo) => {
@@ -27,6 +39,8 @@ $(document).ready(function () {
     });
     $("#subtipo").html(template);
     $("#subtipo").val("").trigger("change");
+    $("#subtipo_edit").html(template);
+    $("#subtipo_edit").val("").trigger("change");
   });
 
   async function obtener_subtipos() {
@@ -72,6 +86,18 @@ $(document).ready(function () {
     },
   });
 
+  $("#presentacion_edit").select2({
+    placeholder: "Seleccione una presentación",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
   obtener_presentaciones().then((respuesta) => {
     let template = "";
     respuesta.forEach((presentacion) => {
@@ -81,6 +107,8 @@ $(document).ready(function () {
     });
     $("#presentacion").html(template);
     $("#presentacion").val("").trigger("change");
+    $("#presentacion_edit").html(template);
+    $("#presentacion_edit").val("").trigger("change");
   });
 
   async function obtener_presentaciones() {
@@ -129,6 +157,18 @@ $(document).ready(function () {
     },
   });
 
+  $("#laboratorio_edit").select2({
+    placeholder: "Seleccione un laboratorio",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
   obtener_laboratorios().then((respuesta) => {
     let template = "";
     respuesta.forEach((laboratorio) => {
@@ -138,6 +178,8 @@ $(document).ready(function () {
     });
     $("#laboratorio").html(template);
     $("#laboratorio").val("").trigger("change");
+    $("#laboratorio_edit").html(template);
+    $("#laboratorio_edit").val("").trigger("change");
   });
 
   async function obtener_laboratorios() {
@@ -784,6 +826,18 @@ $(document).ready(function () {
     let precio = $(elemento).attr("precio");
     let laboratorio = $(elemento).attr("laboratorio");
     let avatar = $(elemento).attr("avatar");
+    $("#nombre_card").text(nombre);
+    $("#nombre_card2").text("#" + codigo);
+    $("#avatar_card").attr("src", "/farmaciav2/Util/img/productos/" + avatar);
+    $("#id_producto").val(id);
+    $("#nombre_edit").val(nombre);
+    $("#concentracion_edit").val(concentracion);
+    $("#subtipo_edit").val(subtipo).trigger("change");
+    $("#presentacion_edit").val(presentacion).trigger("change");
+    $("#fraccion_edit").val(fracciones);
+    $("#sanitario_edit").val(registro_sanitario);
+    $("#precio_edit").val(precio);
+    $("#laboratorio_edit").val(laboratorio).trigger("change");
   });
 
   function Loader(mensaje) {
