@@ -840,6 +840,159 @@ $(document).ready(function () {
     $("#laboratorio_edit").val(laboratorio).trigger("change");
   });
 
+  async function editar_producto(datos) {
+    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
+      method: "POST",
+      body: datos,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        if (respuesta.mensaje == "success") {
+          toastr.success("Se ha editado el producto correctamente", "Exito!", {
+            timeOut: 2000,
+          });
+          obtener_productos();
+          $("#editar_producto").modal("hide");
+          $("#form-editar_producto").trigger("reset");
+          $("#subtipo_edit").val("").trigger("change");
+          $("#presentacion_edit").val("").trigger("change");
+          $("#laboratorio_edit").val("").trigger("change");
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_prod") {
+          Swal.fire({
+            icon: "error",
+            title: "El producto ya existe...",
+            text: "El producto ya existe, póngase en contacto con el administrador del sistema.",
+          });
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($("#form-editar_producto")[0]);
+      let funcion = "editar_producto";
+      datos.append("funcion", funcion);
+      editar_producto(datos);
+    },
+  });
+
+  $("#form-editar_producto").validate({
+    rules: {
+      nombre_edit: {
+        required: true,
+        minlength: 2,
+      },
+      concentracion_edit: {
+        required: true,
+        minlength: 2,
+      },
+      subtipo_edit: {
+        required: true,
+      },
+      presentacion_edit: {
+        required: true,
+      },
+      fraccion_edit: {
+        required: true,
+        number: true,
+      },
+      sanitario_edit: {
+        required: true,
+        minlength: 2,
+      },
+      precio_edit: {
+        required: true,
+        number: true,
+      },
+      laboratorio_edit: {
+        required: true,
+      },
+    },
+    messages: {
+      nombre_edit: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+      },
+      concentracion_edit: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+      },
+      subtipo_edit: {
+        required: "* Dato requerido",
+      },
+      presentacion_edit: {
+        required: "* Dato requerido",
+      },
+      fraccion_edit: {
+        required: "* Dato requerido",
+        number: "* El dato debe ser numérico",
+      },
+      sanitario_edit: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 2 caracteres",
+      },
+      precio_edit: {
+        required: "* Dato requerido",
+        number: "* El dato debe ser numérico",
+      },
+      laboratorio_edit: {
+        required: "* Dato requerido",
+      },
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {
       mensaje = "Cargando datos...";

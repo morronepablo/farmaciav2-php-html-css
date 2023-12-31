@@ -104,4 +104,51 @@ if ($_POST['funcion'] == 'obtener_productos') {
 	);
 
 	echo json_encode($json);
+} else if ($_POST['funcion'] == 'editar_producto') {
+	$mensaje = '';
+	if (!empty($_SESSION['id'])) {
+		$id 			= $_POST['id_producto'];
+		$formateado			= str_replace(' ', '+', $id);
+		$id_producto			= openssl_decrypt($formateado, CODE, KEY);
+
+		$nombre 			= $_POST['nombre_edit'];
+		$concentracion 		= $_POST['concentracion_edit'];
+
+		$subtipo 			= $_POST['subtipo_edit'];
+		$formateado			= str_replace(' ', '+', $subtipo);
+		$id_subtipo			= openssl_decrypt($formateado, CODE, KEY);
+
+		$presentacion 		= $_POST['presentacion_edit'];
+		$formateado			= str_replace(' ', '+', $presentacion);
+		$id_presentacion	= openssl_decrypt($formateado, CODE, KEY);
+
+		$fraccion 			= $_POST['fraccion_edit'];
+		$sanitario 			= $_POST['sanitario_edit'];
+		$precio 			= $_POST['precio_edit'];
+
+		$laboratorio 		= $_POST['laboratorio_edit'];
+		$formateado			= str_replace(' ', '+', $laboratorio);
+		$id_laboratorio		= openssl_decrypt($formateado, CODE, KEY);
+
+		if (is_numeric($id_producto) && is_numeric($id_subtipo)  && is_numeric($id_presentacion) && is_numeric($id_laboratorio)) {
+			/*$producto->encontrar_producto($codigo);
+
+			if (empty($producto->objetos)) {
+				$producto->crear($codigo, $nombre, $concentracion, $fraccion, $sanitario, $precio, $id_subtipo, $id_presentacion, $id_laboratorio);
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_prod';
+			} */
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+
+	echo json_encode($json);
 }
