@@ -849,6 +849,7 @@ $(document).ready(function () {
       let response = await data.text();
       try {
         let respuesta = JSON.parse(response);
+        console.log(respuesta);
         if (respuesta.mensaje == "success") {
           toastr.success("Se ha editado el producto correctamente", "Exito!", {
             timeOut: 2000,
