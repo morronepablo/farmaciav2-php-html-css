@@ -113,7 +113,17 @@ class Producto
 	function encontrar_producto_editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $precio, $id_laboratorio)
 	{
 		$sql = "SELECT id 
-		FROM producto WHERE nombre=:nombre AND concentracion=:concentracion AND fracciones=:fracciones AND registro_sanitario=:registro_sanitario AND precio=:precio AND id_laboratorio=:id_laboratorio AND id_subtipo_producto=:id_subtipo_producto AND id_presentacion=:id_presentacion AND id!=:id";
+		FROM producto 
+		WHERE nombre=:nombre 
+		AND concentracion=:concentracion 
+		AND fracciones=:fracciones 
+		AND registro_sanitario=:registro_sanitario 
+		AND precio=:precio 
+		AND id_laboratorio=:id_laboratorio 
+		AND id_subtipo_producto=:id_subtipo_producto 
+		AND id_presentacion=:id_presentacion 
+		AND id!=:id
+		";
 		$variables = array(
 			':id' 					=> $id_producto,
 			':nombre' 				=> $nombre,
@@ -129,5 +139,32 @@ class Producto
 		$query->execute($variables);
 		$this->objetos = $query->fetchAll();
 		return $this->objetos;
+	}
+	function editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $precio, $id_laboratorio)
+	{
+		$sql = "UPDATE producto 
+		SET nombre=:nombre, 
+		concentracion=:concentracion, 
+		fracciones=:fracciones, 
+		registro_sanitario=:registro_sanitario, 
+		precio=:precio, 
+		id_laboratorio=:id_laboratorio, 
+		id_subtipo_producto=:id_subtipo_producto, 
+		id_presentacion=:id_presentacion 
+		WHERE id=:id
+		";
+		$variables = array(
+			':id' 					=> $id_producto,
+			':nombre' 				=> $nombre,
+			':concentracion' 		=> $concentracion,
+			':fracciones' 			=> $fraccion,
+			':registro_sanitario' 	=> $sanitario,
+			':precio' 				=> $precio,
+			':id_laboratorio' 		=> $id_laboratorio,
+			':id_subtipo_producto' 	=> $id_subtipo,
+			':id_presentacion' 		=> $id_presentacion,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
 	}
 }

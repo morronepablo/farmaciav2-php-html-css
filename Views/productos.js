@@ -603,7 +603,7 @@ $(document).ready(function () {
                                                               codigo="${datos.codigo}"
                                                               avatar="${datos.avatar}"
                                                             >
-                                                                <i class="fas fa-plus"></i>
+                                                                <i class="fas fa-trash"></i>
                                                             </button>`;
                 } else {
                   template += `<button 
@@ -877,6 +877,11 @@ $(document).ready(function () {
             title: "El producto ya existe...",
             text: "El producto ya existe, póngase en contacto con el administrador del sistema.",
           });
+          $("#editar_producto").modal("hide");
+          $("#form-editar_producto").trigger("reset");
+          $("#subtipo_edit").val("").trigger("change");
+          $("#presentacion_edit").val("").trigger("change");
+          $("#laboratorio_edit").val("").trigger("change");
         } else if (respuesta.mensaje == "error_session") {
           Swal.fire({
             position: "center",

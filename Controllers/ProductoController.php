@@ -133,7 +133,7 @@ if ($_POST['funcion'] == 'obtener_productos') {
 		if (is_numeric($id_producto) && is_numeric($id_subtipo)  && is_numeric($id_presentacion) && is_numeric($id_laboratorio)) {
 			$producto->encontrar_producto_editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $precio, $id_laboratorio);
 			if (empty($producto->objetos)) {
-				//$producto->crear($codigo, $nombre, $concentracion, $fraccion, $sanitario, $precio, $id_subtipo, $id_presentacion, $id_laboratorio);
+				$producto->editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $precio, $id_laboratorio);
 				$mensaje = 'success';
 			} else {
 				$mensaje = 'error_prod';
