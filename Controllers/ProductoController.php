@@ -19,8 +19,8 @@ if ($_POST['funcion'] == 'obtener_productos') {
 		$stock = $producto->objetos[0]->total;
 		$json[] = array(
 			'id'				 => openssl_encrypt($objeto->id, CODE, KEY),
-			'nombre'			 => $objeto->nombre,
-			'concentracion'		 => $objeto->concentracion,
+			'nombre'			 => str_replace('***', '%', $objeto->nombre),
+			'concentracion'		 => str_replace('***', '%', $objeto->concentracion),
 			'precio'			 => $objeto->precio,
 			'stock'				 => $stock,
 			'laboratorio'		 => $objeto->laboratorio,
@@ -44,8 +44,8 @@ if ($_POST['funcion'] == 'obtener_productos') {
 		$stock = $producto->objetos[0]->total;
 		$json[] = array(
 			'id'				 => openssl_encrypt($objeto->id, CODE, KEY),
-			'nombre'			 => $objeto->nombre,
-			'concentracion'		 => $objeto->concentracion,
+			'nombre'			 => str_replace('***', '%', $objeto->nombre),
+			'concentracion'		 => str_replace('***', '%', $objeto->concentracion),
 			'precio'			 => $objeto->precio,
 			'stock'				 => $stock,
 			'laboratorio'		 => $objeto->laboratorio,
@@ -70,7 +70,9 @@ if ($_POST['funcion'] == 'obtener_productos') {
 	if (!empty($_SESSION['id'])) {
 		$codigo 			= $_POST['codigo'];
 		$nombre 			= $_POST['nombre'];
+		$nombre				= str_replace('%', '***', $nombre);
 		$concentracion 		= $_POST['concentracion'];
+		$concentracion		= str_replace('%', '***', $concentracion);
 		$subtipo 			= $_POST['subtipo'];
 		$formateado			= str_replace(' ', '+', $subtipo);
 		$id_subtipo			= openssl_decrypt($formateado, CODE, KEY);
@@ -112,7 +114,9 @@ if ($_POST['funcion'] == 'obtener_productos') {
 		$id_producto			= openssl_decrypt($formateado, CODE, KEY);
 
 		$nombre 			= $_POST['nombre_edit'];
+		$nombre				= str_replace('%', '***', $nombre);
 		$concentracion 		= $_POST['concentracion_edit'];
+		$concentracion		= str_replace('%', '***', $concentracion);
 
 		$subtipo 			= $_POST['subtipo_edit'];
 		$formateado			= str_replace(' ', '+', $subtipo);
@@ -131,7 +135,7 @@ if ($_POST['funcion'] == 'obtener_productos') {
 		$id_laboratorio		= openssl_decrypt($formateado, CODE, KEY);
 
 		if (is_numeric($id_producto) && is_numeric($id_subtipo)  && is_numeric($id_presentacion) && is_numeric($id_laboratorio)) {
-			$producto->encontrar_producto_editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $precio, $id_laboratorio);
+			$producto->encontrar_producto_editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $id_laboratorio);
 			if (empty($producto->objetos)) {
 				$producto->editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $precio, $id_laboratorio);
 				$mensaje = 'success';

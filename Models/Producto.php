@@ -110,7 +110,7 @@ class Producto
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	function encontrar_producto_editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $precio, $id_laboratorio)
+	function encontrar_producto_editar($id_producto, $nombre, $concentracion, $id_subtipo, $id_presentacion, $fraccion, $sanitario, $id_laboratorio)
 	{
 		$sql = "SELECT id 
 		FROM producto 
@@ -118,7 +118,6 @@ class Producto
 		AND concentracion=:concentracion 
 		AND fracciones=:fracciones 
 		AND registro_sanitario=:registro_sanitario 
-		AND precio=:precio 
 		AND id_laboratorio=:id_laboratorio 
 		AND id_subtipo_producto=:id_subtipo_producto 
 		AND id_presentacion=:id_presentacion 
@@ -130,7 +129,6 @@ class Producto
 			':concentracion' 		=> $concentracion,
 			':fracciones' 			=> $fraccion,
 			':registro_sanitario' 	=> $sanitario,
-			':precio' 				=> $precio,
 			':id_laboratorio' 		=> $id_laboratorio,
 			':id_subtipo_producto' 	=> $id_subtipo,
 			':id_presentacion' 		=> $id_presentacion,
