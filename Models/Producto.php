@@ -165,4 +165,28 @@ class Producto
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+	function eliminar($id_producto)
+	{
+		$sql = "UPDATE producto 
+				SET estado=:estado
+				WHERE id=:id_producto";
+		$variables = array(
+			':id_producto'	=> $id_producto,
+			':estado' 		=> 'I',
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
+	function activar($id_producto)
+	{
+		$sql = "UPDATE producto 
+				SET estado=:estado
+				WHERE id=:id_producto";
+		$variables = array(
+			':id_producto'	=> $id_producto,
+			':estado' 		=> 'A',
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }
