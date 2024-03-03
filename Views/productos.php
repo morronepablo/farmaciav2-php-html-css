@@ -133,6 +133,49 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     </div>
 </div>
 <!-- Fin Modal Editar Producto -->
+<!-- Modal Cambiar Avatar -->
+<div class="modal fade" id="editar_avatar">
+    <div class="modal-dialog">
+        <div class="modal-content card card-success">
+            <div class="modal-header card-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cambiar avatar</h5>
+            </div>
+            <div class="modal-body p-0">
+                <div class="card card-widget widget-user">
+                    <div class="widget-user-header bg-success">
+                        <h3 id="nombre_avatar" class="widget-user-username"></h3>
+                    </div>
+                    <div class="widget-user-image">
+                        <img id="avatar" class="img-circle elevation-2" src="" alt="User Avatar">
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form id="form-editar_avatar" enctype="multipart/form-data">
+                                    <input type="hidden" id="id_producto_avatar" name="id_producto_avatar">
+                                    <div class="form-group">
+                                        <label for="exampleInputFile">Avatar: </label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="avatar_edit" name="avatar_edit">
+                                                <label class="custom-file-label" for="exampleInputFile">Seleccione una imagen</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+                <button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Cambiar Avatar -->
 <div class="content-wrapper" style="min-height: 678.917px;">
     <section class="content-header">
         <div class="container-fluid">

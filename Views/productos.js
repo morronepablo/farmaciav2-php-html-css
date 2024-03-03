@@ -574,7 +574,12 @@ $(document).ready(function () {
                 if (datos.estado == "A") {
                   template += `<button 
                                                               class="btn btn-outline-secondary btn-circle btn-lg editar_avatar"
+                                                              data-toggle="modal"
+                                                              data-target="#editar_avatar"
                                                               id="${datos.id}"
+                                                              nombre="${datos.nombre}"
+                                                              codigo="${datos.codigo}"
+                                                              avatar="${datos.avatar}"
                                                             >
                                                                 <i class="fas fa-camera"></i>
                                                             </button>
@@ -1206,6 +1211,17 @@ $(document).ready(function () {
     }
     return respuesta;
   }
+
+  $(document).on("click", ".editar_avatar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let avatar = $(elemento).attr("avatar");
+    let nombre = $(elemento).attr("nombre");
+    let codigo = $(elemento).attr("codigo");
+    $("#id_producto_avatar").val(id);
+    $("#nombre_avatar").text("[" + codigo + "] " + nombre);
+    $("#avatar").attr("src", "/farmaciav2/Util/img/productos/" + avatar);
+  });
 
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {
