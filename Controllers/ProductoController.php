@@ -196,4 +196,33 @@ if ($_POST['funcion'] == 'obtener_productos') {
 	);
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
+} else if ($_POST['funcion'] == 'editar_avatar') {
+	$mensaje = '';
+	if (!empty($_SESSION['id'])) {
+		$id_usuario 	= $_SESSION['id'];
+		$id				= $_POST['id_producto_avatar'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_producto	= openssl_decrypt($formateado, CODE, KEY);
+		if (is_numeric($id_producto)) {
+			$nombre		= uniqid() . '-' . $_FILES['avatar_edit']['name'];
+			$ruta 		= $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Util/img/productos/' . $nombre;
+			move_uploaded_file($_FILES['avatar_edit']['tmp_name'], $ruta);
+			$producto->encontrar_producto_id($id_producto);
+			$avatar = $producto->objetos[0]->avatar;
+			if ($avatar != 'prod_default.png') {
+				unlink($_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Util/img/productos/' . $avatar);
+			}
+			$producto->editar_avatar($id_producto, $nombre);
+			$mensaje 	= 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje' => $mensaje
+	);
+	$jsonstring = json_encode($json);
+	echo $jsonstring;
 }

@@ -1,5 +1,6 @@
 $(document).ready(function () {
   Loader();
+  bsCustomFileInput.init();
   verificar_sesion();
 
   toastr.options = {
@@ -1222,6 +1223,102 @@ $(document).ready(function () {
     $("#nombre_avatar").text("[" + codigo + "] " + nombre);
     $("#avatar").attr("src", "/farmaciav2/Util/img/productos/" + avatar);
   });
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($("#form-editar_avatar")[0]);
+      let funcion = "editar_avatar";
+      datos.append("funcion", funcion);
+
+      editar_avatar(datos);
+    },
+  });
+
+  $("#form-editar_avatar").validate({
+    rules: {
+      avatar_edit: {
+        required: true,
+        extension: "png|jpeg|jpg|webp",
+      },
+    },
+    messages: {
+      avatar_edit: {
+        required: "* Dato requerido",
+        extension: "* Solo se permiten formato (png|jpeg|jpg|webp)",
+      },
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
+  async function editar_avatar(datos) {
+    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
+      method: "POST",
+      body: datos,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        console.log(respuesta);
+        if (respuesta.mensaje == "success") {
+          toastr.success("Su avatar fué actualizado correctamente", "Exito!", {
+            timeOut: 2000,
+          });
+          obtener_productos();
+          $("#editar_avatar").modal("hide");
+          $("#form-editar_avatar").trigger("reset");
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
 
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {

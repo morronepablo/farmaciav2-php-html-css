@@ -189,4 +189,47 @@ class Producto
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+	function encontrar_producto_id($id)
+	{
+		$sql = "SELECT 
+			  p.id as id,
+			  p.codigo,
+			  p.nombre as nombre,
+			  p.concentracion,
+			  p.fracciones,
+			  p.registro_sanitario,
+			  p.precio,
+			  p.avatar as avatar,
+			  p.estado as estado,
+			  p.fecha_creacion as fecha_creacion,
+			  p.fecha_edicion as fecha_edicion,
+			  l.nombre as laboratorio,
+			  t.nombre as subtipo,
+			  pre.nombre as presentacion
+			  FROM producto p
+			  JOIN laboratorio l ON p.id_laboratorio=l.id
+			  JOIN subtipo_producto t ON p.id_subtipo_producto=t.id
+			  JOIN presentacion pre ON p.id_presentacion=pre.id
+			  WHERE p.id=:id
+		";
+		$variables = array(
+			':id' => $id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
+	function editar_avatar($id_producto, $nombre)
+	{
+		$sql = "UPDATE producto 
+				SET avatar=:nombre
+				WHERE id=:id_producto";
+		$variables = array(
+			':id_producto'	=> $id_producto,
+			':nombre' 		=> $nombre,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }
