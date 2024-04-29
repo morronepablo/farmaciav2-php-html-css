@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-11-2023 a las 17:50:18
+-- Tiempo de generación: 29-04-2024 a las 16:43:10
 -- Versión del servidor: 10.1.26-MariaDB
 -- Versión de PHP: 7.1.9
 
@@ -51,12 +51,34 @@ CREATE TABLE `cliente` (
 CREATE TABLE `compra` (
   `id` int(11) NOT NULL,
   `codigo` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `fecha_compra` date NOT NULL,
-  `fecha_entrega` date NOT NULL,
+  `nota` varchar(1000) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_vencimiento` date DEFAULT NULL,
   `total` float NOT NULL,
+  `comprobante_id` int(11) NOT NULL,
   `id_estado_pago` int(11) NOT NULL,
-  `id_proveedor` int(11) NOT NULL
+  `id_proveedor` int(11) NOT NULL,
+  `pedido_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `comprobante`
+--
+
+CREATE TABLE `comprobante` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) COLLATE utf8mb4_spanish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `comprobante`
+--
+
+INSERT INTO `comprobante` (`id`, `nombre`) VALUES
+(1, 'Boleta'),
+(2, 'Factura');
 
 -- --------------------------------------------------------
 
@@ -90,8 +112,8 @@ CREATE TABLE `estado_pago` (
 --
 
 INSERT INTO `estado_pago` (`id`, `nombre`) VALUES
-(1, 'Cancelado'),
-(2, 'No cancelado');
+(1, 'Contado'),
+(2, 'Crédito');
 
 -- --------------------------------------------------------
 
@@ -2531,20 +2553,53 @@ INSERT INTO `localidad` (`id`, `nombre`, `id_provincia`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `lote`
+-- Estructura de tabla para la tabla `movimiento`
 --
 
-CREATE TABLE `lote` (
+CREATE TABLE `movimiento` (
   `id` int(11) NOT NULL,
-  `codigo` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `cantidad_lote` int(11) NOT NULL,
-  `vencimiento` date NOT NULL,
-  `precio_compra` float NOT NULL,
-  `estado` varchar(10) COLLATE utf8_spanish_ci NOT NULL DEFAULT 'A',
-  `id_compra` int(11) NOT NULL,
-  `id_producto` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+  `precio_venta` float DEFAULT NULL,
+  `precio_compra` float NOT NULL DEFAULT '0',
+  `fecha_vencimiento` date NOT NULL,
+  `lote` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '',
+  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `compra_id` int(11) DEFAULT '0',
+  `venta_id` int(11) DEFAULT '0',
+  `producto_id` int(11) NOT NULL DEFAULT '0',
+  `tipo_movimiento_id` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedido`
+--
+
+CREATE TABLE `pedido` (
+  `id` int(11) NOT NULL,
+  `descripcion` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
+  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `total` float NOT NULL,
+  `estado` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT 'A',
+  `estado_proceso` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT 'espera',
+  `id_proveedor` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedido_compra`
+--
+
+CREATE TABLE `pedido_compra` (
+  `id` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio` float DEFAULT '0',
+  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `producto_id` int(11) NOT NULL,
+  `pedido_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -2577,7 +2632,8 @@ INSERT INTO `presentacion` (`id`, `nombre`, `estado`, `fecha_creacion`, `fecha_e
 (10, 'Comprimidos', 'A', '2023-11-05 13:41:49', '2023-11-05 13:41:49'),
 (11, 'Inyectable', 'A', '2023-11-05 13:41:58', '2023-11-05 13:41:58'),
 (12, 'Suspensión', 'A', '2023-11-05 13:42:08', '2023-11-05 13:42:08'),
-(13, 'Sobres Efervescentes ', 'A', '2023-11-05 13:42:18', '2023-11-05 13:42:18');
+(13, 'Sobres Efervescentes ', 'A', '2023-11-05 13:42:18', '2023-11-05 13:42:18'),
+(14, 'Caja Tubo x 15g', 'A', '2024-01-21 13:45:03', '2024-01-21 13:45:03');
 
 -- --------------------------------------------------------
 
@@ -2607,7 +2663,23 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`id`, `codigo`, `nombre`, `concentracion`, `fracciones`, `registro_sanitario`, `precio`, `avatar`, `estado`, `fecha_creacion`, `fecha_edicion`, `id_laboratorio`, `id_subtipo_producto`, `id_presentacion`) VALUES
-(1, 123, 'prueba', 'prueba mg', 1, '32131', 1, 'prod_default.png', 'I', '2023-10-15 18:44:59', '2023-11-12 11:29:11', 1, 1, 1);
+(1, 123, 'prueba', 'prueba mg', 1, '32131', 1, 'prod_default.png', 'I', '2023-10-15 18:44:59', '2023-11-12 11:29:11', 1, 1, 1),
+(2, 123456, 'PRueba2', '1ewrqw', 1, 'trewte', 1, 'prod_default.png', 'A', '2023-12-10 21:11:23', '2023-12-10 21:11:23', 6, 4, 4),
+(3, 44353453, 'Producto3', 'prueba', 1, 'ggffdg', 1, 'prod_default.png', 'A', '2023-12-10 21:14:38', '2024-01-14 17:26:49', 4, 4, 4),
+(4, 55555, 'Producto5', 'prueba', 1, 'aasdfg', 1, 'prod_default.png', 'A', '2023-12-10 21:19:47', '2024-01-14 17:26:57', 4, 4, 4),
+(5, 777777, 'Aerosol 2', '1ewrqw', 2, 'tttt', 2, 'prod_default.png', 'A', '2023-12-10 21:25:29', '2024-01-21 13:38:47', 6, 4, 4),
+(6, 6665543, 'Aerosol', '1ewrqw', 1, 'ccdsfg', 1, 'prod_default.png', 'A', '2023-12-10 21:27:41', '2024-02-26 16:44:41', 6, 4, 4),
+(7, 11223344, 'Aerosol', '1ewrqw', 1, 'trewte4535', 1, 'prod_default.png', 'A', '2023-12-10 23:29:10', '2024-01-14 17:27:14', 6, 4, 4),
+(8, 999888, 'Pablo', '1ewrqw', 1, '55urty', 1, 'prod_default.png', 'A', '2023-12-10 23:31:30', '2024-01-14 17:27:20', 6, 4, 4),
+(9, 4444554, 'Tito', '12123', 1, '1244ert', 1, 'prod_default.png', 'A', '2023-12-10 23:41:33', '2024-01-14 17:27:26', 7, 4, 4),
+(10, 1112222, 'Aerosol', '1ewrqw', 1, '009765hf', 1, 'prod_default.png', 'A', '2023-12-10 23:46:31', '2024-01-14 17:27:31', 6, 4, 4),
+(11, 1112255, 'Aerosol', '1ewrqw', 1, 'wwer53', 1, 'prod_default.png', 'A', '2023-12-10 23:48:08', '2024-01-14 17:27:38', 6, 4, 4),
+(12, 221122, 'Aerosol', '1ewrqw', 1, 'jhjghj', 1, 'prod_default.png', 'A', '2023-12-10 23:48:37', '2024-01-14 17:27:42', 6, 4, 4),
+(13, 112233, 'Aerosol', '1ewrqw', 1, 'wweery', 1, 'prod_default.png', 'A', '2023-12-10 23:50:15', '2024-01-14 17:27:46', 6, 4, 2),
+(14, 777756, 'Aerosol', '1ewrqw', 1, 'eerr66788', 1, 'prod_default.png', 'A', '2023-12-10 23:51:56', '2024-01-14 17:27:51', 6, 4, 4),
+(15, 999999991, 'Pablo', '1ewrqw', 1, 'ddffggr445', 1, 'prod_default.png', 'A', '2023-12-10 23:52:34', '2024-01-14 17:27:56', 4, 4, 4),
+(16, 333333, 'Pablo Martin Morrone', '1ewrqw', 1, 'ssd6677jjh', 1, 'prod_default.png', 'A', '2023-12-10 23:56:02', '2024-01-14 17:28:03', 4, 4, 4),
+(17, 47787, 'ACIDO FUSIDICO 5***', '5***', 1, 'NG4822', 1, '65eddca2af071-1111.jpeg', 'A', '2024-01-21 13:46:47', '2024-03-10 13:15:30', 13, 13, 14);
 
 -- --------------------------------------------------------
 
@@ -2677,12 +2749,12 @@ INSERT INTO `provincia` (`id`, `nombre`) VALUES
 
 CREATE TABLE `subtipo_producto` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(250) NOT NULL,
-  `estado` varchar(10) NOT NULL DEFAULT 'A',
+  `nombre` varchar(250) CHARACTER SET latin1 NOT NULL,
+  `estado` varchar(10) CHARACTER SET latin1 NOT NULL DEFAULT 'A',
   `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `id_tipo_producto` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `subtipo_producto`
@@ -2700,7 +2772,8 @@ INSERT INTO `subtipo_producto` (`id`, `nombre`, `estado`, `fecha_creacion`, `fec
 (9, 'Solución Nasal', 'A', '2023-09-24 15:19:19', '2023-09-24 15:19:19', 3),
 (10, 'Polvo para Inhalación en Cápsula Dura', 'A', '2023-09-24 15:20:11', '2023-09-24 15:20:11', 3),
 (11, 'Aerosol Tópico', 'A', '2023-09-24 15:20:50', '2023-09-24 15:20:50', 3),
-(12, 'Aerosol para Inhalación', 'A', '2023-09-24 15:21:33', '2023-09-24 15:21:33', 3);
+(12, 'Aerosol para Inhalación', 'A', '2023-09-24 15:21:33', '2023-09-24 15:21:33', 3),
+(13, 'Crema', 'A', '2024-01-21 13:44:03', '2024-01-21 13:44:03', 4);
 
 -- --------------------------------------------------------
 
@@ -2725,6 +2798,25 @@ INSERT INTO `tipo` (`id`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tipo_movimiento`
+--
+
+CREATE TABLE `tipo_movimiento` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tipo_movimiento`
+--
+
+INSERT INTO `tipo_movimiento` (`id`, `nombre`) VALUES
+(1, 'entrada'),
+(2, 'salida');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipo_producto`
 --
 
@@ -2743,7 +2835,8 @@ CREATE TABLE `tipo_producto` (
 INSERT INTO `tipo_producto` (`id`, `nombre`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
 (1, 'TABLETA', 'A', '2023-07-30 13:44:53', '2023-07-30 13:44:53'),
 (2, 'SUSPENCION', 'A', '2023-08-20 14:25:21', '2023-08-20 14:25:21'),
-(3, 'AEROSOL', 'A', '2023-09-24 15:14:16', '2023-09-24 15:14:16');
+(3, 'AEROSOL', 'A', '2023-09-24 15:14:16', '2023-09-24 15:14:16'),
+(4, 'CREMA', 'A', '2024-01-21 13:43:46', '2024-01-21 13:43:46');
 
 -- --------------------------------------------------------
 
@@ -2826,7 +2919,15 @@ ALTER TABLE `cliente`
 ALTER TABLE `compra`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_estado_pago` (`id_estado_pago`,`id_proveedor`),
-  ADD KEY `id_proveedor` (`id_proveedor`);
+  ADD KEY `id_proveedor` (`id_proveedor`),
+  ADD KEY `comprobante_id` (`comprobante_id`),
+  ADD KEY `pedido_id` (`pedido_id`);
+
+--
+-- Indices de la tabla `comprobante`
+--
+ALTER TABLE `comprobante`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `detalle_venta`
@@ -2855,12 +2956,27 @@ ALTER TABLE `localidad`
   ADD KEY `id_provincia` (`id_provincia`);
 
 --
--- Indices de la tabla `lote`
+-- Indices de la tabla `movimiento`
 --
-ALTER TABLE `lote`
+ALTER TABLE `movimiento`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_compra` (`id_compra`,`id_producto`),
-  ADD KEY `id_producto` (`id_producto`);
+  ADD KEY `producto_id` (`producto_id`),
+  ADD KEY `tipo_movimiento_id` (`tipo_movimiento_id`);
+
+--
+-- Indices de la tabla `pedido`
+--
+ALTER TABLE `pedido`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_proveedor` (`id_proveedor`);
+
+--
+-- Indices de la tabla `pedido_compra`
+--
+ALTER TABLE `pedido_compra`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `producto_id` (`producto_id`),
+  ADD KEY `pedido_id` (`pedido_id`);
 
 --
 -- Indices de la tabla `presentacion`
@@ -2900,6 +3016,12 @@ ALTER TABLE `subtipo_producto`
 -- Indices de la tabla `tipo`
 --
 ALTER TABLE `tipo`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `tipo_movimiento`
+--
+ALTER TABLE `tipo_movimiento`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2949,6 +3071,12 @@ ALTER TABLE `compra`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `comprobante`
+--
+ALTER TABLE `comprobante`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
@@ -2973,22 +3101,34 @@ ALTER TABLE `localidad`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2383;
 
 --
--- AUTO_INCREMENT de la tabla `lote`
+-- AUTO_INCREMENT de la tabla `movimiento`
 --
-ALTER TABLE `lote`
+ALTER TABLE `movimiento`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `pedido`
+--
+ALTER TABLE `pedido`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `pedido_compra`
+--
+ALTER TABLE `pedido_compra`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `presentacion`
 --
 ALTER TABLE `presentacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
@@ -3006,7 +3146,7 @@ ALTER TABLE `provincia`
 -- AUTO_INCREMENT de la tabla `subtipo_producto`
 --
 ALTER TABLE `subtipo_producto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo`
@@ -3015,10 +3155,16 @@ ALTER TABLE `tipo`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT de la tabla `tipo_movimiento`
+--
+ALTER TABLE `tipo_movimiento`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `tipo_producto`
 --
 ALTER TABLE `tipo_producto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
@@ -3046,6 +3192,8 @@ ALTER TABLE `venta_producto`
 -- Filtros para la tabla `compra`
 --
 ALTER TABLE `compra`
+  ADD CONSTRAINT `FK_compra_comprobante` FOREIGN KEY (`comprobante_id`) REFERENCES `comprobante` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `FK_compra_pedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedido` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `compra_ibfk_1` FOREIGN KEY (`id_estado_pago`) REFERENCES `estado_pago` (`id`),
   ADD CONSTRAINT `compra_ibfk_2` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id`);
 
@@ -3062,11 +3210,24 @@ ALTER TABLE `localidad`
   ADD CONSTRAINT `localidad_ibfk_1` FOREIGN KEY (`id_provincia`) REFERENCES `provincia` (`id`);
 
 --
--- Filtros para la tabla `lote`
+-- Filtros para la tabla `movimiento`
 --
-ALTER TABLE `lote`
-  ADD CONSTRAINT `lote_ibfk_1` FOREIGN KEY (`id_compra`) REFERENCES `compra` (`id`),
-  ADD CONSTRAINT `lote_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id`);
+ALTER TABLE `movimiento`
+  ADD CONSTRAINT `FK_movimiento_producto` FOREIGN KEY (`producto_id`) REFERENCES `producto` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `FK_movimiento_tipo_movimiento` FOREIGN KEY (`tipo_movimiento_id`) REFERENCES `tipo_movimiento` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `pedido`
+--
+ALTER TABLE `pedido`
+  ADD CONSTRAINT `FK_pedido_proveedor` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `pedido_compra`
+--
+ALTER TABLE `pedido_compra`
+  ADD CONSTRAINT `FK_pedido_compra_pedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedido` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `FK_pedido_compra_producto` FOREIGN KEY (`producto_id`) REFERENCES `producto` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `producto`

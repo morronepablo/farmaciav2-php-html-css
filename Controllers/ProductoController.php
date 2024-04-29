@@ -15,14 +15,14 @@ if ($_POST['funcion'] == 'obtener_productos') {
 	$producto->obtener_productos();
 	$json = array();
 	foreach ($producto->objetos as $objeto) {
-		$producto->obtener_stock($objeto->id);
-		$stock = $producto->objetos[0]->total;
+		/*$producto->obtener_stock($objeto->id);
+		$stock = $producto->objetos[0]->total;*/
 		$json[] = array(
 			'id'				 => openssl_encrypt($objeto->id, CODE, KEY),
 			'nombre'			 => str_replace('***', '%', $objeto->nombre),
 			'concentracion'		 => str_replace('***', '%', $objeto->concentracion),
 			'precio'			 => $objeto->precio,
-			'stock'				 => $stock,
+			// 'stock'				 => $stock,
 			'laboratorio'		 => $objeto->laboratorio,
 			'subtipo'			 => $objeto->subtipo,
 			'presentacion'		 => $objeto->presentacion,
@@ -40,14 +40,14 @@ if ($_POST['funcion'] == 'obtener_productos') {
 	$producto->obtener_gestion_productos();
 	$json = array();
 	foreach ($producto->objetos as $objeto) {
-		$producto->obtener_stock($objeto->id);
-		$stock = $producto->objetos[0]->total;
+		/*$producto->obtener_stock($objeto->id);
+		$stock = $producto->objetos[0]->total;*/
 		$json[] = array(
 			'id'				 => openssl_encrypt($objeto->id, CODE, KEY),
 			'nombre'			 => str_replace('***', '%', $objeto->nombre),
 			'concentracion'		 => str_replace('***', '%', $objeto->concentracion),
 			'precio'			 => $objeto->precio,
-			'stock'				 => $stock,
+			// 'stock'				 => $stock,
 			'laboratorio'		 => $objeto->laboratorio,
 			'id_laboratorio'	 => openssl_encrypt($objeto->id_laboratorio, CODE, KEY),
 			'subtipo'			 => $objeto->subtipo,

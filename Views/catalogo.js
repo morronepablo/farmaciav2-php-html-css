@@ -228,6 +228,14 @@ $(document).ready(function () {
                     </a>
                 </li>
                 <li id="gestion_compras" class="nav-header">Compras</li>
+                <li id="" class="nav-item">
+                    <a href="/farmaciav2/Views/pedidos.php" class="nav-link">
+                        <i class="nav-icon fas fa-clipboard-list"></i>
+                        <p>
+                            Gestión pedidos
+                        </p>
+                    </a>
+                </li>
                 <li id="gestion_proveedor" class="nav-item">
                     <a href="/farmaciav2/Views/proveedores.php" class="nav-link">
                         <i class="nav-icon fas fa-truck"></i>

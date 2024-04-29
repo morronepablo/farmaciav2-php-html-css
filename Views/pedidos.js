@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  bsCustomFileInput.init();
   Loader();
   //setTimeout(verificar_sesion, 2000);
 
@@ -7,6 +8,30 @@ $(document).ready(function () {
   toastr.options = {
     preventDuplicates: true,
   };
+
+  $("#proveedor").select2({
+    placeholder: "Seleccione un proveedor",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  $("#producto").select2({
+    placeholder: "Seleccione un producto",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
 
   function llenar_menu_superior(usuario) {
     let template = `
@@ -162,7 +187,7 @@ $(document).ready(function () {
                     </a>
                 </li>
                 <li id="gestion_cliente" class="nav-item">
-                    <a href="/farmaciav2/Views/clientes.php" class="active nav-link">
+                    <a href="/farmaciav2/Views/clientes.php" class="nav-link">
                         <i class="nav-icon fas fa-user-friends"></i>
                         <p>
                             Gestión cliente
@@ -180,7 +205,7 @@ $(document).ready(function () {
                 </li>
                 <li id="gestion_almacen" class="nav-header">Almacén</li>
                 <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/laboratorios.php" class="nav-link">
+                    <a href="/farmaciav2/Views/laboratorios.php" class="active nav-link">
                         <i class="nav-icon fas fa-flask"></i>
                         <p>
                             Laboratorios
@@ -272,7 +297,7 @@ $(document).ready(function () {
         if (usuario.length != 0 && usuario.id_tipo != 3) {
           llenar_menu_superior(usuario);
           llenar_menu_lateral(usuario);
-          obtener_clientes();
+          obtener_laboratorios();
           CloseLoader();
         } else {
           location.href = "/farmaciav2/";
@@ -295,21 +320,24 @@ $(document).ready(function () {
     }
   }
 
-  async function obtener_clientes() {
-    let funcion = "obtener_clientes";
-    let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion,
-    });
+  async function obtener_laboratorios() {
+    let funcion = "obtener_laboratorios";
+    let data = await fetch(
+      "/farmaciav2/Controllers/LaboratorioController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion,
+      }
+    );
     if (data.ok) {
       let response = await data.text();
       try {
-        let clientes = JSON.parse(response);
-        //console.log(clientes);
+        let laboratorios = JSON.parse(response);
+        console.log(laboratorios);
 
-        $("#clientes").DataTable({
-          data: clientes,
+        $("#laboratorios").DataTable({
+          data: laboratorios,
           aaSorting: [],
           searching: true,
           scrollX: false,
@@ -319,63 +347,77 @@ $(document).ready(function () {
               render: function (data, type, datos, meta) {
                 let template = "";
                 template += `
-                                <div class="card bg-light">
-                                    <div class="h5 card-header text-muted border-bottom-0">`;
-                if (datos.estado == "A") {
-                  template += `<span class="badge badge-success">Activo</span>`;
-                } else {
-                  template += `<span class="badge badge-secondary">Inactivo</span>`;
-                }
-                template += `</div>
-                                    <div class="card-body pt-0">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <h4 class=""><b>${datos.nombre} ${datos.apellido}</b></h4>
-                                                <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> DNI: ${datos.dni}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Edad: ${datos.edad}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Teléfono: ${datos.telefono}</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Correo: ${datos.correo}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Sexo: ${datos.sexo}</li>
-                                                    <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Adicional: ${datos.adicional}</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-4 text-center">
-                                                <img src="/farmaciav2/Util/img/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
-                                            </div>
+                                <div class="card card-widget widget-user-2">
+                                    <div class="widget-user-header bg-success d-flex" >
+                                        <div class="widget-user-image" style="width: 80px; height: 80px; object-fit: cover;">
+                                            <img class="img-circle elevation-2" src="/farmaciav2/Util/img/laboratorios/${datos.avatar}" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
-                                    </div>
-                                    <div class="card-footer">
-                                        <div class="text-right">`;
+                                        <div>
+                                            <h3 class="widget-user-username" style="margin: 0 20px;">${datos.nombre}</h3>`;
                 if (datos.estado == "A") {
-                  template += `<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="eliminar_cliente btn btn-outline-danger btn-circle btn-lg">
-                                                            <i class="far fa-trash-alt mr-5"></i>
-                                                        </button>   
-                                                        <button 
-                                                            id="${datos.id}" 
-                                                            avatar="${datos.avatar}" 
-                                                            nombre="${datos.nombre}" 
-                                                            apellido="${datos.apellido}" 
-                                                            telefono="${datos.telefono}"
-                                                            correo="${datos.correo}"
-                                                            adicional="${datos.adicional}"
-                                                            data-toggle="modal"
-                                                            data-target="#editar_cliente"
-                                                            class="editar_cliente btn btn-outline-success btn-circle btn-lg"
-                                                        >
-                                                            <i class="fas fa-pencil-alt mr-5"></i>
-                                                        </button>`;
-                } else if (datos.estado == "I") {
-                  template += `<button id="${datos.id}" avatar="${datos.avatar}" nombre="${datos.nombre}" apellido="${datos.apellido}" class="activar_cliente btn btn-outline-primary btn-circle btn-lg">
-                                                            <i class="fas fa-plus mr-5"></i>
-                                                        </button>`;
+                  template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-warning">Activo</span></h5>`;
+                } else {
+                  template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-secondary">Inactivo</span></h5>`;
                 }
 
                 template += `</div>
+                                    </div>
+                                    <div class="card-footer p-0">
+                                        <ul class="nav flex-column">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link">`;
+                if (datos.estado == "A") {
+                  template += `
+                                                        <span style="margin-right: 5px;">
+                                                            <button 
+                                                                class="btn btn-outline-primary btn-circle btn-lg editar" 
+                                                                data-toggle="modal" 
+                                                                data-target="#editar_laboratorio" 
+                                                                id="${datos.id}"
+                                                                nombre="${datos.nombre}"
+                                                                avatar="${datos.avatar}"
+                                                            >
+                                                                <i class="fas fa-pencil-alt"></i>
+                                                            </button>
+                                                        </span>
+                                                        <span style="margin-right: 5px;">
+                                                            <button 
+                                                                class="btn btn-outline-info btn-circle btn-lg editar_avatar"
+                                                                data-toggle="modal" 
+                                                                data-target="#editar_avatar"
+                                                                id="${datos.id}"
+                                                                nombre="${datos.nombre}"
+                                                                avatar="${datos.avatar}"
+                                                            >
+                                                                <i class="fas fa-image"></i>
+                                                            </button>
+                                                        </span>
+                                                        <span style="margin-right: 5px;">
+                                                            <button 
+                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar"
+                                                                id="${datos.id}"
+                                                                nombre="${datos.nombre}"
+                                                                avatar="${datos.avatar}"
+                                                            >
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </span>
+                                                        `;
+                } else {
+                  template += `<span>
+                                                                        <button 
+                                                                            class="btn btn-outline-success btn-circle btn-lg activar"
+                                                                            id="${datos.id}"
+                                                                            nombre="${datos.nombre}"
+                                                                            avatar="${datos.avatar}"
+                                                                        >
+                                                                            <i class="fas fa-plus"></i>
+                                                                        </button>
+                                                                    </span>`;
+                }
+                template += `</a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                                 `;
@@ -404,29 +446,34 @@ $(document).ready(function () {
     }
   }
 
-  async function crear_cliente(datos) {
-    let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
-      method: "POST",
-      body: datos,
-    });
+  async function crear_laboratorio(datos) {
+    let data = await fetch(
+      "/farmaciav2/Controllers/LaboratorioController.php",
+      {
+        method: "POST",
+        body: datos,
+      }
+    );
     if (data.ok) {
       let response = await data.text();
       try {
         let respuesta = JSON.parse(response);
         if (respuesta.mensaje == "success") {
-          toastr.success("Se ha creado el cliente correctamente", "Exito!", {
-            timeOut: 2000,
-          });
-          obtener_clientes();
-          $("#crear_cliente").modal("hide");
-          $("#form-crear_cliente").trigger("reset");
-        } else if (respuesta.mensaje == "error_cliente") {
+          toastr.success(
+            "Se ha creado el laboratorio correctamente",
+            "Exito!",
+            { timeOut: 2000 }
+          );
+          obtener_laboratorios();
+          $("#crear_laboratorio").modal("hide");
+          $("#form-crear_laboratorio").trigger("reset");
+        } else if (respuesta.mensaje == "error_lab") {
           Swal.fire({
             icon: "error",
-            title: "El cliente ya existe...",
-            text: "El cliente ya existe, póngase en contacto con el administrador del sistema.",
+            title: "El laboratorio ya existe...",
+            text: "El laboratorio ya existe, póngase en contacto con el administrador del sistema.",
           });
-          $("#form-crear_cliente").trigger("reset");
+          $("#form-crear_laboratorio").trigger("reset");
         } else if (respuesta.mensaje == "error_session") {
           Swal.fire({
             position: "center",
@@ -459,95 +506,24 @@ $(document).ready(function () {
 
   $.validator.setDefaults({
     submitHandler: function () {
-      let datos = new FormData($("#form-crear_cliente")[0]);
-      let funcion = "crear_cliente";
+      let datos = new FormData($("#form-crear_laboratorio")[0]);
+      let funcion = "crear_laboratorio";
       datos.append("funcion", funcion);
-      crear_cliente(datos);
+      crear_laboratorio(datos);
     },
   });
 
-  jQuery.validator.addMethod(
-    "letras",
-    (value) => {
-      let campo = value.replace(/ /g, "");
-      let estado = /^[A-Za-z]+$/.test(campo);
-      return estado;
-    },
-    "* Este campo solo permite letras"
-  );
-
-  $("#form-crear_cliente").validate({
+  $("#form-crear_laboratorio").validate({
     rules: {
       nombre: {
         required: true,
         minlength: 3,
-        letras: true,
-      },
-      apellido: {
-        required: true,
-        minlength: 3,
-        letras: true,
-      },
-      nacimiento: {
-        required: true,
-      },
-      dni: {
-        required: true,
-        minlength: 7,
-        maxlength: 8,
-        number: true,
-      },
-      telefono: {
-        required: true,
-        minlength: 10,
-        maxlength: 10,
-        number: true,
-      },
-      sexo: {
-        required: true,
-        letras: true,
-      },
-      correo: {
-        required: true,
-        email: true,
-      },
-      adicional: {
-        maxlength: 100,
       },
     },
     messages: {
       nombre: {
         required: "* Dato requerido",
         minlength: "* Se permite mínimo 3 caracteres",
-      },
-      apellido: {
-        required: "* Dato requerido",
-        minlength: "* Se permite mínimo 3 caracteres",
-      },
-      nacimiento: {
-        required: "* Dato requerido",
-      },
-      dni: {
-        required: "* Dato requerido",
-        number: "* El dato debe ser numérico",
-        minlength: "* Se permite mínimo 7 caracteres",
-        maxlength: "* Se permite máximo 8 caracteres",
-      },
-      telefono: {
-        required: "* Dato requerido",
-        number: "* El dato debe ser numérico",
-        minlength: "* Se permite mínimo 10 caracteres",
-        maxlength: "* Se permite máximo 10 caracteres",
-      },
-      sexo: {
-        required: "* Dato requerido",
-      },
-      correo: {
-        required: "* Dato requerido",
-        email: "* Ingrese un correo de formato válido",
-      },
-      adicional: {
-        maxlength: "* Se permite máximo 100 caracteres",
       },
     },
     errorElement: "span",
@@ -565,39 +541,154 @@ $(document).ready(function () {
     },
   });
 
-  $(document).on("click", ".editar_cliente", (e) => {
+  $(document).on("click", ".editar", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
     let avatar = $(elemento).attr("avatar");
     let nombre = $(elemento).attr("nombre");
-    let apellido = $(elemento).attr("apellido");
-    let telefono = $(elemento).attr("telefono");
-    let correo = $(elemento).attr("correo");
-    let adicional = $(elemento).attr("adicional");
-
-    $("#nombre_edit").text(nombre);
-    $("#apellido_edit").text(apellido);
-    $("#avatar_edit").attr("src", "/farmaciav2/Util/img/" + avatar);
-    $("#id_usuario").val(id);
-    $("#telefono_edit").val(telefono);
-    $("#correo_edit").val(correo);
-    $("#adicional_edit").val(adicional);
+    $("#id_laboratorio").val(id);
+    $("#nombre_edit").val(nombre);
+    $("#nombre_card").text(nombre);
+    $("#avatar_card").attr(
+      "src",
+      "/farmaciav2/Util/img/laboratorios/" + avatar
+    );
   });
 
-  async function editar_cliente(datos) {
-    let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
-      method: "POST",
-      body: datos,
-    });
+  async function editar_laboratorio(datos) {
+    let data = await fetch(
+      "/farmaciav2/Controllers/LaboratorioController.php",
+      {
+        method: "POST",
+        body: datos,
+      }
+    );
     if (data.ok) {
       let response = await data.text();
       try {
         let respuesta = JSON.parse(response);
         if (respuesta.mensaje == "success") {
-          toastr.success("Se ha editado al Cliente correctamente...", "Éxito!");
-          $("#form-editar_cliente").trigger("reset");
-          $("#editar_cliente").modal("hide");
-          obtener_clientes();
+          toastr.success(
+            "Se ha editado el laboratorio correctamente",
+            "Exito!",
+            { timeOut: 2000 }
+          );
+          obtener_laboratorios();
+          $("#editar_laboratorio").modal("hide");
+          $("#form-editar_laboratorio").trigger("reset");
+        } else if (respuesta.mensaje == "error_lab") {
+          Swal.fire({
+            icon: "error",
+            title: "El laboratorio ya existe...",
+            text: "El laboratorio ya existe, póngase en contacto con el administrador del sistema.",
+          });
+          //$('#form-editar_laboratorio').trigger('reset');
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
+
+  $.validator.setDefaults({
+    submitHandler: function () {
+      let datos = new FormData($("#form-editar_laboratorio")[0]);
+      let funcion = "editar_laboratorio";
+      datos.append("funcion", funcion);
+      editar_laboratorio(datos);
+    },
+  });
+
+  $("#form-editar_laboratorio").validate({
+    rules: {
+      nombre_edit: {
+        required: true,
+        minlength: 3,
+      },
+    },
+    messages: {
+      nombre_edit: {
+        required: "* Dato requerido",
+        minlength: "* Se permite mínimo 3 caracteres",
+      },
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+      error.addClass("invalid-feedback");
+      element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass("is-invalid");
+      $(element).removeClass("is-valid");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass("is-invalid");
+      $(element).addClass("is-valid");
+    },
+  });
+
+  $(document).on("click", ".editar_avatar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let avatar = $(elemento).attr("avatar");
+    let nombre = $(elemento).attr("nombre");
+    $("#id_laboratorio_avatar").val(id);
+    $("#nombre_avatar").text(nombre);
+    $("#avatar").attr("src", "/farmaciav2/Util/img/laboratorios/" + avatar);
+  });
+
+  async function editar_avatar(datos) {
+    let data = await fetch(
+      "/farmaciav2/Controllers/LaboratorioController.php",
+      {
+        method: "POST",
+        body: datos,
+      }
+    );
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+        if (respuesta.mensaje == "success") {
+          toastr.success("Su avatar fué actualizado correctamente", "Éxito!", {
+            timeOut: 2000,
+          });
+          obtener_laboratorios();
+          $("#editar_avatar").modal("hide");
+          $("#form-editar_avatar").trigger("reset");
         } else if (respuesta.mensaje == "error_decrypt") {
           Swal.fire({
             position: "center",
@@ -641,46 +732,24 @@ $(document).ready(function () {
 
   $.validator.setDefaults({
     submitHandler: function () {
-      let datos = new FormData($("#form-editar_cliente")[0]);
-      let funcion = "editar_cliente";
+      let datos = new FormData($("#form-editar_avatar")[0]);
+      let funcion = "editar_avatar";
       datos.append("funcion", funcion);
-      editar_cliente(datos);
+      editar_avatar(datos);
     },
   });
 
-  $("#form-editar_cliente").validate({
+  $("#form-editar_avatar").validate({
     rules: {
-      telefono_edit: {
+      avatar_edit: {
         required: true,
-        minlength: 10,
-        maxlength: 10,
-        number: true,
-      },
-      correo_edit: {
-        required: true,
-        email: true,
-      },
-      adicional_edit: {
-        required: true,
-        minlength: 2,
-        maxlength: 100,
+        extension: "png|jpg|jpeg|webp",
       },
     },
     messages: {
-      telefono_edit: {
+      avatar_edit: {
         required: "* Dato requerido",
-        minlength: "* Se permite mínimo de 10 caracteres",
-        maxlength: "* Se permite máximo de 10 caracteres",
-        number: "* Los datos deben ser solo números",
-      },
-      correo_edit: {
-        required: "* Dato requerido",
-        email: "* Solo se permite formato email",
-      },
-      adicional_edit: {
-        required: "* Dato requerido",
-        minlength: "* Se permite mínimo de 2 caracteres",
-        maxlength: "* Se permite máximo de 100 caracteres",
+        extension: "* Solo se permite formato png, jpg, jpeg, webp",
       },
     },
     errorElement: "span",
@@ -698,14 +767,17 @@ $(document).ready(function () {
     },
   });
 
-  async function eliminar_cliente(id) {
-    let funcion = "eliminar_cliente";
+  async function eliminar(id) {
+    let funcion = "eliminar";
     let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id,
-    });
+    let data = await fetch(
+      "/farmaciav2/Controllers/LaboratorioController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion + "&&id=" + id,
+      }
+    );
     if (data.ok) {
       let response = await data.text();
       try {
@@ -729,11 +801,11 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  $(document).on("click", ".eliminar_cliente", (e) => {
+  $(document).on("click", ".eliminar", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
+    let avatar = $(elemento).attr("avatar");
     let nombre = $(elemento).attr("nombre");
-    let apellido = $(elemento).attr("apellido");
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success ml-2",
@@ -744,8 +816,10 @@ $(document).ready(function () {
 
     swalWithBootstrapButtons
       .fire({
-        title: `Desea eliminar a ${nombre} ${apellido} ?`,
-        icon: "warning",
+        title: `Desea eliminar el laboratorio ${nombre} ?`,
+        imageUrl: "/farmaciav2/Util/img/laboratorios/" + avatar,
+        imageWidth: 200,
+        imageHeight: 200,
         showCancelButton: true,
         confirmButtonText: "Si, eliminar !",
         cancelButtonText: "No, cancelar !",
@@ -753,12 +827,12 @@ $(document).ready(function () {
       })
       .then((result) => {
         if (result.isConfirmed) {
-          eliminar_cliente(id).then((respuesta) => {
+          eliminar(id).then((respuesta) => {
             if (respuesta.mensaje == "success") {
-              obtener_clientes();
+              obtener_laboratorios();
               swalWithBootstrapButtons.fire(
                 "Eliminado!",
-                "El cliente fue eliminado correctamente",
+                "El laboratorio fue eliminado correctamente",
                 "success"
               );
             } else if (respuesta.mensaje == "error_decrypt") {
@@ -780,6 +854,7 @@ $(document).ready(function () {
                 showConfirmButton: false,
                 timer: 1500,
               }).then(function () {
+                //refresca la pagina (F5)
                 location.href = "/farmaciav2/index.php";
               });
             }
@@ -790,21 +865,24 @@ $(document).ready(function () {
         ) {
           swalWithBootstrapButtons.fire(
             "Cancelado",
-            "canceló la eliminación del cliente",
+            "canceló la eliminación del laboratorio",
             "error"
           );
         }
       });
   });
 
-  async function activar_cliente(id) {
-    let funcion = "activar_cliente";
+  async function activar(id) {
+    let funcion = "activar";
     let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id,
-    });
+    let data = await fetch(
+      "/farmaciav2/Controllers/LaboratorioController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion + "&&id=" + id,
+      }
+    );
     if (data.ok) {
       let response = await data.text();
       try {
@@ -828,11 +906,11 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  $(document).on("click", ".activar_cliente", (e) => {
+  $(document).on("click", ".activar", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
+    let avatar = $(elemento).attr("avatar");
     let nombre = $(elemento).attr("nombre");
-    let apellido = $(elemento).attr("apellido");
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success ml-2",
@@ -843,8 +921,10 @@ $(document).ready(function () {
 
     swalWithBootstrapButtons
       .fire({
-        title: `Desea volver activar a ${nombre} ${apellido} ?`,
-        icon: "warning",
+        title: `Desea volver activar el laboratorio ${nombre} ?`,
+        imageUrl: "/farmaciav2/Util/img/laboratorios/" + avatar,
+        imageWidth: 200,
+        imageHeight: 200,
         showCancelButton: true,
         confirmButtonText: "Si, activar !",
         cancelButtonText: "No, cancelar !",
@@ -852,12 +932,12 @@ $(document).ready(function () {
       })
       .then((result) => {
         if (result.isConfirmed) {
-          activar_cliente(id).then((respuesta) => {
+          activar(id).then((respuesta) => {
             if (respuesta.mensaje == "success") {
-              obtener_clientes();
+              obtener_laboratorios();
               swalWithBootstrapButtons.fire(
                 "Activado!",
-                "El cliente fue activado correctamente",
+                "El laboratorio fue activado correctamente",
                 "success"
               );
             } else if (respuesta.mensaje == "error_decrypt") {
@@ -879,6 +959,7 @@ $(document).ready(function () {
                 showConfirmButton: false,
                 timer: 1500,
               }).then(function () {
+                //refresca la pagina (F5)
                 location.href = "/farmaciav2/index.php";
               });
             }
@@ -889,7 +970,7 @@ $(document).ready(function () {
         ) {
           swalWithBootstrapButtons.fire(
             "Cancelado",
-            "canceló la activación del cliente",
+            "canceló la activación del laboratorio",
             "error"
           );
         }
