@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.4
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-04-2024 a las 16:43:10
--- Versión del servidor: 10.1.26-MariaDB
--- Versión de PHP: 7.1.9
+-- Tiempo de generación: 05-05-2024 a las 23:23:29
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -30,16 +29,16 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `cliente` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
-  `apellido` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `apellido` varchar(50) NOT NULL,
   `dni` int(50) DEFAULT NULL,
   `edad` date NOT NULL,
   `telefono` int(45) DEFAULT NULL,
-  `correo` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `sexo` varchar(45) COLLATE utf8_spanish_ci NOT NULL,
-  `adicional` varchar(500) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `avatar` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `estado` varchar(10) COLLATE utf8_spanish_ci NOT NULL DEFAULT 'A'
+  `correo` varchar(50) DEFAULT NULL,
+  `sexo` varchar(45) NOT NULL,
+  `adicional` varchar(500) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `estado` varchar(10) NOT NULL DEFAULT 'A'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -50,9 +49,9 @@ CREATE TABLE `cliente` (
 
 CREATE TABLE `compra` (
   `id` int(11) NOT NULL,
-  `codigo` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `nota` varchar(1000) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `codigo` varchar(100) NOT NULL,
+  `nota` varchar(1000) DEFAULT NULL,
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
   `fecha_vencimiento` date DEFAULT NULL,
   `total` float NOT NULL,
   `comprobante_id` int(11) NOT NULL,
@@ -69,7 +68,7 @@ CREATE TABLE `compra` (
 
 CREATE TABLE `comprobante` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(50) COLLATE utf8mb4_spanish_ci NOT NULL
+  `nombre` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 --
@@ -94,7 +93,7 @@ CREATE TABLE `detalle_venta` (
   `id__det_prod` int(11) NOT NULL,
   `lote_id_prov` int(255) NOT NULL,
   `id_det_venta` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -104,7 +103,7 @@ CREATE TABLE `detalle_venta` (
 
 CREATE TABLE `estado_pago` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(100) COLLATE utf8_spanish_ci NOT NULL
+  `nombre` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
@@ -126,9 +125,9 @@ CREATE TABLE `laboratorio` (
   `nombre` varchar(250) NOT NULL,
   `avatar` varchar(255) DEFAULT 'lab_default.png',
   `estado` varchar(10) NOT NULL DEFAULT 'A',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_edicion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `laboratorio`
@@ -159,7 +158,7 @@ CREATE TABLE `localidad` (
   `id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `id_provincia` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `localidad`
@@ -2560,15 +2559,15 @@ CREATE TABLE `movimiento` (
   `id` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `precio_venta` float DEFAULT NULL,
-  `precio_compra` float NOT NULL DEFAULT '0',
+  `precio_compra` float NOT NULL DEFAULT 0,
   `fecha_vencimiento` date NOT NULL,
   `lote` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `compra_id` int(11) DEFAULT '0',
-  `venta_id` int(11) DEFAULT '0',
-  `producto_id` int(11) NOT NULL DEFAULT '0',
-  `tipo_movimiento_id` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `compra_id` int(11) DEFAULT 0,
+  `venta_id` int(11) DEFAULT 0,
+  `producto_id` int(11) NOT NULL DEFAULT 0,
+  `tipo_movimiento_id` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -2578,11 +2577,11 @@ CREATE TABLE `movimiento` (
 
 CREATE TABLE `pedido` (
   `id` int(11) NOT NULL,
-  `descripcion` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `descripcion` varchar(1000) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
   `total` float NOT NULL,
-  `estado` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT 'A',
-  `estado_proceso` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT 'espera',
+  `estado` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'A',
+  `estado_proceso` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'espera',
   `id_proveedor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
@@ -2595,8 +2594,8 @@ CREATE TABLE `pedido` (
 CREATE TABLE `pedido_compra` (
   `id` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `precio` float DEFAULT '0',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `precio` float DEFAULT 0,
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
   `producto_id` int(11) NOT NULL,
   `pedido_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
@@ -2611,9 +2610,9 @@ CREATE TABLE `presentacion` (
   `id` int(11) NOT NULL,
   `nombre` varchar(250) NOT NULL,
   `estado` varchar(10) NOT NULL DEFAULT 'A',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_edicion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `presentacion`
@@ -2651,12 +2650,12 @@ CREATE TABLE `producto` (
   `precio` float NOT NULL,
   `avatar` varchar(255) DEFAULT 'prod_default.png',
   `estado` varchar(10) NOT NULL DEFAULT 'A',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_edicion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `id_laboratorio` int(11) NOT NULL,
   `id_subtipo_producto` int(11) NOT NULL,
   `id_presentacion` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `producto`
@@ -2668,15 +2667,15 @@ INSERT INTO `producto` (`id`, `codigo`, `nombre`, `concentracion`, `fracciones`,
 (3, 44353453, 'Producto3', 'prueba', 1, 'ggffdg', 1, 'prod_default.png', 'A', '2023-12-10 21:14:38', '2024-01-14 17:26:49', 4, 4, 4),
 (4, 55555, 'Producto5', 'prueba', 1, 'aasdfg', 1, 'prod_default.png', 'A', '2023-12-10 21:19:47', '2024-01-14 17:26:57', 4, 4, 4),
 (5, 777777, 'Aerosol 2', '1ewrqw', 2, 'tttt', 2, 'prod_default.png', 'A', '2023-12-10 21:25:29', '2024-01-21 13:38:47', 6, 4, 4),
-(6, 6665543, 'Aerosol', '1ewrqw', 1, 'ccdsfg', 1, 'prod_default.png', 'A', '2023-12-10 21:27:41', '2024-02-26 16:44:41', 6, 4, 4),
-(7, 11223344, 'Aerosol', '1ewrqw', 1, 'trewte4535', 1, 'prod_default.png', 'A', '2023-12-10 23:29:10', '2024-01-14 17:27:14', 6, 4, 4),
+(6, 6665543, 'Aerosol F', '1ewrqw', 1, 'ccdsfg', 1, 'prod_default.png', 'A', '2023-12-10 21:27:41', '2024-05-05 18:16:02', 6, 4, 4),
+(7, 11223344, 'Aerosol D', '1ewrqw', 1, 'trewte4535', 1, 'prod_default.png', 'A', '2023-12-10 23:29:10', '2024-05-05 18:15:47', 6, 4, 4),
 (8, 999888, 'Pablo', '1ewrqw', 1, '55urty', 1, 'prod_default.png', 'A', '2023-12-10 23:31:30', '2024-01-14 17:27:20', 6, 4, 4),
 (9, 4444554, 'Tito', '12123', 1, '1244ert', 1, 'prod_default.png', 'A', '2023-12-10 23:41:33', '2024-01-14 17:27:26', 7, 4, 4),
-(10, 1112222, 'Aerosol', '1ewrqw', 1, '009765hf', 1, 'prod_default.png', 'A', '2023-12-10 23:46:31', '2024-01-14 17:27:31', 6, 4, 4),
-(11, 1112255, 'Aerosol', '1ewrqw', 1, 'wwer53', 1, 'prod_default.png', 'A', '2023-12-10 23:48:08', '2024-01-14 17:27:38', 6, 4, 4),
-(12, 221122, 'Aerosol', '1ewrqw', 1, 'jhjghj', 1, 'prod_default.png', 'A', '2023-12-10 23:48:37', '2024-01-14 17:27:42', 6, 4, 4),
-(13, 112233, 'Aerosol', '1ewrqw', 1, 'wweery', 1, 'prod_default.png', 'A', '2023-12-10 23:50:15', '2024-01-14 17:27:46', 6, 4, 2),
-(14, 777756, 'Aerosol', '1ewrqw', 1, 'eerr66788', 1, 'prod_default.png', 'A', '2023-12-10 23:51:56', '2024-01-14 17:27:51', 6, 4, 4),
+(10, 1112222, 'Aerosol B', '1ewrqw', 1, '009765hf', 1, 'prod_default.png', 'A', '2023-12-10 23:46:31', '2024-05-05 18:15:31', 6, 4, 4),
+(11, 1112255, 'Aerosol G', '1ewrqw', 1, 'wwer53', 1, 'prod_default.png', 'A', '2023-12-10 23:48:08', '2024-05-05 18:16:09', 6, 4, 4),
+(12, 221122, 'Aerosol E', '1ewrqw', 1, 'jhjghj', 1, 'prod_default.png', 'A', '2023-12-10 23:48:37', '2024-05-05 18:15:55', 6, 4, 4),
+(13, 112233, 'Aerosol C', '1ewrqw', 1, 'wweery', 1, 'prod_default.png', 'A', '2023-12-10 23:50:15', '2024-05-05 18:15:38', 6, 4, 2),
+(14, 777756, 'Aerosol A', '1ewrqw', 1, 'eerr66788', 1, 'prod_default.png', 'A', '2023-12-10 23:51:56', '2024-05-05 18:15:13', 6, 4, 4),
 (15, 999999991, 'Pablo', '1ewrqw', 1, 'ddffggr445', 1, 'prod_default.png', 'A', '2023-12-10 23:52:34', '2024-01-14 17:27:56', 4, 4, 4),
 (16, 333333, 'Pablo Martin Morrone', '1ewrqw', 1, 'ssd6677jjh', 1, 'prod_default.png', 'A', '2023-12-10 23:56:02', '2024-01-14 17:28:03', 4, 4, 4),
 (17, 47787, 'ACIDO FUSIDICO 5***', '5***', 1, 'NG4822', 1, '65eddca2af071-1111.jpeg', 'A', '2024-01-21 13:46:47', '2024-03-10 13:15:30', 13, 13, 14);
@@ -2695,9 +2694,17 @@ CREATE TABLE `proveedor` (
   `direccion` varchar(45) NOT NULL,
   `avatar` varchar(255) DEFAULT 'prov_default.png',
   `estado` varchar(10) NOT NULL DEFAULT 'A',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_edicion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `proveedor`
+--
+
+INSERT INTO `proveedor` (`id`, `nombre`, `telefono`, `correo`, `direccion`, `avatar`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
+(1, 'Distribuidora Morrone', 1138669097, 'morronepablo@gmail.com', 'Av. Rivadavia 10444 6 F', 'prov_default.png', 'A', '2024-05-05 17:58:57', '2024-05-05 17:58:57'),
+(2, 'Distribuidora DOCQ', 1138661609, 'docq@gmail.com', 'pedro goyena 2024', 'prov_default.png', 'I', '2024-05-05 18:00:20', '2024-05-05 18:01:16');
 
 -- --------------------------------------------------------
 
@@ -2708,7 +2715,7 @@ CREATE TABLE `proveedor` (
 CREATE TABLE `provincia` (
   `id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `provincia`
@@ -2749,10 +2756,10 @@ INSERT INTO `provincia` (`id`, `nombre`) VALUES
 
 CREATE TABLE `subtipo_producto` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(250) CHARACTER SET latin1 NOT NULL,
-  `estado` varchar(10) CHARACTER SET latin1 NOT NULL DEFAULT 'A',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `nombre` varchar(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `estado` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'A',
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_edicion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `id_tipo_producto` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
@@ -2784,7 +2791,7 @@ INSERT INTO `subtipo_producto` (`id`, `nombre`, `estado`, `fecha_creacion`, `fec
 CREATE TABLE `tipo` (
   `id` int(11) NOT NULL,
   `nombre` varchar(45) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo`
@@ -2804,7 +2811,7 @@ INSERT INTO `tipo` (`id`, `nombre`) VALUES
 CREATE TABLE `tipo_movimiento` (
   `id` int(11) NOT NULL,
   `nombre` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_movimiento`
@@ -2824,9 +2831,9 @@ CREATE TABLE `tipo_producto` (
   `id` int(11) NOT NULL,
   `nombre` varchar(250) NOT NULL,
   `estado` varchar(10) NOT NULL DEFAULT 'A',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_edicion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_edicion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_producto`
@@ -2860,7 +2867,7 @@ CREATE TABLE `usuario` (
   `estado` varchar(10) NOT NULL DEFAULT 'A',
   `id_tipo` int(11) NOT NULL,
   `id_localidad` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
@@ -2886,7 +2893,7 @@ CREATE TABLE `venta` (
   `total` float DEFAULT NULL,
   `vendedor` int(11) NOT NULL,
   `id_cliente` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -2901,7 +2908,7 @@ CREATE TABLE `venta_producto` (
   `subtotal` float NOT NULL,
   `producto_id_producto` int(11) NOT NULL,
   `venta_id_venta` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Índices para tablas volcadas
@@ -3134,7 +3141,7 @@ ALTER TABLE `producto`
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `provincia`

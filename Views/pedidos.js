@@ -205,7 +205,7 @@ $(document).ready(function () {
                 </li>
                 <li id="gestion_almacen" class="nav-header">Almacén</li>
                 <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/laboratorios.php" class="active nav-link">
+                    <a href="/farmaciav2/Views/laboratorios.php" class="nav-link">
                         <i class="nav-icon fas fa-flask"></i>
                         <p>
                             Laboratorios
@@ -254,7 +254,7 @@ $(document).ready(function () {
                 </li>
                 <li id="gestion_compras" class="nav-header">Compras</li>
                 <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/pedidos.php" class="nav-link">
+                    <a href="/farmaciav2/Views/pedidos.php" class="active nav-link">
                         <i class="nav-icon fas fa-clipboard-list"></i>
                         <p>
                             Gestión pedidos
@@ -318,6 +318,91 @@ $(document).ready(function () {
         text: "Hubo confilcto de código: " + data.status,
       });
     }
+  }
+
+  obtener_proveedores().then((respuesta) => {
+    let template = "";
+    respuesta.forEach((proveedor) => {
+      if (proveedor.estado == "A") {
+        template += `<option value="${proveedor.id}">${proveedor.nombre}</option>`;
+      }
+    });
+    $("#proveedor").html(template);
+    $("#proveedor").val("").trigger("change");
+  });
+
+  async function obtener_proveedores() {
+    let funcion = "obtener_proveedores";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  obtener_productos().then((respuesta) => {
+    console.log(respuesta);
+    let template = "";
+    respuesta.forEach((producto) => {
+      if (producto.estado == "A") {
+        template += `<option value="${producto.id}">Código: ${producto.codigo} | Nombre: ${producto.nombre} | Concen: ${producto.concentracion} | Lab: ${producto.laboratorio} | Subtipo: ${producto.subtipo} | Present: ${producto.presentacion}</option>`;
+      }
+    });
+    $("#producto").html(template);
+    $("#producto").val("").trigger("change");
+  });
+
+  async function obtener_productos() {
+    let funcion = "obtener_gestion_productos";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
   }
 
   async function obtener_laboratorios() {
