@@ -29,11 +29,11 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                             </div>
                             <div class="form-group">
                                 <label for="">Cantidad:</label>
-                                <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese cantidad" required>
+                                <input type="number" step="1" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese cantidad" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Precio:</label>
-                                <input type="number" class="form-control" name="precio" id="precio" placeholder="Ingrese precio" required>
+                                <input type="number" step="any" class="form-control" name="precio" id="precio" placeholder="Ingrese precio" required>
                             </div>
                             <button type="button" id="agregar_producto" class="btn btn-outline-success btn-circle btn-lg float-right"><i class="fas fa-plus"></i></button>
                         </div>
