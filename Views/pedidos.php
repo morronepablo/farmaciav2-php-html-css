@@ -29,15 +29,26 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                             </div>
                             <div class="form-group">
                                 <label for="">Cantidad:</label>
-                                <input type="text" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese cantidad" required>
+                                <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese cantidad" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Precio:</label>
-                                <input type="text" class="form-control" name="precio" id="precio" placeholder="Ingrese precio" required>
+                                <input type="number" class="form-control" name="precio" id="precio" placeholder="Ingrese precio" required>
                             </div>
+                            <button type="button" id="agregar_producto" class="btn btn-outline-success btn-circle btn-lg float-right"><i class="fas fa-plus"></i></button>
                         </div>
                         <div class="col-md-4">
+                            <table class="table table-hover mt-1">
+                                <thead class="bg-success">
+                                    <tr>
+                                        <th width="80%">Producto</th>
+                                        <th width="20%">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista_pedido">
 
+                                </tbody>
+                            </table>
                         </div>
                         <div class="col-md-3">
 

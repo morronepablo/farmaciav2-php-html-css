@@ -405,6 +405,44 @@ $(document).ready(function () {
     return respuesta;
   }
 
+  var html = `
+  <tr>
+    <td colspan="2">
+      <div class="col-md-12 bg-danger text-center p-2">
+        No hay productos
+      </div>
+    </td>
+  </tr>
+  `;
+
+  $("#lista_pedido").html(html);
+  $(document).on("click", "#agregar_producto", (e) => {
+    let producto = $("#producto").val();
+    let cantidad = Number($("#cantidad").val());
+    let precio = Number($("#precio").val());
+    let bandera = 0;
+    if (producto == null) {
+      toastr.error("Ingrese un producto", "Error!", { timeOut: 2000 });
+      bandera++;
+    }
+    if (cantidad == "" || cantidad == 0) {
+      toastr.error("Ingrese cantidad", "Error!", { timeOut: 2000 });
+      bandera++;
+    } else {
+      if (Number.isInteger(cantidad) == false) {
+        toastr.error("Cantidad debe ser entero", "Error!", { timeOut: 2000 });
+        bandera++;
+      }
+    }
+    if (precio == "" || precio == 0) {
+      toastr.error("Ingrese precio", "Error!", { timeOut: 2000 });
+      bandera++;
+    }
+    if (bandera == 0) {
+      console.log("validado");
+    }
+  });
+
   async function obtener_laboratorios() {
     let funcion = "obtener_laboratorios";
     let data = await fetch(
