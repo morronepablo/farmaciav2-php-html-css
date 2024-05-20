@@ -367,7 +367,14 @@ $(document).ready(function () {
     let template = "";
     respuesta.forEach((producto) => {
       if (producto.estado == "A") {
-        template += `<option value="${producto.id}">Código: ${producto.codigo} | Nombre: ${producto.nombre} | Concen: ${producto.concentracion} | Lab: ${producto.laboratorio} | Subtipo: ${producto.subtipo} | Present: ${producto.presentacion}</option>`;
+        template += `<option value="${producto.id}" 
+                              codigo="${producto.codigo}"
+                              nombre="${producto.nombre}"
+                              concentracion="${producto.concentracion}"
+                              laboratorio="${producto.laboratorio}"
+                              subtipo="${producto.subtipo}"
+                              presentacion="${producto.presentacion}"
+                      >Código: ${producto.codigo} | Nombre: ${producto.nombre} | Concen: ${producto.concentracion} | Lab: ${producto.laboratorio} | Subtipo: ${producto.subtipo} | Present: ${producto.presentacion}</option>`;
       }
     });
     $("#producto").html(template);
@@ -439,7 +446,48 @@ $(document).ready(function () {
       bandera++;
     }
     if (bandera == 0) {
-      console.log("validado");
+      let template = `
+        <tr id="${producto}">
+          <td>
+            <strong>Código: </strong>${$("#producto")
+              .find("option:selected")
+              .attr("codigo")}<br>
+            <strong>Nombre: </strong>${$("#producto")
+              .find("option:selected")
+              .attr("nombre")}<br>
+            <strong>Concentración: </strong>${$("#producto")
+              .find("option:selected")
+              .attr("concentracion")}<br>
+            <strong>Laboratorio: </strong>${$("#producto")
+              .find("option:selected")
+              .attr("laboratorio")}<br>
+            <strong>Subtipo: </strong>${$("#producto")
+              .find("option:selected")
+              .attr("subtipo")}<br>
+            <strong>Presentación: </strong>${$("#producto")
+              .find("option:selected")
+              .attr("presentacion")}<br>
+            <strong>Cantidad: </strong>${cantidad}<br>
+            <strong>Precio: </strong>${precio}
+          </td>
+          <td>
+          <button type="button" class="eliminar_producto btn btn-outline-danger btn-circle btn-lg float-center"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      `;
+      let bandera_1 = 0;
+      $.each($("#lista_pedido tr"), function (indexInArray, elemento) {
+        if (producto == $(elemento).attr("id")) {
+          bandera_1++;
+        }
+      });
+      if (bandera_1 == 0) {
+        $("#lista_pedido tr:last").after(template);
+      } else {
+        toastr.error("El producto ya está ingresado", "Error!", {
+          timeOut: 2000,
+        });
+      }
     }
   });
 
