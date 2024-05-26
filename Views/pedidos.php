@@ -45,7 +45,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                                         <th width="20%">Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody id="lista_pedido">
+                                <tbody id="lista_pedido" cantidad="0">
 
                                 </tbody>
                             </table>

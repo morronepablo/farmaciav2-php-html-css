@@ -363,7 +363,7 @@ $(document).ready(function () {
   }
 
   obtener_productos().then((respuesta) => {
-    console.log(respuesta);
+    // console.log(respuesta);
     let template = "";
     respuesta.forEach((producto) => {
       if (producto.estado == "A") {
@@ -423,6 +423,7 @@ $(document).ready(function () {
   `;
 
   $("#lista_pedido").html(html);
+
   $(document).on("click", "#agregar_producto", (e) => {
     let producto = $("#producto").val();
     let cantidad = Number($("#cantidad").val());
@@ -446,6 +447,7 @@ $(document).ready(function () {
       bandera++;
     }
     if (bandera == 0) {
+      let cant_tr = $("#lista_pedido").attr("cantidad");
       let template = `
         <tr id="${producto}">
           <td>
@@ -482,13 +484,40 @@ $(document).ready(function () {
         }
       });
       if (bandera_1 == 0) {
-        $("#lista_pedido tr:last").after(template);
+        if (cant_tr == 0) {
+          $("#lista_pedido").html(template);
+          $("#lista_pedido").attr("cantidad", 1);
+        } else {
+          $("#lista_pedido tr:last").after(template);
+        }
+        toastr.info(
+          "El producto con código: " +
+            $("#producto").find("option:selected") +
+            " fué agregado a la lista",
+          "Info!",
+          { timeOut: 2000 }
+        );
+        $("#producto").val("").trigger("change");
+        $("#cantidad").val("");
+        $("#precio").val("");
       } else {
         toastr.error("El producto ya está ingresado", "Error!", {
           timeOut: 2000,
         });
       }
     }
+  });
+
+  $(document).on("click", ".eliminar_producto", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let tr = $(elemento).closest("tr");
+    let cant_tr = $("#lista_pedido tr").length;
+    if (cant_tr == 1) {
+      $("#lista_pedido").attr("cantidad", 0);
+      $("#lista_pedido").html(html);
+    }
+    $(tr).remove();
+    toastr.warning("El producto fué removido", "Cuidado!", { timeOut: 2000 });
   });
 
   async function obtener_laboratorios() {
@@ -505,8 +534,7 @@ $(document).ready(function () {
       let response = await data.text();
       try {
         let laboratorios = JSON.parse(response);
-        console.log(laboratorios);
-
+        // console.log(laboratorios);
         $("#laboratorios").DataTable({
           data: laboratorios,
           aaSorting: [],
