@@ -25,15 +25,15 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                             <hr>
                             <div class="form-group">
                                 <label for="">Producto:</label>
-                                <select name="producto" id="producto" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success" required></select>
+                                <select name="producto" id="producto" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success"></select>
                             </div>
                             <div class="form-group">
                                 <label for="">Cantidad:</label>
-                                <input type="number" step="1" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese cantidad" required>
+                                <input type="number" step="1" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese cantidad">
                             </div>
                             <div class="form-group">
                                 <label for="">Precio:</label>
-                                <input type="number" step="any" class="form-control" name="precio" id="precio" placeholder="Ingrese precio" required>
+                                <input type="number" step="any" class="form-control" name="precio" id="precio" placeholder="Ingrese precio">
                             </div>
                             <button type="button" id="agregar_producto" class="btn btn-outline-success btn-circle btn-lg float-right"><i class="fas fa-plus"></i></button>
                         </div>

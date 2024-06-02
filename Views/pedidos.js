@@ -449,7 +449,7 @@ $(document).ready(function () {
     if (bandera == 0) {
       let cant_tr = $("#lista_pedido").attr("cantidad");
       let template = `
-        <tr id="${producto}">
+        <tr id="${producto}" cantidad="${cantidad}" precio="${precio}">
           <td>
             <strong>Código: </strong>${$("#producto")
               .find("option:selected")
@@ -518,6 +518,20 @@ $(document).ready(function () {
     }
     $(tr).remove();
     toastr.warning("El producto fué removido", "Cuidado!", { timeOut: 2000 });
+  });
+
+  $("#form-crear_pedido").submit(function (e) {
+    let proveedor = $("#proveedor").val();
+    let descripcion = $("#descripcion").val();
+    let cant_tr = $("#lista_pedido").attr("cantidad");
+    if (cant_tr == 1) {
+      $.each($("#lista_pedido tr"), function (indexInArray, elemento) {
+        console.log(elemento);
+      });
+    } else {
+      toastr.error("No hay productos en la lista", "Error!", { timeOut: 2000 });
+    }
+    e.preventDefault();
   });
 
   async function obtener_laboratorios() {
