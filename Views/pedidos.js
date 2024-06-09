@@ -524,15 +524,60 @@ $(document).ready(function () {
     let proveedor = $("#proveedor").val();
     let descripcion = $("#descripcion").val();
     let cant_tr = $("#lista_pedido").attr("cantidad");
+    let productos = [];
     if (cant_tr == 1) {
       $.each($("#lista_pedido tr"), function (indexInArray, elemento) {
-        console.log(elemento);
+        // console.log(elemento);
+        let producto = {
+          id: $(elemento).attr("id"),
+          cantidad: $(elemento).attr("cantidad"),
+          precio: $(elemento).attr("precio"),
+        };
+        productos.push(producto);
       });
+      crear_pedido(proveedor, descripcion, productos);
     } else {
       toastr.error("No hay productos en la lista", "Error!", { timeOut: 2000 });
     }
     e.preventDefault();
   });
+
+  async function crear_pedido(proveedor, descripcion, productos) {
+    let funcion = "crear_pedido";
+    let data = await fetch("/farmaciav2/Controllers/PedidoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:
+        "funcion=" +
+        funcion +
+        "&&proveedor=" +
+        proveedor +
+        "&&descripcion=" +
+        descripcion +
+        "&&productos=" +
+        JSON.stringify(productos),
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
 
   async function obtener_laboratorios() {
     let funcion = "obtener_laboratorios";
