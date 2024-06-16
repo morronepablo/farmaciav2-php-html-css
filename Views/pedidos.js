@@ -525,9 +525,13 @@ $(document).ready(function () {
     let descripcion = $("#descripcion").val();
     let cant_tr = $("#lista_pedido").attr("cantidad");
     let productos = [];
+    let total = 0;
     if (cant_tr == 1) {
       $.each($("#lista_pedido tr"), function (indexInArray, elemento) {
         // console.log(elemento);
+        total +=
+          Number($(elemento).attr("cantidad")) *
+          Number($(elemento).attr("precio"));
         let producto = {
           id: $(elemento).attr("id"),
           cantidad: $(elemento).attr("cantidad"),
@@ -535,14 +539,14 @@ $(document).ready(function () {
         };
         productos.push(producto);
       });
-      crear_pedido(proveedor, descripcion, productos);
+      crear_pedido(proveedor, descripcion, total, productos);
     } else {
       toastr.error("No hay productos en la lista", "Error!", { timeOut: 2000 });
     }
     e.preventDefault();
   });
 
-  async function crear_pedido(proveedor, descripcion, productos) {
+  async function crear_pedido(proveedor, descripcion, total, productos) {
     let funcion = "crear_pedido";
     let data = await fetch("/farmaciav2/Controllers/PedidoController.php", {
       method: "POST",
@@ -554,6 +558,8 @@ $(document).ready(function () {
         proveedor +
         "&&descripcion=" +
         descripcion +
+        "&&total=" +
+        total +
         "&&productos=" +
         JSON.stringify(productos),
     });
