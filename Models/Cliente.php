@@ -1,14 +1,18 @@
-<?php 
-include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Conexion.php';
-class Cliente {
+<?php
+include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Conexion.php';
+class Cliente
+{
 	var $objetos;
-	public function __construct(){
+	var $acceso;
+	public function __construct()
+	{
 		$db = new Conexion();
 		$this->acceso = $db->pdo;
 	}
 
-	function obtener_clientes(){
-		$sql="SELECT 
+	function obtener_clientes()
+	{
+		$sql = "SELECT 
 			  id, 
 			  nombre,
 			  apellido,
@@ -25,12 +29,13 @@ class Cliente {
 		";
 		$query = $this->acceso->prepare($sql);
 		$query->execute();
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function encontrar_cliente($dni){
-		$sql="SELECT *
+	function encontrar_cliente($dni)
+	{
+		$sql = "SELECT *
 			  FROM cliente
 			  WHERE dni=:dni";
 		$variables = array(
@@ -38,11 +43,12 @@ class Cliente {
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function crear($nombre, $apellido, $edad, $dni, $telefono, $correo, $sexo, $adicional) {
+	function crear($nombre, $apellido, $edad, $dni, $telefono, $correo, $sexo, $adicional)
+	{
 		$sql = "INSERT INTO cliente(nombre, apellido, dni, edad, telefono, correo, sexo, adicional, avatar)
 				VALUES(:nombre, :apellido, :dni, :edad, :telefono, :correo, :sexo, :adicional, :avatar)";
 		$variables = array(
@@ -60,7 +66,8 @@ class Cliente {
 		$query->execute($variables);
 	}
 
-	function editar($id_cliente,$telefono,$correo,$adicional){
+	function editar($id_cliente, $telefono, $correo, $adicional)
+	{
 		$sql = "UPDATE cliente 
 				SET telefono=:telefono, 
 					correo=:correo, 
@@ -76,7 +83,8 @@ class Cliente {
 		$query->execute($variables);
 	}
 
-	function eliminar($id_cliente){
+	function eliminar($id_cliente)
+	{
 		$sql = "UPDATE cliente 
 				SET estado=:estado 
 				WHERE id=:id_cliente";
@@ -88,7 +96,8 @@ class Cliente {
 		$query->execute($variables);
 	}
 
-	function activar($id_cliente){
+	function activar($id_cliente)
+	{
 		$sql = "UPDATE cliente 
 				SET estado=:estado 
 				WHERE id=:id_cliente";
@@ -99,7 +108,4 @@ class Cliente {
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	
 }
-
- ?>

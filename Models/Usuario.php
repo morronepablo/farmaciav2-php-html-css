@@ -1,14 +1,18 @@
-<?php 
-include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Conexion.php';
-class Usuario{
+<?php
+include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Conexion.php';
+class Usuario
+{
 	var $objetos;
-	public function __construct(){
+	var $acceso;
+	public function __construct()
+	{
 		$db = new Conexion();
 		$this->acceso = $db->pdo;
 	}
 
-	function login($dni){
-		$sql="SELECT 
+	function login($dni)
+	{
+		$sql = "SELECT 
 			  u.id as id,
 			  u.nombre as nombre,
 			  u.apellido as apellido,
@@ -29,8 +33,9 @@ class Usuario{
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
-	function obtener_datos($id_usuario){
-		$sql="SELECT 
+	function obtener_datos($id_usuario)
+	{
+		$sql = "SELECT 
 			  u.id, 
 			  u.nombre,
 			  u.apellido,
@@ -57,10 +62,11 @@ class Usuario{
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
-	function editar_datos($id_usuario,$telefono,$residencia,$direccion,$correo,$sexo,$adicional){
+	function editar_datos($id_usuario, $telefono, $residencia, $direccion, $correo, $sexo, $adicional)
+	{
 		$sql = "UPDATE usuario 
 				SET telefono=:telefono, 
 					id_localidad=:residencia,
@@ -81,7 +87,8 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	function editar_avatar($id_usuario,$nombre){
+	function editar_avatar($id_usuario, $nombre)
+	{
 		$sql = "UPDATE usuario 
 				SET avatar=:nombre 
 				WHERE id=:id_usuario";
@@ -92,7 +99,8 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	function editar_password($id_usuario,$newpass){
+	function editar_password($id_usuario, $newpass)
+	{
 		$sql = "UPDATE usuario 
 				SET contrasena=:newpass 
 				WHERE id=:id_usuario";
@@ -103,8 +111,9 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	function obtener_usuarios(){
-		$sql="SELECT 
+	function obtener_usuarios()
+	{
+		$sql = "SELECT 
 			  u.id, 
 			  u.nombre,
 			  u.apellido,
@@ -130,10 +139,11 @@ class Usuario{
 		";
 		$query = $this->acceso->prepare($sql);
 		$query->execute();
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
-	function crear($nombre, $apellido, $edad, $dni, $contrasena, $telefono, $id_localidad, $direccion, $correo, $sexo, $adicional) {
+	function crear($nombre, $apellido, $edad, $dni, $contrasena, $telefono, $id_localidad, $direccion, $correo, $sexo, $adicional)
+	{
 		$sql = "INSERT INTO usuario(nombre, apellido, edad, dni, contrasena, telefono, direccion, correo, sexo, adicional, avatar, id_tipo, id_localidad)
 				VALUES(:nombre, :apellido, :edad, :dni, :contrasena, :telefono, :direccion, :correo, :sexo, :adicional, :avatar, :id_tipo, :id_localidad)";
 		$variables = array(
@@ -154,7 +164,8 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	function borrar($id){
+	function borrar($id)
+	{
 		$sql = "UPDATE usuario 
 				SET estado=:estado 
 				WHERE id=:id";
@@ -165,7 +176,8 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	function activar($id){
+	function activar($id)
+	{
 		$sql = "UPDATE usuario 
 				SET estado=:estado 
 				WHERE id=:id";
@@ -176,7 +188,8 @@ class Usuario{
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	function actualizar_tipo_usuario($id, $tipo_usuario){
+	function actualizar_tipo_usuario($id, $tipo_usuario)
+	{
 		$sql = "UPDATE usuario 
 				SET id_tipo=:tipo_usuario 
 				WHERE id=:id";
@@ -188,7 +201,4 @@ class Usuario{
 		$query->execute($variables);
 	}
 	/******************************/
-	
 }
-
- ?>

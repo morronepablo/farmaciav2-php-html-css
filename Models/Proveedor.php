@@ -1,33 +1,39 @@
-<?php 
-include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Conexion.php';
-class Proveedor {
+<?php
+include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Conexion.php';
+class Proveedor
+{
 	var $objetos;
-	public function __construct(){
+	var $acceso;
+	public function __construct()
+	{
 		$db = new Conexion();
 		$this->acceso = $db->pdo;
 	}
 
-	function obtener_proveedores(){
-		$sql="SELECT * FROM proveedor ORDER BY nombre";
+	function obtener_proveedores()
+	{
+		$sql = "SELECT * FROM proveedor ORDER BY nombre";
 		$query = $this->acceso->prepare($sql);
 		$query->execute();
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function obtener_proveedor($id_proveedor){
-		$sql="SELECT * FROM proveedor WHERE id=:id_proveedor";
+	function obtener_proveedor($id_proveedor)
+	{
+		$sql = "SELECT * FROM proveedor WHERE id=:id_proveedor";
 		$variables = array(
 			':id_proveedor' => $id_proveedor
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function encontrar_proveedor_1($nombre, $id_usuario){
-		$sql="SELECT *
+	function encontrar_proveedor_1($nombre, $id_usuario)
+	{
+		$sql = "SELECT *
 			  FROM proveedor
 			  WHERE nombre=:nombre AND id!=:id_usuario";
 		$variables = array(
@@ -36,12 +42,13 @@ class Proveedor {
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function encontrar_proveedor($nombre){
-		$sql="SELECT *
+	function encontrar_proveedor($nombre)
+	{
+		$sql = "SELECT *
 			  FROM proveedor
 			  WHERE nombre=:nombre";
 		$variables = array(
@@ -49,11 +56,12 @@ class Proveedor {
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function crear($nombre, $telefono, $correo, $direccion) {
+	function crear($nombre, $telefono, $correo, $direccion)
+	{
 		$sql = "INSERT INTO proveedor(nombre, telefono, correo, direccion)
 				VALUES(:nombre, :telefono, :correo, :direccion)";
 		$variables = array(
@@ -66,7 +74,8 @@ class Proveedor {
 		$query->execute($variables);
 	}
 
-	function editar($id_proveedor, $nombre, $telefono_edit, $correo_edit, $direccion_edit) {
+	function editar($id_proveedor, $nombre, $telefono_edit, $correo_edit, $direccion_edit)
+	{
 		$sql = "UPDATE proveedor SET nombre=:nombre, telefono=:telefono, correo=:correo, direccion=:direccion WHERE id=:id_proveedor";
 		$variables = array(
 			':nombre'		=> $nombre,
@@ -79,7 +88,8 @@ class Proveedor {
 		$query->execute($variables);
 	}
 
-	function editar_avatar($id_proveedor, $nombre, $telefono_edit, $correo_edit, $direccion_edit, $avatar) {
+	function editar_avatar($id_proveedor, $nombre, $telefono_edit, $correo_edit, $direccion_edit, $avatar)
+	{
 		$sql = "UPDATE proveedor SET nombre=:nombre, telefono=:telefono, correo=:correo, direccion=:direccion, avatar=:avatar WHERE id=:id_proveedor";
 		$variables = array(
 			':nombre'		=> $nombre,
@@ -93,7 +103,8 @@ class Proveedor {
 		$query->execute($variables);
 	}
 
-	function eliminar($id_proveedor) {
+	function eliminar($id_proveedor)
+	{
 		$sql = "UPDATE proveedor 
 				SET estado=:estado
 				WHERE id=:id_proveedor";
@@ -105,7 +116,8 @@ class Proveedor {
 		$query->execute($variables);
 	}
 
-	function activar($id_proveedor) {
+	function activar($id_proveedor)
+	{
 		$sql = "UPDATE proveedor 
 				SET estado=:estado
 				WHERE id=:id_proveedor";
@@ -117,17 +129,15 @@ class Proveedor {
 		$query->execute($variables);
 	}
 
-	function obtener_laboratorio_id($id){
-		$sql="SELECT * FROM laboratorio WHERE id=:id";
+	function obtener_laboratorio_id($id)
+	{
+		$sql = "SELECT * FROM laboratorio WHERE id=:id";
 		$variables = array(
 			':id' => $id
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
-	
 }
-
- ?>

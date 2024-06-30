@@ -1,14 +1,18 @@
-<?php 
-include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Conexion.php';
-class Localidad{
+<?php
+include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Conexion.php';
+class Localidad
+{
 	var $objetos;
-	public function __construct(){
+	var $acceso;
+	public function __construct()
+	{
 		$db = new Conexion();
 		$this->acceso = $db->pdo;
 	}
 
-	function obtener_residencias(){
-		$sql="SELECT 
+	function obtener_residencias()
+	{
+		$sql = "SELECT 
 			  l.id,
 			  CONCAT(l.nombre,' - ', p.nombre) as residencia
 			  FROM localidad l
@@ -21,7 +25,4 @@ class Localidad{
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
-	
 }
-
- ?>

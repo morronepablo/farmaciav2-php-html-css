@@ -1,22 +1,27 @@
-<?php 
-include_once $_SERVER["DOCUMENT_ROOT"].'/farmaciav2/Models/Conexion.php';
-class Laboratorio {
+<?php
+include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Conexion.php';
+class Laboratorio
+{
 	var $objetos;
-	public function __construct(){
+	var $acceso;
+	public function __construct()
+	{
 		$db = new Conexion();
 		$this->acceso = $db->pdo;
 	}
 
-	function obtener_laboratorios(){
-		$sql="SELECT * FROM laboratorio ORDER BY nombre";
+	function obtener_laboratorios()
+	{
+		$sql = "SELECT * FROM laboratorio ORDER BY nombre";
 		$query = $this->acceso->prepare($sql);
 		$query->execute();
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function encontrar_laboratorio($nombre){
-		$sql="SELECT *
+	function encontrar_laboratorio($nombre)
+	{
+		$sql = "SELECT *
 			  FROM laboratorio
 			  WHERE nombre=:nombre";
 		$variables = array(
@@ -24,11 +29,12 @@ class Laboratorio {
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function crear($nombre) {
+	function crear($nombre)
+	{
 		$sql = "INSERT INTO laboratorio(nombre)
 				VALUES(:nombre)";
 		$variables = array(
@@ -38,7 +44,8 @@ class Laboratorio {
 		$query->execute($variables);
 	}
 
-	function editar($id_laboratorio, $nombre) {
+	function editar($id_laboratorio, $nombre)
+	{
 		$sql = "UPDATE laboratorio SET nombre=:nombre WHERE id=:id";
 		$variables = array(
 			':nombre'	=> $nombre,
@@ -48,18 +55,20 @@ class Laboratorio {
 		$query->execute($variables);
 	}
 
-	function obtener_laboratorio_id($id){
-		$sql="SELECT * FROM laboratorio WHERE id=:id";
+	function obtener_laboratorio_id($id)
+	{
+		$sql = "SELECT * FROM laboratorio WHERE id=:id";
 		$variables = array(
 			':id' => $id
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
-		$this->objetos= $query->fetchall();
+		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
 
-	function editar_avatar($id_laboratorio, $nombre) {
+	function editar_avatar($id_laboratorio, $nombre)
+	{
 		$sql = "UPDATE laboratorio 
 				SET avatar=:nombre
 				WHERE id=:id";
@@ -71,7 +80,8 @@ class Laboratorio {
 		$query->execute($variables);
 	}
 
-	function eliminar($id_laboratorio) {
+	function eliminar($id_laboratorio)
+	{
 		$sql = "UPDATE laboratorio 
 				SET estado=:estado
 				WHERE id=:id";
@@ -83,7 +93,8 @@ class Laboratorio {
 		$query->execute($variables);
 	}
 
-	function activar($id_laboratorio) {
+	function activar($id_laboratorio)
+	{
 		$sql = "UPDATE laboratorio 
 				SET estado=:estado
 				WHERE id=:id";
@@ -94,7 +105,4 @@ class Laboratorio {
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
-	
 }
-
- ?>

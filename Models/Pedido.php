@@ -3,6 +3,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Conexion.php';
 class Pedido
 {
 	var $objetos;
+	var $acceso;
 	public function __construct()
 	{
 		$db = new Conexion();

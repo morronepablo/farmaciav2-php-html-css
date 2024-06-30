@@ -567,6 +567,44 @@ $(document).ready(function () {
       let response = await data.text();
       try {
         let respuesta = JSON.parse(response);
+        if (respuesta.mensaje == "success") {
+          toastr.success(
+            "Se ha creado el pedido satisfactoriamente.",
+            "Éxito!",
+            {
+              timeOut: 2000,
+            }
+          );
+          //obtener_pedidos();
+          $("#crear_pedido").modal("hide");
+          $("#form-crear_pedido").trigger("reset");
+          $("#proveedor").val("").trigger("change");
+          $("#producto").val("").trigger("change");
+          $("#lista_pedido").attr("cantidad", 0);
+          $("#lista_pedido").html(html);
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
       } catch (error) {
         console.error(error);
         console.log(response);
