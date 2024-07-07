@@ -10,12 +10,17 @@ $fecha_actual = date('d-m-Y');
 
 if ($_POST['funcion'] == 'obtener_pedidos') {
 	$json = array();
-	$tipo->obtener_tipos();
-	foreach ($tipo->objetos as $objeto) {
+	$pedido->obtener_pedidos();
+	foreach ($pedido->objetos as $objeto) {
 		$json[] = array(
-			'id'		=> openssl_encrypt($objeto->id, CODE, KEY),
-			'nombre'	=> $objeto->nombre,
-			'estado' 	=> $objeto->estado
+			'id'				=> openssl_encrypt($objeto->id, CODE, KEY),
+			'descripcion'		=> $objeto->descripcion,
+			'fecha_creacion'	=> $objeto->fecha_creacion,
+			'total' 			=> $objeto->total,
+			'estado' 			=> $objeto->estado,
+			'estado_proceso' 	=> $objeto->estado_proceso,
+			'proveedor' 		=> $objeto->proveedor,
+			'id_proveedor'		=> openssl_encrypt($objeto->id_proveedor, CODE, KEY),
 		);
 	}
 	echo json_encode($json);
