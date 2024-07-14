@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-05-2024 a las 23:23:29
+-- Tiempo de generación: 14-07-2024 a las 21:16:31
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,17 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `farmaciasistemav2`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `crear_obtener_id_pedido` (IN `id_proveedor_param` INT, IN `descripcion_param` VARCHAR(500), IN `total_param` FLOAT)   BEGIN
+	INSERT INTO pedido(descripcion,total,id_proveedor) VALUES(descripcion_param,total_param,id_proveedor_param);
+	SELECT MAX(id) AS id FROM pedido;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -2585,6 +2596,14 @@ CREATE TABLE `pedido` (
   `id_proveedor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `pedido`
+--
+
+INSERT INTO `pedido` (`id`, `descripcion`, `fecha_creacion`, `total`, `estado`, `estado_proceso`, `id_proveedor`) VALUES
+(1, 'dolor', '2024-07-14 15:26:01', 250, 'A', 'espera', 1),
+(2, 'Algo', '2024-07-14 15:26:38', 1000, 'A', 'espera', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -2599,6 +2618,15 @@ CREATE TABLE `pedido_compra` (
   `producto_id` int(11) NOT NULL,
   `pedido_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `pedido_compra`
+--
+
+INSERT INTO `pedido_compra` (`id`, `cantidad`, `precio`, `fecha_creacion`, `producto_id`, `pedido_id`) VALUES
+(1, 5, 10, '2024-07-14 15:26:01', 17, 1),
+(2, 10, 20, '2024-07-14 15:26:01', 5, 1),
+(3, 10, 100, '2024-07-14 15:26:38', 13, 2);
 
 -- --------------------------------------------------------
 
@@ -3117,13 +3145,13 @@ ALTER TABLE `movimiento`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido_compra`
 --
 ALTER TABLE `pedido_compra`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `presentacion`

@@ -645,112 +645,66 @@ $(document).ready(function () {
           columns: [
             {
               render: function (data, type, datos, meta) {
-                let estado_span = "";
-                if (datos.estado == "A") {
-                  estado_span =
-                    "<span class='badge badge-pill badge-success'>Activo</span>";
-                } else {
-                  estado_span =
-                    "<span class='badge badge-pill badge-secondary'>Inactivo</span>";
+                let estado = "<span class='badge badge-success'>Activo</span>";
+                if (datos.estado == "I") {
+                  estado =
+                    "<span class='badge badge-secondary'>Inactivo</span>";
                 }
-                let stock = "";
-                if (datos.stock == null || datos.stock == "") {
-                  stock = "Sin Stock";
-                } else {
-                  stock = datos.stock;
-                }
-                let reg_sanitario = "";
-                if (
-                  datos.registro_sanitario == null ||
-                  datos.registro_sanitario == ""
-                ) {
-                  reg_sanitario = "Sin Registro Sanitario";
-                } else {
-                  reg_sanitario = datos.registro_sanitario;
-                }
+
                 let template = `
                                 <div class="">
                                     <div class="card bg-light">
-                                        <div class="h5 card-header text-muted border-bottom-0">
-                                            <i class="fas fa-lg fa-cubes mr-1"></i>${stock}
-                                        </div>
-                                        <div class="card-body pt-0">
+                                        <div class="card-body pt-3">
                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    <h4 class=""><b>${datos.nombre}</b> ${estado_span}</h4>
+                                                <div class="col-md-12">
+                                                    <h4 class=""><strong>Código: ${datos.id}</strong> ${estado}</h4>
                                                     <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Código: ${datos.codigo}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-coins"></i></span> Precio: ${datos.precio}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Descripción: ${datos.descripcion}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Total: ${datos.total}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Proveedor: ${datos.proveedor}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Fecha: ${datos.fecha_creacion}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Estado proceso: ${datos.estado_proceso}</li>
                                                     </ul>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Subtipo: ${datos.subtipo}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Fracciones: ${datos.fracciones}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Reg. Sanitario: ${reg_sanitario}</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-md-4 text-center">
-                                                    <img src="/farmaciav2/Util/img/productos/${datos.avatar}"  alt="" class="img-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="card-footer">
-                                            <div class="text-right">`;
-                if (datos.estado == "A") {
-                  template += `<button 
-                                                              class="btn btn-outline-secondary btn-circle btn-lg editar_avatar"
-                                                              data-toggle="modal"
-                                                              data-target="#editar_avatar"
-                                                              id="${datos.id}"
-                                                              nombre="${datos.nombre}"
-                                                              codigo="${datos.codigo}"
-                                                              avatar="${datos.avatar}"
-                                                            >
-                                                                <i class="fas fa-camera"></i>
-                                                            </button>
-                                                            <button 
-                                                              class="btn btn-outline-info btn-circle btn-lg editar_producto"
-                                                              data-toggle="modal"
-                                                              data-target="#editar_producto"
-                                                              id="${datos.id}"
-                                                              nombre="${datos.nombre}"
-                                                              codigo="${datos.codigo}"
-                                                              avatar="${datos.avatar}"
-                                                              concentracion="${datos.concentracion}"
-                                                              fracciones="${datos.fracciones}"
-                                                              laboratorio="${datos.id_laboratorio}"
-                                                              precio="${datos.precio}"
-                                                              registro_sanitario="${datos.registro_sanitario}"
-                                                              presentacion="${datos.id_presentacion}"
-                                                              subtipo="${datos.id_subtipo}"
-                                                            >
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button 
-                                                              class="btn btn-outline-danger btn-circle btn-lg eliminar_producto"
-                                                              id="${datos.id}"
-                                                              nombre="${datos.nombre}"
-                                                              codigo="${datos.codigo}"
-                                                              avatar="${datos.avatar}"
-                                                            >
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>`;
-                } else {
-                  template += `<button 
-                                                              class="btn btn-outline-success btn-circle btn-lg activar_producto"
-                                                              id="${datos.id}"
-                                                              nombre="${datos.nombre}"
-                                                              codigo="${datos.codigo}"
-                                                              avatar="${datos.avatar}"
-                                                            >
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>`;
+                                            <div class="text-right">
+                                              <button 
+                                                class="btn btn-outline-info btn-circle btn-lg ver_detalle"
+                                                data-toggle="modal"
+                                                data-target="#ver_detalle"
+                                                id="${datos.id}"
+                                                proveedor="${datos.proveedor}"
+                                                fecha_creacion="${datos.fecha_creacion}"
+                                                total="${datos.total}"
+                                              >
+                                                  <i class="fas fa-search"></i>
+                                              </button>
+                                            `;
+                if (datos.estado_proceso == "espera") {
+                  template += `
+                                              <button 
+                                                class="btn btn-outline-success btn-circle btn-lg realizar_compra"
+                                                data-toggle="modal"
+                                                data-target="#realizar_compra"
+                                                id="${datos.id}"
+                                                proveedor="${datos.proveedor}"
+                                                fecha_creacion="${datos.fecha_creacion}"
+                                                total="${datos.total}"
+                                              >
+                                                  <i class="fas fa-arrow-circle-up"></i>
+                                              </button>
+                                              <button 
+                                                class="btn btn-outline-danger btn-circle btn-lg eliminar"
+                                                id="${datos.id}"
+                                                proveedor="${datos.proveedor}"
+                                                fecha_creacion="${datos.fecha_creacion}"
+                                                total="${datos.total}"
+                                              >
+                                                  <i class="fas fa-trash"></i>
+                                              </button>`;
                 }
-
                 template += `</div>
                                         </div>
                                     </div>
