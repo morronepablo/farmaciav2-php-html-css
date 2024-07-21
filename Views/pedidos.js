@@ -735,6 +735,69 @@ $(document).ready(function () {
     }
   }
 
+  $(document).on("click", ".ver_detalle", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let proveedor = $(elemento).attr("proveedor");
+    let fecha_creacion = $(elemento).attr("fecha_creacion");
+    let total = $(elemento).attr("total");
+
+    // Parsear la fecha y formatearla
+    let fecha = new Date(fecha_creacion);
+    let dia = fecha.getDate().toString().padStart(2, "0");
+    let mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // Los meses son de 0 a 11
+    let año = fecha.getFullYear();
+    let fechaFormateada = `${dia}/${mes}/${año}`;
+
+    $("#codigo_detalle").text(id);
+    $("#proveedor_detalle").text(proveedor);
+    $("#fecha_detalle").text(fechaFormateada);
+    ver_detalle(id).then((respuesta) => {
+      console.log(respuesta);
+    });
+  });
+
+  async function ver_detalle(id) {
+    let funcion = "ver_detalle";
+    let respuesta = "";
+    let data = await fetch(
+      "/farmaciav2/Controllers/PedidoCompraController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion + "&&id=" + id,
+      }
+    );
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  //
+  //
+  /**
+   * description
+   */
+  ///
+
   async function crear_laboratorio(datos) {
     let data = await fetch(
       "/farmaciav2/Controllers/LaboratorioController.php",

@@ -64,6 +64,44 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     </div>
 </div>
 <!-- Fin Modal Crear Pedido -->
+<!-- Modal Ver Detalle -->
+<div class="modal fade" id="ver_detalle">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content card card-success">
+            <div class="modal-header card-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ver pedido</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <strong>Código: </strong><span id="codigo_detalle"></span><br>
+                        <strong>Proveedor: </strong><span id="proveedor_detalle"></span><br>
+                        <strong>Fecha: </strong><span id="fecha_detalle"></span><br>
+                    </div>
+                    <div class="col-md-12">
+                        <table class="table table-hover">
+                            <thead class="bg-success">
+                                <tr>
+                                    <th width="70%">Producto</th>
+                                    <th width="10%">Subtotal</th>
+                                    <th width="10%">Cantidad</th>
+                                    <th width="10%">Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detalles">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Ver Detalle -->
 <!-- Modal Editar Laboratorio -->
 <div class="modal fade" id="editar_laboratorio">
     <div class="modal-dialog modal-dialog-scrollable">

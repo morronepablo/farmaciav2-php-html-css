@@ -23,4 +23,23 @@ class PedidoCompra
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+
+	function ver_detalle($id_pedido)
+	{
+		$sql = "
+			SELECT 
+			* 
+			FROM 
+			pedido_compra 
+			WHERE 
+			pedido_id = :id_pedido
+		";
+		$variables = array(
+			':id_pedido' 	=> $id_pedido,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }
