@@ -28,11 +28,19 @@ class PedidoCompra
 	{
 		$sql = "
 			SELECT 
-			* 
-			FROM 
-			pedido_compra 
-			WHERE 
-			pedido_id = :id_pedido
+			p.cantidad,
+			p.precio,
+			pro.nombre AS producto,
+			pro.concentracion,
+			l.nombre AS laboratorio,
+			s.nombre AS subtipo,
+			pre.nombre AS presentacion
+			FROM pedido_compra p
+			JOIN producto pro ON pro.id=p.producto_id
+			JOIN laboratorio l ON  l.id=pro.id_laboratorio
+			JOIN subtipo_producto s ON s.id=pro.id_subtipo_producto
+			JOIN presentacion pre ON pre.id=pro.id_presentacion
+			WHERE p.pedido_id=:id_pedido
 		";
 		$variables = array(
 			':id_pedido' 	=> $id_pedido,

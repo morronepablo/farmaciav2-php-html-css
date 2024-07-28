@@ -82,10 +82,10 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                         <table class="table table-hover">
                             <thead class="bg-success">
                                 <tr>
-                                    <th width="70%">Producto</th>
-                                    <th width="10%">Subtotal</th>
+                                    <th width="60%">Producto</th>
                                     <th width="10%">Cantidad</th>
-                                    <th width="10%">Precio</th>
+                                    <th width="15%">Precio</th>
+                                    <th width="15%">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody id="detalles">

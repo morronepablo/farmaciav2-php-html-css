@@ -14,9 +14,20 @@ if ($_POST['funcion'] == 'ver_detalle') {
 		$id 		= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
 		$id_pedido 	= openssl_decrypt($formateado, CODE, KEY);
+		$json = array();
 		if (is_numeric($id_pedido)) {
 			$pedido_compra->ver_detalle($id_pedido);
-			var_dump($pedido_compra->objetos);
+			foreach ($pedido_compra->objetos as $objeto) {
+				$json[] = array(
+					'cantidad'		=> $objeto->cantidad,
+					'precio'		=> $objeto->precio,
+					'producto'		=> str_replace('***', '%', $objeto->producto),
+					'concentracion'	=> str_replace('***', '%', $objeto->concentracion),
+					'laboratorio'	=> $objeto->laboratorio,
+					'subtipo'		=> $objeto->subtipo,
+					'presentacion'	=> $objeto->presentacion
+				);
+			}
 
 			$mensaje = 'success';
 		} else {
@@ -26,7 +37,8 @@ if ($_POST['funcion'] == 'ver_detalle') {
 		$mensaje = 'error_session';
 	}
 	$json = array(
-		'mensaje'	=>	$mensaje
+		'mensaje'	=>	$mensaje,
+		'data'		=> $json
 	);
 
 	echo json_encode($json);

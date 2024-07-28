@@ -753,9 +753,78 @@ $(document).ready(function () {
     $("#proveedor_detalle").text(proveedor);
     $("#fecha_detalle").text(fechaFormateada);
     ver_detalle(id).then((respuesta) => {
-      console.log(respuesta);
+      if (respuesta.mensaje == "success") {
+        let productos = respuesta.data;
+        console.log(productos);
+        let html = "";
+        productos.forEach((producto) => {
+          html += `
+            <tr>
+              <td>
+                <strong>Nombre: </strong><span>${producto.producto}</span><br>
+                <strong>Concentración: </strong><span>${
+                  producto.concentracion
+                }</span><br>
+                <strong>Laboratorio: </strong><span>${
+                  producto.laboratorio
+                }</span><br>
+                <strong>Subtipo: </strong><span>${producto.subtipo}</span><br>
+                <strong>Presentación: </strong><span>${
+                  producto.presentacion
+                }</span><br>
+              </td>
+              <td class="text-right">${formatNumber(
+                Number(producto.cantidad).toFixed(2)
+              )}</td>
+              <td class="text-right">$ ${formatNumber(
+                Number(producto.precio).toFixed(2)
+              )}</td>
+              <td class="text-right">$ ${formatNumber(
+                (Number(producto.cantidad) * Number(producto.precio)).toFixed(2)
+              )}</td>
+            </tr>
+          `;
+        });
+        html += `
+          <tr>
+            <td colspan="4" class="text-right"><strong>Total: </strong>$ ${formatNumber(
+              Number(total).toFixed(2)
+            )}</td>
+          </tr>
+        `;
+        $("#detalles").html(html);
+      } else if (respuesta.mensaje == "error_decrypt") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "No vulnere los datos...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.reload();
+        });
+      } else if (respuesta.mensaje == "error_session") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Sesión finalizada...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.href = "/farmaciav2/index.php";
+        });
+      }
     });
   });
+
+  function formatNumber(num) {
+    num = num.toString().replace(".", ","); // Reemplaza el punto decimal con una coma
+    let parts = num.split(","); // Divide en parte entera y decimal
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Formatea la parte entera con puntos
+    return parts.join(","); // Une de nuevo las partes
+  }
 
   async function ver_detalle(id) {
     let funcion = "ver_detalle";
