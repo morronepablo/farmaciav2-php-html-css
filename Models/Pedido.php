@@ -45,4 +45,16 @@ class Pedido
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function eliminar($id)
+	{
+		$sql = "DELETE FROM pedido
+				WHERE id=:id
+		";
+		$variables = array(
+			':id' => $id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }

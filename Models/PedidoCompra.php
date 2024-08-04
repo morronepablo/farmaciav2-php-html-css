@@ -50,4 +50,16 @@ class PedidoCompra
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function eliminar($id)
+	{
+		$sql = "DELETE FROM pedido_compra
+				WHERE pedido_id=:pedido_id
+		";
+		$variables = array(
+			':pedido_id' => $id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }

@@ -54,4 +54,26 @@ if ($_POST['funcion'] == 'obtener_pedidos') {
 	);
 
 	echo json_encode($json);
+} else if ($_POST['funcion'] == 'eliminar') {
+	$mensaje = '';
+	if (!empty($_SESSION['id'])) {
+		$id		= $_POST['id'];
+		$formateado	= str_replace(' ', '+', $id);
+		$id_pedido	= openssl_decrypt($formateado, CODE, KEY);
+
+		if (is_numeric($id_pedido)) {
+			$pedido_compra->eliminar($id_pedido);
+			$pedido->eliminar($id_pedido);
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+
+	echo json_encode($json);
 }

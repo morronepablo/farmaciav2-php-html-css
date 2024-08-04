@@ -860,6 +860,104 @@ $(document).ready(function () {
     return respuesta;
   }
 
+  async function eliminar(id) {
+    let funcion = "eliminar";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/PedidoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  $(document).on("click", ".eliminar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success ml-2",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: `Desea eliminar el pedido ${id} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, eliminar !",
+        cancelButtonText: "No, cancelar !",
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          eliminar(id).then((respuesta) => {
+            if (respuesta.mensaje == "success") {
+              obtener_pedidos();
+              swalWithBootstrapButtons.fire(
+                "Eliminado!",
+                "El pedido fue eliminado correctamente",
+                "success"
+              );
+            } else if (respuesta.mensaje == "error_decrypt") {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "No vulnere los datos...",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                //refresca la pagina (F5)
+                location.reload();
+              });
+            } else if (respuesta.mensaje == "error_session") {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Sesión finalizada...",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                //refresca la pagina (F5)
+                location.href = "/farmaciav2/index.php";
+              });
+            }
+          });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            "Cancelado",
+            "canceló la eliminación del pedido",
+            "error"
+          );
+        }
+      });
+  });
+
   //
   //
   /**
@@ -1186,111 +1284,6 @@ $(document).ready(function () {
       $(element).removeClass("is-invalid");
       $(element).addClass("is-valid");
     },
-  });
-
-  async function eliminar(id) {
-    let funcion = "eliminar";
-    let respuesta = "";
-    let data = await fetch(
-      "/farmaciav2/Controllers/LaboratorioController.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "funcion=" + funcion + "&&id=" + id,
-      }
-    );
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
-  }
-
-  $(document).on("click", ".eliminar", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let avatar = $(elemento).attr("avatar");
-    let nombre = $(elemento).attr("nombre");
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success ml-2",
-        cancelButton: "btn btn-danger",
-      },
-      buttonsStyling: false,
-    });
-
-    swalWithBootstrapButtons
-      .fire({
-        title: `Desea eliminar el laboratorio ${nombre} ?`,
-        imageUrl: "/farmaciav2/Util/img/laboratorios/" + avatar,
-        imageWidth: 200,
-        imageHeight: 200,
-        showCancelButton: true,
-        confirmButtonText: "Si, eliminar !",
-        cancelButtonText: "No, cancelar !",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          eliminar(id).then((respuesta) => {
-            if (respuesta.mensaje == "success") {
-              obtener_laboratorios();
-              swalWithBootstrapButtons.fire(
-                "Eliminado!",
-                "El laboratorio fue eliminado correctamente",
-                "success"
-              );
-            } else if (respuesta.mensaje == "error_decrypt") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "No vulnere los datos...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.reload();
-              });
-            } else if (respuesta.mensaje == "error_session") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Sesión finalizada...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.href = "/farmaciav2/index.php";
-              });
-            }
-          });
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-            "Cancelado",
-            "canceló la eliminación del laboratorio",
-            "error"
-          );
-        }
-      });
   });
 
   async function activar(id) {
