@@ -102,32 +102,77 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     </div>
 </div>
 <!-- Fin Modal Ver Detalle -->
-<!-- Modal Editar Laboratorio -->
-<div class="modal fade" id="editar_laboratorio">
-    <div class="modal-dialog modal-dialog-scrollable">
+<!-- Modal Realizar Compra -->
+<div class="modal fade" id="realizar_compra">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Editar laboratorio</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Crear compra</h5>
             </div>
-            <div class="modal-body p-0">
-                <form id="form-editar_laboratorio" enctype="multipart/form-data">
-                    <div class="card card-widget widget-user">
-                        <div class="widget-user-header bg-success">
-                            <h3 class="widget-user-username" id="nombre_card"></h3>
-                        </div>
-                        <div class="widget-user-image">
-                            <img class="img-circle elevation-2" id="avatar_card" alt="User Avatar" style="width: 80px; height: 80px; object-fit: cover;">
-                        </div>
-                        <div class="card-footer">
-                            <div class="row">
-                                <input type="hidden" id="id_laboratorio" name="id_laboratorio">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="">Nombre:</label>
-                                        <input type="text" class="form-control" name="nombre_edit" id="nombre_edit" placeholder="Ingrese nombre">
-                                    </div>
-                                </div>
+            <div class="modal-body">
+                <form id="form-realizar_compra" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Código:</label>
+                                <input type="text" class="form-control" name="codigo_compra" id="codigo_compra" placeholder="Ingrese compra" required>
                             </div>
+                            <div class="form-group">
+                                <label for="">Nota:</label>
+                                <textarea type="text" class="form-control" name="nota_compra" id="nota_compra" placeholder="Ingrese nota" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Comprobante:</label>
+                                <select name="comprobante_compra" id="comprobante_compra" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success" required></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Estado pago:</label>
+                                <select name="estado_pago_compra" id="estado_pago_compra" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success" required></select>
+                            </div>
+                            <div class="form-group" id="vencimiento">
+                                <label for="">Vencimiento:</label>
+                                <input type="date" class="form-control" name="vencimiento_compra" id="vencimiento_compra" placeholder="Ingrese vencimiento">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Proveedor:</label>
+                                <select name="proveedor_compra" id="proveedor_compra" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success" required></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Producto:</label>
+                                <select name="producto_compra" id="producto_compra" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Lote:</label>
+                                <input type="number" step="1" class="form-control" name="lote_compra" id="lote_compra" placeholder="Ingrese lote">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Cantidad:</label>
+                                <input type="number" step="1" class="form-control" name="cantidad_compra" id="cantidad_compra" placeholder="Ingrese cantidad">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Precio:</label>
+                                <input type="number" step="any" class="form-control" name="precio_compra" id="precio_compra" placeholder="Ingrese precio">
+                            </div>
+                            <button type="button" id="agregar_producto_compra" class="btn btn-outline-success btn-circle btn-lg float-right"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table table-hover mt-1">
+                                <thead class="bg-success">
+                                    <tr>
+                                        <th width="80%">Producto</th>
+                                        <th width="20%">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista_compra" cantidad="0">
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
             </div>
@@ -139,7 +184,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
         </div>
     </div>
 </div>
-<!-- Fin Modal Editar Laboratorio -->
+<!-- Fin Modal Realizar Compra -->
 <!-- Modal Editar Avatar -->
 <div class="modal fade" id="editar_avatar">
     <div class="modal-dialog modal-dialog-scrollable">
