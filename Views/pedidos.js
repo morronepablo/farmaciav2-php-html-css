@@ -21,8 +21,56 @@ $(document).ready(function () {
     },
   });
 
+  $("#proveedor_compra").select2({
+    placeholder: "Seleccione un proveedor",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
   $("#producto").select2({
     placeholder: "Seleccione un producto",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  $("#producto_compra").select2({
+    placeholder: "Seleccione un producto",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  $("#comprobante_compra").select2({
+    placeholder: "Seleccione un comprobante",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  $("#estado_pago_compra").select2({
+    placeholder: "Seleccione un estado",
     language: {
       noResult: function () {
         return "No hay resultados.";
@@ -329,6 +377,8 @@ $(document).ready(function () {
     });
     $("#proveedor").html(template);
     $("#proveedor").val("").trigger("change");
+    $("#proveedor_compra").html(template);
+    $("#proveedor_compra").val("").trigger("change");
   });
 
   async function obtener_proveedores() {
@@ -379,12 +429,99 @@ $(document).ready(function () {
     });
     $("#producto").html(template);
     $("#producto").val("").trigger("change");
+    $("#producto_compra").html(template);
+    $("#producto_compra").val("").trigger("change");
   });
 
   async function obtener_productos() {
     let funcion = "obtener_gestion_productos";
     let respuesta = "";
     let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  obtener_comprobantes().then((respuesta) => {
+    // console.log(respuesta);
+    let template = "";
+    respuesta.forEach((comprobante) => {
+      template += `<option value="${comprobante.id}">${comprobante.nombre}</option>`;
+    });
+    $("#comprobante_compra").html(template);
+    $("#comprobante_compra").val("").trigger("change");
+  });
+
+  async function obtener_comprobantes() {
+    let funcion = "obtener_comprobantes";
+    let respuesta = "";
+    let data = await fetch(
+      "/farmaciav2/Controllers/ComprobanteController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion,
+      }
+    );
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  obtener_condicion_pago().then((respuesta) => {
+    // console.log(respuesta);
+    let template = "";
+    respuesta.forEach((estado) => {
+      template += `<option value="${estado.id}">${estado.nombre}</option>`;
+    });
+    $("#estado_pago_compra").html(template);
+    $("#estado_pago_compra").val("").trigger("change");
+  });
+
+  async function obtener_condicion_pago() {
+    let funcion = "obtener_condicion_pago";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/EstadoPagoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion,
