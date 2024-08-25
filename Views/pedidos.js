@@ -1095,11 +1095,48 @@ $(document).ready(function () {
       });
   });
 
+  $("#lista_compra").html(html);
+
   $(document).on("click", ".realizar_compra", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
-    console.log(id);
+    obtener_pedido(id).then((respuesta) => {
+      let pedido = respuesta.pedido;
+      let detalles = pedido.detalle;
+      console.log(pedido, detalles);
+    });
   });
+
+  async function obtener_pedido(id) {
+    let funcion = "obtener_pedido";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/PedidoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
 
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {

@@ -57,4 +57,26 @@ class Pedido
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+
+	function obtener_pedido($id)
+	{
+		$sql = "
+			SELECT
+			p.id,
+			p.descripcion,
+			p.estado,
+			p.estado_proceso,
+			p.fecha_creacion,
+			p.total,
+			p.id_proveedor,
+			pr.nombre AS	proveedor
+			FROM	pedido p
+			JOIN	proveedor pr ON	p.id_proveedor = pr.id
+			WHERE p.id=:id;
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute(array(':id' => $id));
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }

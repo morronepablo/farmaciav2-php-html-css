@@ -28,6 +28,8 @@ class PedidoCompra
 	{
 		$sql = "
 			SELECT 
+			pro.id,
+			pro.codigo,
 			p.cantidad,
 			p.precio,
 			pro.nombre AS producto,

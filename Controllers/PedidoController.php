@@ -76,4 +76,54 @@ if ($_POST['funcion'] == 'obtener_pedidos') {
 	);
 
 	echo json_encode($json);
+} else if ($_POST['funcion'] == 'obtener_pedido') {
+	$mensaje = '';
+	if (!empty($_SESSION['id'])) {
+		$id		= $_POST['id'];
+		$formateado	= str_replace(' ', '+', $id);
+		$id_pedido	= openssl_decrypt($formateado, CODE, KEY);
+		$json = array();
+		$detalle_json = array();
+		if (is_numeric($id_pedido)) {
+			$pedido_compra->ver_detalle($id_pedido);
+			foreach ($pedido_compra->objetos as $objeto) {
+				$detalle_json[] = array(
+					'id'			=> openssl_encrypt($objeto->id, CODE, KEY),
+					'codigo'		=> $objeto->codigo,
+					'cantidad'		=> $objeto->cantidad,
+					'precio'		=> $objeto->precio,
+					'producto'		=> str_replace('***', '%', $objeto->producto),
+					'concentracion'	=> str_replace('***', '%', $objeto->concentracion),
+					'laboratorio'	=> $objeto->laboratorio,
+					'subtipo'		=> $objeto->subtipo,
+					'presentacion'	=> $objeto->presentacion
+				);
+			}
+			$pedido->obtener_pedido($id_pedido);
+			foreach ($pedido->objetos as $objeto) {
+				$json = array(
+					'id'				=> openssl_encrypt($objeto->id, CODE, KEY),
+					'descripcion'		=> $objeto->descripcion,
+					'fecha_creacion'	=> $objeto->fecha_creacion,
+					'total' 			=> $objeto->total,
+					'estado' 			=> $objeto->estado,
+					'estado_proceso' 	=> $objeto->estado_proceso,
+					'proveedor' 		=> $objeto->proveedor,
+					'id_proveedor'		=> openssl_encrypt($objeto->id_proveedor, CODE, KEY),
+					'detalle'			=> $detalle_json,
+				);
+			}
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje,
+		'pedido'	=>	$json
+	);
+
+	echo json_encode($json);
 }
