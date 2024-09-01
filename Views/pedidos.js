@@ -1119,13 +1119,13 @@ $(document).ready(function () {
             <strong>Subtipo: </strong>${detalle.subtipo}<br>
             <strong>Presentación: </strong>${detalle.presentacion}<br>
             <strong>Lote: </strong>
-              <input type="text" class="form-control text-right" value="" style="width: 120px;">
+              <input type="text" lote="" class="lote_compra form-control text-right" value="" style="width: 120px;">
             <br>
             <strong>Cantidad: </strong>
-              <input type="number" step="1" class="form-control text-right" value="${detalle.cantidad}" style="width: 120px;">
+              <input type="number" cantidad="${detalle.cantidad}" step="1" class="cantidad_compra form-control text-right" value="${detalle.cantidad}" style="width: 120px;">
             <br>
             <strong>Precio: </strong>
-              <input type="number" step="1" class="form-control text-right" value="${detalle.precio}" style="width: 120px;">
+              <input type="number" precio="${detalle.precio}" step="1" class="precio_compra form-control text-right" value="${detalle.precio}" style="width: 120px;">
             <br>
           </td>
           <td>
