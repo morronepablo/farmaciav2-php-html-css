@@ -111,6 +111,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
             </div>
             <div class="modal-body">
                 <form id="form-realizar_compra" enctype="multipart/form-data">
+                    <input type="hidden" name="id_pedido" id="id_pedido">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">

@@ -1103,7 +1103,39 @@ $(document).ready(function () {
     obtener_pedido(id).then((respuesta) => {
       let pedido = respuesta.pedido;
       let detalles = pedido.detalle;
-      console.log(pedido, detalles);
+      $("#id_pedido").val(pedido.id);
+      $("#nota_compra").val(pedido.descripcion);
+      $("#proveedor_compra").val(pedido.id_proveedor).trigger("change");
+      let template = "";
+      detalles.forEach((detalle) => {
+        console.log(detalle);
+        template += `
+        <tr id="${detalle.id}" cantidad="${detalle.cantidad}" precio="${detalle.precio}" lote="">
+          <td style="font-size: 13px;">
+            <strong>Código: </strong>${detalle.codigo}<br>
+            <strong>Nombre: </strong>${detalle.producto}<br>
+            <strong>Concentración: </strong>${detalle.concentracion}<br>
+            <strong>Laboratorio: </strong>${detalle.laboratorio}<br>
+            <strong>Subtipo: </strong>${detalle.subtipo}<br>
+            <strong>Presentación: </strong>${detalle.presentacion}<br>
+            <strong>Lote: </strong>
+              <input type="text" class="form-control text-right" value="" style="width: 120px;">
+            <br>
+            <strong>Cantidad: </strong>
+              <input type="number" step="1" class="form-control text-right" value="${detalle.cantidad}" style="width: 120px;">
+            <br>
+            <strong>Precio: </strong>
+              <input type="number" step="1" class="form-control text-right" value="${detalle.precio}" style="width: 120px;">
+            <br>
+          </td>
+          <td>
+          <button type="button" class="eliminar_producto_compra btn btn-outline-danger btn-circle btn-lg float-center"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      `;
+      });
+      $("#lista_compra").html(template);
+      $("#lista_compra").attr("cantidad", 1);
     });
   });
 
