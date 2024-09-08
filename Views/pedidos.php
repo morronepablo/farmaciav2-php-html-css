@@ -150,7 +150,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                             </div>
                             <div class="form-group">
                                 <label for="">Lote:</label>
-                                <input type="number" step="1" class="form-control" name="lote_compra" id="lote_compra" placeholder="Ingrese lote">
+                                <input type="text" step="1" class="form-control" name="lote_compra" id="lote_compra" placeholder="Ingrese lote">
                             </div>
                             <div class="form-group">
                                 <label for="">Cantidad:</label>

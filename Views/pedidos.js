@@ -9,6 +9,8 @@ $(document).ready(function () {
     preventDuplicates: true,
   };
 
+  $("#vencimiento").hide();
+
   $("#proveedor").select2({
     placeholder: "Seleccione un proveedor",
     language: {
@@ -512,7 +514,7 @@ $(document).ready(function () {
     // console.log(respuesta);
     let template = "";
     respuesta.forEach((estado) => {
-      template += `<option value="${estado.id}">${estado.nombre}</option>`;
+      template += `<option nombre="${estado.nombre}" value="${estado.id}">${estado.nombre}</option>`;
     });
     $("#estado_pago_compra").html(template);
     $("#estado_pago_compra").val("").trigger("change");
@@ -629,7 +631,7 @@ $(document).ready(function () {
         }
         toastr.info(
           "El producto con código: " +
-            $("#producto").find("option:selected") +
+            $("#producto").find("option:selected").attr("codigo") +
             " fué agregado a la lista",
           "Info!",
           { timeOut: 2000 }
@@ -1169,6 +1171,115 @@ $(document).ready(function () {
     }
     return respuesta;
   }
+
+  $(document).on("change", "#estado_pago_compra", (e) => {
+    $("#vencimiento").hide(300);
+    $("#vencimiento_compra").val("");
+    let estado = $("#estado_pago_compra")
+      .find("option:selected")
+      .attr("nombre");
+    if (estado == "Crédito") {
+      $("#vencimiento").show(300);
+    }
+  });
+
+  $(document).on("click", "#agregar_producto_compra", (e) => {
+    let producto = $("#producto_compra").val();
+    let cantidad = Number($("#cantidad_compra").val());
+    let precio = Number($("#precio_compra").val());
+    let lote = $("#lote_compra").val();
+
+    let bandera = 0;
+    if (producto == null) {
+      toastr.error("Ingrese un producto", "Error!", { timeOut: 2000 });
+      bandera++;
+    }
+    if (cantidad == "" || cantidad <= 0) {
+      toastr.error("Ingrese cantidad", "Error!", { timeOut: 2000 });
+      bandera++;
+    } else {
+      if (Number.isInteger(cantidad) == false) {
+        toastr.error("Cantidad debe ser entero", "Error!", { timeOut: 2000 });
+        bandera++;
+      }
+    }
+    if (precio == "" || precio <= 0) {
+      toastr.error("Ingrese precio", "Error!", { timeOut: 2000 });
+      bandera++;
+    }
+    if (lote == null || lote == "") {
+      toastr.error("Ingrese lote", "Error!", { timeOut: 2000 });
+      bandera++;
+    }
+    if (bandera == 0) {
+      let cant_tr = $("#lista_compra").attr("cantidad");
+      let template = `
+        <tr id="${producto}" cantidad="${cantidad}" precio="${precio} lote="${lote}">
+          <td>
+            <strong>Código: </strong>${$("#producto_compra")
+              .find("option:selected")
+              .attr("codigo")}<br>
+            <strong>Nombre: </strong>${$("#producto_compra")
+              .find("option:selected")
+              .attr("nombre")}<br>
+            <strong>Concentración: </strong>${$("#producto_compra")
+              .find("option:selected")
+              .attr("concentracion")}<br>
+            <strong>Laboratorio: </strong>${$("#producto_compra")
+              .find("option:selected")
+              .attr("laboratorio")}<br>
+            <strong>Subtipo: </strong>${$("#producto_compra")
+              .find("option:selected")
+              .attr("subtipo")}<br>
+            <strong>Presentación: </strong>${$("#producto_compra")
+              .find("option:selected")
+              .attr("presentacion")}<br>
+            <strong>Lote: </strong>
+              <input type="text" lote="${lote}" class="lote_compra form-control text-right" value="${lote}" style="width: 120px;">
+            <br>
+            <strong>Cantidad: </strong>
+              <input type="number" cantidad="${cantidad}" step="1" class="cantidad_compra form-control text-right" value="${cantidad}" style="width: 120px;">
+            <br>
+            <strong>Precio: </strong>
+              <input type="number" precio="${precio}" step="1" class="precio_compra form-control text-right" value="${precio}" style="width: 120px;">
+            <br>
+          </td>
+          <td>
+          <button type="button" class="eliminar_producto_compra btn btn-outline-danger btn-circle btn-lg float-center"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      `;
+      let bandera_1 = 0;
+      $.each($("#lista_compra tr"), function (indexInArray, elemento) {
+        if (producto == $(elemento).attr("id")) {
+          bandera_1++;
+        }
+      });
+      if (bandera_1 == 0) {
+        if (cant_tr == 0) {
+          $("#lista_compra").html(template);
+          $("#lista_compra").attr("cantidad", 1);
+        } else {
+          $("#lista_compra tr:last").after(template);
+        }
+        toastr.info(
+          "El producto con código: " +
+            $("#producto_compra").find("option:selected").attr("codigo") +
+            " fué agregado a la lista",
+          "Info!",
+          { timeOut: 2000 }
+        );
+        $("#producto_compra").val("").trigger("change");
+        $("#lote_compra").val("");
+        $("#cantidad_compra").val(1);
+        $("#precio_compra").val("");
+      } else {
+        toastr.error("El producto ya está ingresado", "Error!", {
+          timeOut: 2000,
+        });
+      }
+    }
+  });
 
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {
