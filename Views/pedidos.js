@@ -1110,7 +1110,7 @@ $(document).ready(function () {
       $("#proveedor_compra").val(pedido.id_proveedor).trigger("change");
       let template = "";
       detalles.forEach((detalle) => {
-        console.log(detalle);
+        // console.log(detalle);
         template += `
         <tr id="${detalle.id}" cantidad="${detalle.cantidad}" precio="${detalle.precio}" lote="">
           <td style="font-size: 13px;">
@@ -1278,6 +1278,46 @@ $(document).ready(function () {
           timeOut: 2000,
         });
       }
+    }
+  });
+
+  $(document).on("blur", ".lote_compra", (e) => {
+    let elemento = e.currentTarget;
+    let lote_ant = $(elemento).attr("lote");
+    let lote = $(elemento).val();
+    if (lote_ant == "" && lote != "") {
+      $(elemento).attr("lote", lote);
+      let tr = $(elemento).closest("tr");
+      $(tr).attr("lote", lote);
+    }
+    if (lote == "") {
+      $(elemento).val(lote_ant);
+      toastr.error("Ingrese lote", "Error!", { timeOut: 2000 });
+    }
+  });
+
+  $(document).on("blur", ".cantidad_compra", (e) => {
+    let elemento = e.currentTarget;
+    let cantidad_ant = $(elemento).attr("cantidad");
+    let cantidad = Number($(elemento).val());
+    if (cantidad == "" || cantidad <= 0) {
+      toastr.error("Ingrese cantidad", "Error!", { timeOut: 2000 });
+      $(elemento).val(cantidad_ant);
+    } else {
+      if (Number.isInteger(cantidad) == false) {
+        toastr.error("Cantidad debe ser entero", "Error!", { timeOut: 2000 });
+        $(elemento).val(cantidad_ant);
+      }
+    }
+  });
+
+  $(document).on("blur", ".precio_compra", (e) => {
+    let elemento = e.currentTarget;
+    let precio_ant = $(elemento).attr("precio");
+    let precio = Number($(elemento).val());
+    if (precio == "" || precio <= 0) {
+      toastr.error("Ingrese precio", "Error!", { timeOut: 2000 });
+      $(elemento).val(precio_ant);
     }
   });
 
