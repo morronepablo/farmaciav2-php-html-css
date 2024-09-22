@@ -1215,7 +1215,7 @@ $(document).ready(function () {
       let cant_tr = $("#lista_compra").attr("cantidad");
       let template = `
         <tr id="${producto}" cantidad="${cantidad}" precio="${precio} lote="${lote}">
-          <td>
+          <td style="font-size: 13px;">
             <strong>Código: </strong>${$("#producto_compra")
               .find("option:selected")
               .attr("codigo")}<br>
@@ -1319,6 +1319,25 @@ $(document).ready(function () {
       toastr.error("Ingrese precio", "Error!", { timeOut: 2000 });
       $(elemento).val(precio_ant);
     }
+  });
+
+  $(document).on("click", ".eliminar_producto_compra", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let tr = $(elemento).closest("tr");
+    $(tr).remove();
+    let cant_tr = $("#lista_compra tr").length;
+    if (cant_tr == 0) {
+      $("#lista_compra").html(html);
+      $("#lista_compra").attr("cantidad", 0);
+    }
+    toastr.warning("El producto fué removido", "Cuidado!", { timeOut: 2000 });
+  });
+
+  $("#form-realizar_compra").submit(function (e) {
+    let datos = new FormData($("#form-realizar_compra")[0]);
+    let funcion = "realizar_compra";
+    datos.append("funcion", funcion);
+    e.preventDefault();
   });
 
   function Loader(mensaje) {
