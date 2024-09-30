@@ -1337,8 +1337,65 @@ $(document).ready(function () {
     let datos = new FormData($("#form-realizar_compra")[0]);
     let funcion = "realizar_compra";
     datos.append("funcion", funcion);
+    let estado = $("#estado_pago_compra")
+      .find("option:selected")
+      .attr("nombre");
+    let vencimiento = $("#vencimiento_compra").val();
+    let bandera = 0;
+    if (estado == "Crédito") {
+      if (vencimiento == "") {
+        toastr.error("Ingrese Fecha de Vencimiento", "Error!");
+        bandera++;
+      }
+    }
+    let cant_tr = $("#lista_compra").attr("cantidad");
+    if (cant_tr == 0) {
+      toastr.error("No hay productos en la lista", "Error!");
+      bandera++;
+    } else {
+      let bandara_1 = 0;
+      $.each($("#lista_compra tr"), function (indexInArray, elemento) {
+        console.log($(elemento));
+      });
+    }
+
+    if (bandera == 0) {
+      realizar_compra(datos).then((respuesta) => {
+        console.log(datos);
+      });
+    }
     e.preventDefault();
   });
+
+  async function realizar_compra(datos) {
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
+      method: "POST",
+      //headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: datos,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
 
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {
