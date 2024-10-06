@@ -1342,6 +1342,8 @@ $(document).ready(function () {
       .attr("nombre");
     let vencimiento = $("#vencimiento_compra").val();
     let bandera = 0;
+    let productos = [];
+    let total = 0;
     if (estado == "Crédito") {
       if (vencimiento == "") {
         toastr.error("Ingrese Fecha de Vencimiento", "Error!");
@@ -1355,13 +1357,66 @@ $(document).ready(function () {
     } else {
       let bandara_1 = 0;
       $.each($("#lista_compra tr"), function (indexInArray, elemento) {
-        console.log($(elemento));
+        if ($(elemento).attr("lote") == "") {
+          bandara_1 = 1;
+        }
       });
+      if (bandara_1 == 1) {
+        toastr.error("Hay productos sin lote", "Error!");
+        bandera++;
+      } else {
+        $.each($("#lista_compra tr"), function (indexInArray, elemento) {
+          total +=
+            Number($(elemento).attr("cantidad")) *
+            Number($(elemento).attr("precio"));
+          let producto = {
+            id: $(elemento).attr("id"),
+            lote: $(elemento).attr("lote"),
+            cantidad: $(elemento).attr("cantidad"),
+            precio: $(elemento).attr("precio"),
+          };
+          productos.push(producto);
+        });
+        datos.append("productos", JSON.stringify(productos));
+        datos.append("total", total);
+      }
     }
-
     if (bandera == 0) {
       realizar_compra(datos).then((respuesta) => {
-        console.log(datos);
+        if (respuesta.mensaje == "success") {
+          obtener_pedidos();
+          toastr.success("Compra realizada con éxito", "Éxito");
+          $("#realizar_compra").modal("hide");
+          $("#form-realizar_compra").trigger("reset");
+          $("#comprobante_compra").val("").trigger("change");
+          $("#estado_pago_compra").val("").trigger("change");
+          $("#proveedor_compra").val("").trigger("change");
+          $("#producto_compra").val("").trigger("change");
+          $("#lista_compra").attr("cantidad", 0);
+          $("#lista_compra").html(html);
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
       });
     }
     e.preventDefault();
