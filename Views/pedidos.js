@@ -1188,7 +1188,6 @@ $(document).ready(function () {
     let cantidad = Number($("#cantidad_compra").val());
     let precio = Number($("#precio_compra").val());
     let lote = $("#lote_compra").val();
-
     let bandera = 0;
     if (producto == null) {
       toastr.error("Ingrese un producto", "Error!", { timeOut: 2000 });
@@ -1214,7 +1213,7 @@ $(document).ready(function () {
     if (bandera == 0) {
       let cant_tr = $("#lista_compra").attr("cantidad");
       let template = `
-        <tr id="${producto}" cantidad="${cantidad}" precio="${precio} lote="${lote}">
+        <tr id="${producto}" cantidad="${cantidad}" precio="${precio}" lote="${lote}">
           <td style="font-size: 13px;">
             <strong>Código: </strong>${$("#producto_compra")
               .find("option:selected")
@@ -1369,6 +1368,7 @@ $(document).ready(function () {
           total +=
             Number($(elemento).attr("cantidad")) *
             Number($(elemento).attr("precio"));
+
           let producto = {
             id: $(elemento).attr("id"),
             lote: $(elemento).attr("lote"),

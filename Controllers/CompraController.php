@@ -1,7 +1,9 @@
 <?php
+include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Compra.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Pedido.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/PedidoCompra.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Util/Config/config.php';
+$compra = new Compra();
 $pedido = new Pedido();
 $pedido_compra = new PedidoCompra();
 session_start();
@@ -11,26 +13,39 @@ $fecha_actual = date('d-m-Y');
 if ($_POST['funcion'] == 'realizar_compra') {
 	$mensaje = '';
 	if (!empty($_SESSION['id'])) {
-		var_dump($_POST);
-		/*$proveedor 		= $_POST['proveedor'];
+
+		$id		 		= $_POST['id_pedido'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_pedido	 	= openssl_decrypt($formateado, CODE, KEY);
+
+		$codigo		 	= $_POST['codigo_compra'];
+		$nota		 	= $_POST['nota_compra'];
+		$vencimiento	= $_POST['vencimiento_compra'];
+		$total		 	= $_POST['total'];
+		$comprobante	= $_POST['comprobante_compra'];
+		$formateado		= str_replace(' ', '+', $comprobante);
+		$id_comprobante	= openssl_decrypt($formateado, CODE, KEY);
+		$estado			= $_POST['estado_pago_compra'];
+		$formateado		= str_replace(' ', '+', $estado);
+		$id_estado		= openssl_decrypt($formateado, CODE, KEY);
+		$proveedor		= $_POST['proveedor_compra'];
 		$formateado		= str_replace(' ', '+', $proveedor);
-		$id_proveedor 	= openssl_decrypt($formateado, CODE, KEY);
-		$total 			= $_POST['total'];
-		$descripcion 	= $_POST['descripcion'];
+		$id_proveedor	= openssl_decrypt($formateado, CODE, KEY);
 		$productos		= json_decode($_POST['productos']);
-		if (is_numeric($id_proveedor)) {
-			$pedido->crear_pedido($descripcion, $total, $id_proveedor);
+		if (is_numeric($id_pedido) && is_numeric($id_comprobante) && is_numeric($id_estado) && is_numeric($id_proveedor)) {
+			var_dump($total);
+			/*$compra->crear_compra($codigo, $nota, $vencimiento, $total, $id_comprobante, $id_estado, $id_proveedor, $id_pedido);
 			// obtener el id del pedido creado
-			$id_pedido = $pedido->objetos[0]->id;
+			$id_compra = $compra->objetos[0]->id_compra;
+			var_dump($id_compra);
 			foreach ($productos as $objeto) {
-				$formateado		= str_replace(' ', '+', $objeto->id);
-				$id_producto 	= openssl_decrypt($formateado, CODE, KEY);
-				$pedido_compra->crear_detalle($objeto->cantidad, $objeto->precio, $id_producto, $id_pedido);
-			}
+
+				//$pedido_compra->crear_detalle($objeto->cantidad, $objeto->precio, $id_producto, $id_pedido);
+			}*/
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
-		}*/
+		}
 	} else {
 		$mensaje = 'error_session';
 	}
