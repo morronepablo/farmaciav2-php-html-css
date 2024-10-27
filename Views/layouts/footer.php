@@ -26,6 +26,8 @@
 <script src="/farmaciav2/Util/js/additional-methods.min.js"></script>
 <!-- Custom File Input-->
 <script src="/farmaciav2/Util/js/bs-custom-file-input.min.js"></script>
+<!-- Moment-->
+<script src="/farmaciav2/Util/js/moment.js"></script>
 
 </body>
 

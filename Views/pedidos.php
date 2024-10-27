@@ -156,6 +156,10 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                                 <label for="">Cantidad:</label>
                                 <input type="number" step="1" class="form-control" name="cantidad_compra" id="cantidad_compra" placeholder="Ingrese cantidad">
                             </div>
+                            <div class="form-group" id="vencimiento">
+                                <label for="">Vencimiento:</label>
+                                <input type="date" class="form-control" name="vencimiento_pro_compra" id="vencimiento_pro_compra" placeholder="Ingrese vencimiento">
+                            </div>
                             <div class="form-group">
                                 <label for="">Precio:</label>
                                 <input type="number" step="any" class="form-control" name="precio_compra" id="precio_compra" placeholder="Ingrese precio">

@@ -1112,7 +1112,7 @@ $(document).ready(function () {
       detalles.forEach((detalle) => {
         // console.log(detalle);
         template += `
-        <tr id="${detalle.id}" cantidad="${detalle.cantidad}" precio="${detalle.precio}" lote="">
+        <tr id="${detalle.id}" cantidad="${detalle.cantidad}" precio="${detalle.precio}" lote="" vencimiento="">
           <td style="font-size: 13px;">
             <strong>Código: </strong>${detalle.codigo}<br>
             <strong>Nombre: </strong>${detalle.producto}<br>
@@ -1121,13 +1121,16 @@ $(document).ready(function () {
             <strong>Subtipo: </strong>${detalle.subtipo}<br>
             <strong>Presentación: </strong>${detalle.presentacion}<br>
             <strong>Lote: </strong>
-              <input type="text" lote="" class="lote_compra form-control text-right" value="" style="width: 120px;">
+              <input type="text" lote="" class="lote_compra form-control text-right" value="" style="width: 140px;">
+            <br>
+            <strong>Vencimiento: </strong>
+              <input type="date" vencimiento="" class="vencimiento_compra form-control" value="" style="width: 140px;">
             <br>
             <strong>Cantidad: </strong>
-              <input type="number" cantidad="${detalle.cantidad}" step="1" class="cantidad_compra form-control text-right" value="${detalle.cantidad}" style="width: 120px;">
+              <input type="number" cantidad="${detalle.cantidad}" step="1" class="cantidad_compra form-control text-right" value="${detalle.cantidad}" style="width: 140px;">
             <br>
             <strong>Precio: </strong>
-              <input type="number" precio="${detalle.precio}" step="1" class="precio_compra form-control text-right" value="${detalle.precio}" style="width: 120px;">
+              <input type="number" precio="${detalle.precio}" step="1" class="precio_compra form-control text-right" value="${detalle.precio}" style="width: 140px;">
             <br>
           </td>
           <td>
@@ -1188,6 +1191,9 @@ $(document).ready(function () {
     let cantidad = Number($("#cantidad_compra").val());
     let precio = Number($("#precio_compra").val());
     let lote = $("#lote_compra").val();
+    let vencimiento = $("#vencimiento_pro_compra").val();
+    let fecha_actual = moment();
+    fecha_actual = fecha_actual.format("YYYY-MM-DD");
     let bandera = 0;
     if (producto == null) {
       toastr.error("Ingrese un producto", "Error!", { timeOut: 2000 });
@@ -1209,6 +1215,19 @@ $(document).ready(function () {
     if (lote == null || lote == "") {
       toastr.error("Ingrese lote", "Error!", { timeOut: 2000 });
       bandera++;
+    }
+    if (vencimiento == "") {
+      toastr.error("Ingrese vencimiento", "Error!", { timeOut: 2000 });
+      bandera++;
+    } else {
+      if (fecha_actual >= vencimiento) {
+        toastr.error(
+          "La fecha es igual o inferior a la fecha actual",
+          "Error!",
+          { timeOut: 2000 }
+        );
+        bandera++;
+      }
     }
     if (bandera == 0) {
       let cant_tr = $("#lista_compra").attr("cantidad");
@@ -1234,13 +1253,16 @@ $(document).ready(function () {
               .find("option:selected")
               .attr("presentacion")}<br>
             <strong>Lote: </strong>
-              <input type="text" lote="${lote}" class="lote_compra form-control text-right" value="${lote}" style="width: 120px;">
+              <input type="text" lote="${lote}" class="lote_compra form-control text-right" value="${lote}" style="width: 140px;">
+            <br>
+            <strong>Vencimiento: </strong>
+              <input type="date" vencimiento="${vencimiento}" class="vencimiento_compra form-control" value="${vencimiento}" style="width: 140px;">
             <br>
             <strong>Cantidad: </strong>
-              <input type="number" cantidad="${cantidad}" step="1" class="cantidad_compra form-control text-right" value="${cantidad}" style="width: 120px;">
+              <input type="number" cantidad="${cantidad}" step="1" class="cantidad_compra form-control text-right" value="${cantidad}" style="width: 140px;">
             <br>
             <strong>Precio: </strong>
-              <input type="number" precio="${precio}" step="1" class="precio_compra form-control text-right" value="${precio}" style="width: 120px;">
+              <input type="number" precio="${precio}" step="1" class="precio_compra form-control text-right" value="${precio}" style="width: 140px;">
             <br>
           </td>
           <td>
