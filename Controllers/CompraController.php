@@ -34,8 +34,9 @@ if ($_POST['funcion'] == 'realizar_compra') {
 		$formateado		= str_replace(' ', '+', $proveedor);
 		$id_proveedor	= openssl_decrypt($formateado, CODE, KEY);
 		$productos		= json_decode($_POST['productos']);
+		var_dump($_POST);
 		if (is_numeric($id_pedido) && is_numeric($id_comprobante) && is_numeric($id_estado) && is_numeric($id_proveedor)) {
-			$compra->crear_compra($codigo, $nota, $vencimiento, $total, $id_comprobante, $id_estado, $id_proveedor, $id_pedido);
+			/*$compra->crear_compra($codigo, $nota, $vencimiento, $total, $id_comprobante, $id_estado, $id_proveedor, $id_pedido);
 			// obtener el id del pedido creado
 			$id_compra = $compra->objetos[0]->id_compra;
 			foreach ($productos as $objeto) {
@@ -43,7 +44,7 @@ if ($_POST['funcion'] == 'realizar_compra') {
 				$id_producto	= openssl_decrypt($formateado, CODE, KEY);
 				$pedido_compra->crear_detalle($objeto->cantidad, $objeto->precio, $id_producto, $id_pedido);
 				$movimiento->crear($objeto->cantidad, 0, $objeto->precio, $vencimiento, $objeto->lote, $id_compra, '', $id_producto, 1);
-			}
+			}*/
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';

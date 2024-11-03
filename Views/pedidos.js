@@ -1232,7 +1232,7 @@ $(document).ready(function () {
     if (bandera == 0) {
       let cant_tr = $("#lista_compra").attr("cantidad");
       let template = `
-        <tr id="${producto}" cantidad="${cantidad}" precio="${precio}" lote="${lote}">
+        <tr id="${producto}" cantidad="${cantidad}" precio="${precio}" lote="${lote}" vencimiento="${vencimiento}">
           <td style="font-size: 13px;">
             <strong>Código: </strong>${$("#producto_compra")
               .find("option:selected")
@@ -1317,6 +1317,38 @@ $(document).ready(function () {
     }
   });
 
+  $(document).on("blur", ".vencimiento_compra", (e) => {
+    let elemento = e.currentTarget;
+    let vencimiento_ant = $(elemento).attr("vencimiento");
+    let vencimiento = $(elemento).val();
+    let fecha_actual = moment();
+    fecha_actual = fecha_actual.format("YYYY-MM-DD");
+    if (vencimiento_ant == "" && vencimiento != "") {
+      let tr = $(elemento).closest("tr");
+      if (fecha_actual >= vencimiento) {
+        $(elemento).attr("vencimiento", "");
+        $(tr).attr("vencimiento", "");
+        $(elemento).val("");
+      } else {
+        $(elemento).attr("vencimiento", vencimiento);
+        $(tr).attr("vencimiento", vencimiento);
+      }
+    }
+    if (vencimiento == "") {
+      toastr.error("Ingrese vencimiento", "Error!", { timeOut: 2000 });
+      $(elemento).val(vencimiento_ant);
+    } else {
+      if (fecha_actual >= vencimiento) {
+        toastr.error(
+          "La fecha es igual o inferior a la fecha actual",
+          "Error!",
+          { timeOut: 2000 }
+        );
+        $(elemento).val(vencimiento_ant);
+      }
+    }
+  });
+
   $(document).on("blur", ".cantidad_compra", (e) => {
     let elemento = e.currentTarget;
     let cantidad_ant = $(elemento).attr("cantidad");
@@ -1381,19 +1413,25 @@ $(document).ready(function () {
         if ($(elemento).attr("lote") == "") {
           bandara_1 = 1;
         }
+        if ($(elemento).attr("vencimiento") == "") {
+          bandara_1 = 2;
+        }
       });
       if (bandara_1 == 1) {
         toastr.error("Hay productos sin lote", "Error!");
+        bandera++;
+      } else if (bandara_1 == 2) {
+        toastr.error("Hay productos sin vencimiento", "Error!");
         bandera++;
       } else {
         $.each($("#lista_compra tr"), function (indexInArray, elemento) {
           total +=
             Number($(elemento).attr("cantidad")) *
             Number($(elemento).attr("precio"));
-
           let producto = {
             id: $(elemento).attr("id"),
             lote: $(elemento).attr("lote"),
+            vencimiento: $(elemento).attr("vencimiento"),
             cantidad: $(elemento).attr("cantidad"),
             precio: $(elemento).attr("precio"),
           };
