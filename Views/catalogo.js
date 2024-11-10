@@ -244,8 +244,8 @@ $(document).ready(function () {
                         </p>
                     </a>
                 </li>
-                <li id="gestion_compra" class="nav-item">
-                    <a href="adm_compras.php" class="nav-link">
+                <li class="nav-item">
+                    <a href="/farmaciav2/Views/compras.php" class="nav-link">
                         <i class="nav-icon fas fa-people-carry"></i>
                         <p>
                             Gestión compras

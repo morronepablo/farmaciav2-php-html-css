@@ -194,106 +194,106 @@ $(document).ready(function () {
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-header">Usuario</li>
             <li class="nav-item">
-                <a href="/farmaciav2/Views/mi_perfil.php" class="active nav-link">
-                    <i class="nav-icon fas fa-user-cog"></i>
-                    <p>
-                        Mi perfil
-                    </p>
-                </a>
+              <a href="/farmaciav2/Views/mi_perfil.php" class="active nav-link">
+                  <i class="nav-icon fas fa-user-cog"></i>
+                  <p>
+                      Mi perfil
+                  </p>
+              </a>
             </li>
             <li class="nav-item">
-                <a href="/farmaciav2/Views/usuarios.php" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        Gestión usuarios
-                    </p>
-                </a>
+              <a href="/farmaciav2/Views/usuarios.php" class="nav-link">
+                  <i class="nav-icon fas fa-users"></i>
+                  <p>
+                      Gestión usuarios
+                  </p>
+              </a>
             </li>
             <li id="gestion_cliente" class="nav-item">
-                <a href="/farmaciav2/Views/clientes.php" class="nav-link">
-                    <i class="nav-icon fas fa-user-friends"></i>
-                    <p>
-                        Gestión cliente
-                    </p>
-                </a>
+              <a href="/farmaciav2/Views/clientes.php" class="nav-link">
+                  <i class="nav-icon fas fa-user-friends"></i>
+                  <p>
+                      Gestión cliente
+                  </p>
+              </a>
             </li>
             <li id="gestion_ventas" class="nav-header">Ventas</li>
             <li id="gestion_listar_ventas" class="nav-item">
-                <a href="adm_venta.php" class="nav-link">
-                    <i class="nav-icon fas fa-notes-medical"></i>
-                    <p>
-                        Listar Ventas
-                    </p>
-                </a>
+              <a href="adm_venta.php" class="nav-link">
+                  <i class="nav-icon fas fa-notes-medical"></i>
+                  <p>
+                      Listar Ventas
+                  </p>
+              </a>
             </li>
             <li id="gestion_almacen" class="nav-header">Almacén</li>
             <li id="" class="nav-item">
-                <a href="/farmaciav2/Views/laboratorios.php" class="nav-link">
-                    <i class="nav-icon fas fa-flask"></i>
-                    <p>
-                        Laboratorios
-                    </p>
-                </a>
+              <a href="/farmaciav2/Views/laboratorios.php" class="nav-link">
+                  <i class="nav-icon fas fa-flask"></i>
+                  <p>
+                      Laboratorios
+                  </p>
+              </a>
             </li>
             <li id="" class="nav-item">
-                <a href="/farmaciav2/Views/presentaciones.php" class="nav-link">
-                    <i class="nav-icon fas fa-tags"></i>
-                    <p>
-                        Presentaciones
-                    </p>
-                </a>
+              <a href="/farmaciav2/Views/presentaciones.php" class="nav-link">
+                  <i class="nav-icon fas fa-tags"></i>
+                  <p>
+                      Presentaciones
+                  </p>
+              </a>
             </li>
             <li id="" class="nav-item">
-                <a href="/farmaciav2/Views/tipos.php" class="nav-link">
-                    <i class="nav-icon fas fa-vials"></i>
-                    <p>
-                        Tipos
-                    </p>
-                </a>
+              <a href="/farmaciav2/Views/tipos.php" class="nav-link">
+                  <i class="nav-icon fas fa-vials"></i>
+                  <p>
+                      Tipos
+                  </p>
+              </a>
             </li>
             <li id="" class="nav-item">
-                <a href="/farmaciav2/Views/subtipos.php" class="nav-link">
-                    <i class="nav-icon fas fa-tablets"></i>
-                    <p>
-                        Subtipos
-                    </p>
-                </a>
+              <a href="/farmaciav2/Views/subtipos.php" class="nav-link">
+                  <i class="nav-icon fas fa-tablets"></i>
+                  <p>
+                      Subtipos
+                  </p>
+              </a>
             </li>
             <li id="gestion_producto" class="nav-item">
-                    <a href="/farmaciav2/Views/productos.php" class="nav-link">
-                        <i class="nav-icon fas fa-pills"></i>
-                        <p>
-                            Gestión producto
-                        </p>
-                    </a>
-                </li>
-            <li id="gestion_lote" class="nav-item">
-                <a href="adm_lote.php" class="nav-link">
-                    <i class="nav-icon fas fa-cubes"></i>
+                <a href="/farmaciav2/Views/productos.php" class="nav-link">
+                    <i class="nav-icon fas fa-pills"></i>
                     <p>
-                        Gestión lote
+                        Gestión producto
                     </p>
                 </a>
+            </li>
+            <li id="gestion_lote" class="nav-item">
+              <a href="adm_lote.php" class="nav-link">
+                  <i class="nav-icon fas fa-cubes"></i>
+                  <p>
+                      Gestión lote
+                  </p>
+              </a>
             </li>
             <li id="gestion_compras" class="nav-header">Compras</li>
             <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/pedidos.php" class="nav-link">
-                        <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p>
-                            Gestión pedidos
-                        </p>
-                    </a>
-                </li>
-            <li id="gestion_proveedor" class="nav-item">
-                <a href="/farmaciav2/Views/proveedores.php" class="nav-link">
-                    <i class="nav-icon fas fa-truck"></i>
+                <a href="/farmaciav2/Views/pedidos.php" class="nav-link">
+                    <i class="nav-icon fas fa-clipboard-list"></i>
                     <p>
-                        Gestión proveedor
+                        Gestión pedidos
                     </p>
                 </a>
             </li>
-            <li id="gestion_compra" class="nav-item">
-                <a href="adm_compras.php" class="nav-link">
+            <li id="gestion_proveedor" class="nav-item">
+              <a href="/farmaciav2/Views/proveedores.php" class="nav-link">
+                  <i class="nav-icon fas fa-truck"></i>
+                  <p>
+                      Gestión proveedor
+                  </p>
+              </a>
+            </li>
+            <li class="nav-item">
+                <a href="/farmaciav2/Views/compras.php" class="nav-link">
                     <i class="nav-icon fas fa-people-carry"></i>
                     <p>
                         Gestión compras

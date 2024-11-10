@@ -304,7 +304,7 @@ $(document).ready(function () {
                 </li>
                 <li id="gestion_compras" class="nav-header">Compras</li>
                 <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/pedidos.php" class="active nav-link">
+                    <a href="/farmaciav2/Views/pedidos.php" class="nav-link">
                         <i class="nav-icon fas fa-clipboard-list"></i>
                         <p>
                             Gestión pedidos
@@ -320,7 +320,7 @@ $(document).ready(function () {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/farmaciav2/Views/compras.php" class="nav-link">
+                    <a href="/farmaciav2/Views/compras.php" class="active nav-link">
                         <i class="nav-icon fas fa-people-carry"></i>
                         <p>
                             Gestión compras
