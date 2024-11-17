@@ -3,67 +3,6 @@ session_start();
 include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
 ?>
 
-<!-- Modal Crear Pedido -->
-<div class="modal fade" id="crear_pedido">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content card card-success">
-            <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Crear pedido</h5>
-            </div>
-            <div class="modal-body">
-                <form id="form-crear_pedido" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="">Proveedor:</label>
-                                <select name="proveedor" id="proveedor" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success" required></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="">Descripción:</label>
-                                <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Ingrese descripción" required>
-                            </div>
-                            <hr>
-                            <div class="form-group">
-                                <label for="">Producto:</label>
-                                <select name="producto" id="producto" class="form-control select2-success" style="width:100%" data-dropdown-css-class="select2-success"></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="">Cantidad:</label>
-                                <input type="number" step="1" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese cantidad">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Precio:</label>
-                                <input type="number" step="any" class="form-control" name="precio" id="precio" placeholder="Ingrese precio">
-                            </div>
-                            <button type="button" id="agregar_producto" class="btn btn-outline-success btn-circle btn-lg float-right"><i class="fas fa-plus"></i></button>
-                        </div>
-                        <div class="col-md-4">
-                            <table class="table table-hover mt-1">
-                                <thead class="bg-success">
-                                    <tr>
-                                        <th width="80%">Producto</th>
-                                        <th width="20%">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="lista_pedido" cantidad="0">
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-md-3">
-
-                        </div>
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary btn-circle btn-lg" data-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
-                <button type="submit" class="btn btn-outline-success btn-circle btn-lg"><i class="fas fa-check"></i></button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Fin Modal Crear Pedido -->
 <!-- Modal Ver Detalle -->
 <div class="modal fade" id="ver_detalle">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -257,7 +196,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
             </div>
             <div class="card-body">
                 <table id="compras" class="table table-hover">
-                    <thead class="bg-primary">
+                    <thead class="bg-success">
                         <tr>
                             <th width="100%">Compras</th>
                         </tr>

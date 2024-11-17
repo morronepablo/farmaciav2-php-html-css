@@ -9,70 +9,8 @@ $(document).ready(function () {
     preventDuplicates: true,
   };
 
-  $("#vencimiento").hide();
-
   $("#proveedor").select2({
     placeholder: "Seleccione un proveedor",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
-
-  $("#proveedor_compra").select2({
-    placeholder: "Seleccione un proveedor",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
-
-  $("#producto").select2({
-    placeholder: "Seleccione un producto",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
-
-  $("#producto_compra").select2({
-    placeholder: "Seleccione un producto",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
-
-  $("#comprobante_compra").select2({
-    placeholder: "Seleccione un comprobante",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
-
-  $("#estado_pago_compra").select2({
-    placeholder: "Seleccione un estado",
     language: {
       noResult: function () {
         return "No hay resultados.";
@@ -347,7 +285,7 @@ $(document).ready(function () {
         if (usuario.length != 0 && usuario.id_tipo != 3) {
           llenar_menu_superior(usuario);
           llenar_menu_lateral(usuario);
-          obtener_pedidos();
+          obtener_compras();
           CloseLoader();
         } else {
           location.href = "/farmaciav2/";
@@ -370,6 +308,129 @@ $(document).ready(function () {
     }
   }
 
+  async function obtener_compras() {
+    let funcion = "obtener_compras";
+    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        let compras = JSON.parse(response);
+        console.log(compras);
+
+        /*
+        $("#pedidos").DataTable({
+          data: pedidos,
+          aaSorting: [],
+          searching: true,
+          scrollX: false,
+          autoWidth: false,
+          columns: [
+            {
+              render: function (data, type, datos, meta) {
+                let estado = "<span class='badge badge-success'>Activo</span>";
+                if (datos.estado == "I") {
+                  estado =
+                    "<span class='badge badge-secondary'>Inactivo</span>";
+                }
+
+                let template = `
+                                <div class="">
+                                    <div class="card bg-light">
+                                        <div class="card-body pt-3">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h4 class=""><strong>Código: ${datos.id}</strong> ${estado}</h4>
+                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Descripción: ${datos.descripcion}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Total: ${datos.total}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Proveedor: ${datos.proveedor}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Fecha: ${datos.fecha_creacion}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Estado proceso: ${datos.estado_proceso}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="text-right">
+                                              <button 
+                                                class="btn btn-outline-info btn-circle btn-lg ver_detalle"
+                                                data-toggle="modal"
+                                                data-target="#ver_detalle"
+                                                id="${datos.id}"
+                                                proveedor="${datos.proveedor}"
+                                                fecha_creacion="${datos.fecha_creacion}"
+                                                total="${datos.total}"
+                                              >
+                                                  <i class="fas fa-search"></i>
+                                              </button>
+                                            `;
+                if (datos.estado_proceso == "espera") {
+                  template += `
+                                              <button 
+                                                class="btn btn-outline-success btn-circle btn-lg realizar_compra"
+                                                data-toggle="modal"
+                                                data-target="#realizar_compra"
+                                                id="${datos.id}"
+                                                proveedor="${datos.proveedor}"
+                                                fecha_creacion="${datos.fecha_creacion}"
+                                                total="${datos.total}"
+                                              >
+                                                  <i class="fas fa-arrow-circle-up"></i>
+                                              </button>
+                                              <button 
+                                                class="btn btn-outline-danger btn-circle btn-lg eliminar"
+                                                id="${datos.id}"
+                                                proveedor="${datos.proveedor}"
+                                                fecha_creacion="${datos.fecha_creacion}"
+                                                total="${datos.total}"
+                                              >
+                                                  <i class="fas fa-trash"></i>
+                                              </button>`;
+                }
+                template += `</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+                return template;
+              },
+            },
+          ],
+          language: espanol,
+          destroy: true,
+        });
+        */
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   obtener_proveedores().then((respuesta) => {
     let template = "";
     respuesta.forEach((proveedor) => {
@@ -387,58 +448,6 @@ $(document).ready(function () {
     let funcion = "obtener_proveedores";
     let respuesta = "";
     let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
-  }
-
-  obtener_productos().then((respuesta) => {
-    // console.log(respuesta);
-    let template = "";
-    respuesta.forEach((producto) => {
-      if (producto.estado == "A") {
-        template += `<option value="${producto.id}" 
-                              codigo="${producto.codigo}"
-                              nombre="${producto.nombre}"
-                              concentracion="${producto.concentracion}"
-                              laboratorio="${producto.laboratorio}"
-                              subtipo="${producto.subtipo}"
-                              presentacion="${producto.presentacion}"
-                      >Código: ${producto.codigo} | Nombre: ${producto.nombre} | Concen: ${producto.concentracion} | Lab: ${producto.laboratorio} | Subtipo: ${producto.subtipo} | Present: ${producto.presentacion}</option>`;
-      }
-    });
-    $("#producto").html(template);
-    $("#producto").val("").trigger("change");
-    $("#producto_compra").html(template);
-    $("#producto_compra").val("").trigger("change");
-  });
-
-  async function obtener_productos() {
-    let funcion = "obtener_gestion_productos";
-    let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion,
@@ -550,18 +559,6 @@ $(document).ready(function () {
     }
     return respuesta;
   }
-
-  var html = `
-  <tr>
-    <td colspan="2">
-      <div class="col-md-12 bg-danger text-center p-2">
-        No hay productos
-      </div>
-    </td>
-  </tr>
-  `;
-
-  $("#lista_pedido").html(html);
 
   $(document).on("click", "#agregar_producto", (e) => {
     let producto = $("#producto").val();
@@ -744,118 +741,6 @@ $(document).ready(function () {
             location.href = "/farmaciav2/index.php";
           });
         }
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-  }
-
-  async function obtener_pedidos() {
-    let funcion = "obtener_pedidos";
-    let data = await fetch("/farmaciav2/Controllers/PedidoController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        let pedidos = JSON.parse(response);
-        console.log(pedidos);
-
-        $("#pedidos").DataTable({
-          data: pedidos,
-          aaSorting: [],
-          searching: true,
-          scrollX: false,
-          autoWidth: false,
-          columns: [
-            {
-              render: function (data, type, datos, meta) {
-                let estado = "<span class='badge badge-success'>Activo</span>";
-                if (datos.estado == "I") {
-                  estado =
-                    "<span class='badge badge-secondary'>Inactivo</span>";
-                }
-
-                let template = `
-                                <div class="">
-                                    <div class="card bg-light">
-                                        <div class="card-body pt-3">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <h4 class=""><strong>Código: ${datos.id}</strong> ${estado}</h4>
-                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Descripción: ${datos.descripcion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Total: ${datos.total}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Proveedor: ${datos.proveedor}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Fecha: ${datos.fecha_creacion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Estado proceso: ${datos.estado_proceso}</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="text-right">
-                                              <button 
-                                                class="btn btn-outline-info btn-circle btn-lg ver_detalle"
-                                                data-toggle="modal"
-                                                data-target="#ver_detalle"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-search"></i>
-                                              </button>
-                                            `;
-                if (datos.estado_proceso == "espera") {
-                  template += `
-                                              <button 
-                                                class="btn btn-outline-success btn-circle btn-lg realizar_compra"
-                                                data-toggle="modal"
-                                                data-target="#realizar_compra"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-arrow-circle-up"></i>
-                                              </button>
-                                              <button 
-                                                class="btn btn-outline-danger btn-circle btn-lg eliminar"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-trash"></i>
-                                              </button>`;
-                }
-                template += `</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                `;
-                return template;
-              },
-            },
-          ],
-          language: espanol,
-          destroy: true,
-        });
       } catch (error) {
         console.error(error);
         console.log(response);
@@ -1096,8 +981,6 @@ $(document).ready(function () {
         }
       });
   });
-
-  $("#lista_compra").html(html);
 
   $(document).on("click", ".realizar_compra", (e) => {
     let elemento = $(this)[0].activeElement;

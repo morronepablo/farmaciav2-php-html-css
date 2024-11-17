@@ -28,4 +28,32 @@ class Compra
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function obtener_compras()
+	{
+		$sql = "
+			SELECT 
+				c.id,
+				c.codigo,
+				c.nota,
+				c.fecha_creacion,
+				c.total,
+				c.comprobante_id,
+				co.nombre AS comprabante,
+				c.id_estado_pago,
+				e.nombre AS estado,
+				c.id_proveedor,
+				p.nombre AS proveedor,
+				c.pedido_id
+			FROM compra c
+			JOIN comprobante co ON c.comprobante_id=co.id
+			JOIN estado_pago e ON c.id_estado_pago=e.id
+			JOIN proveedor p ON c.id_proveedor=p.id
+			ORDER BY c.fecha_creacion DESC
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute();
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }
