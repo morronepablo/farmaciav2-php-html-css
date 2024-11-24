@@ -59,61 +59,27 @@ if ($_POST['funcion'] == 'realizar_compra') {
 	echo json_encode($json);
 } else if ($_POST['funcion'] == 'obtener_compras') {
 	$compra->obtener_compras();
-	var_dump($compra->objetos);
-
-
-
-
-
-
-	/*
-	$mensaje = '';
-	if (!empty($_SESSION['id'])) {
-		$id		= $_POST['id'];
-		$formateado	= str_replace(' ', '+', $id);
-		$id_pedido	= openssl_decrypt($formateado, CODE, KEY);
-		$json = array();
-		$detalle_json = array();
-		if (is_numeric($id_pedido)) {
-			$pedido_compra->ver_detalle($id_pedido);
-			foreach ($pedido_compra->objetos as $objeto) {
-				$detalle_json[] = array(
-					'id'			=> openssl_encrypt($objeto->id, CODE, KEY),
-					'codigo'		=> $objeto->codigo,
-					'cantidad'		=> $objeto->cantidad,
-					'precio'		=> $objeto->precio,
-					'producto'		=> str_replace('***', '%', $objeto->producto),
-					'concentracion'	=> str_replace('***', '%', $objeto->concentracion),
-					'laboratorio'	=> $objeto->laboratorio,
-					'subtipo'		=> $objeto->subtipo,
-					'presentacion'	=> $objeto->presentacion
-				);
-			}
-			$pedido->obtener_pedido($id_pedido);
-			foreach ($pedido->objetos as $objeto) {
-				$json = array(
-					'id'				=> openssl_encrypt($objeto->id, CODE, KEY),
-					'descripcion'		=> $objeto->descripcion,
-					'fecha_creacion'	=> $objeto->fecha_creacion,
-					'total' 			=> $objeto->total,
-					'estado' 			=> $objeto->estado,
-					'estado_proceso' 	=> $objeto->estado_proceso,
-					'proveedor' 		=> $objeto->proveedor,
-					'id_proveedor'		=> openssl_encrypt($objeto->id_proveedor, CODE, KEY),
-					'detalle'			=> $detalle_json,
-				);
-			}
-			$mensaje = 'success';
-		} else {
-			$mensaje = 'error_decrypt';
-		}
-	} else {
-		$mensaje = 'error_session';
+	//var_dump($compra->objetos);
+	$json = array();
+	foreach ($compra->objetos as $objeto) {
+		$json[] = array(
+			'id'				=> openssl_encrypt($objeto->id, CODE, KEY),
+			'codigo'			=> $objeto->codigo,
+			'nota'				=> $objeto->nota,
+			// Formateo de la fecha de creación
+			'fecha_creacion'	=> date('d-m-Y h:i:s', strtotime($objeto->fecha_creacion)),
+			// Formateo de la fecha de vencimiento si existe
+			'fecha_vencimiento'	=> !empty($objeto->fecha_vencimiento) ? date('d-m-Y', strtotime($objeto->fecha_vencimiento)) : null,
+			'total'				=> $objeto->total,
+			'comprobante_id'	=> openssl_encrypt($objeto->comprobante_id, CODE, KEY),
+			'comprobante'		=> $objeto->comprobante,
+			'id_estado_pago'	=> openssl_encrypt($objeto->id_estado_pago, CODE, KEY),
+			'estado'			=> $objeto->estado,
+			'id_proveedor'		=> openssl_encrypt($objeto->id_proveedor, CODE, KEY),
+			'proveedor'			=> $objeto->proveedor,
+			'pedido_id'			=> openssl_encrypt($objeto->pedido_id, CODE, KEY),
+		);
 	}
-	$json = array(
-		'mensaje'	=>	$mensaje,
-		'pedido'	=>	$json
-	);
 
-	echo json_encode($json);*/
+	echo json_encode($json);
 }

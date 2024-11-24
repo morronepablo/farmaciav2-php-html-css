@@ -321,9 +321,8 @@ $(document).ready(function () {
         let compras = JSON.parse(response);
         console.log(compras);
 
-        /*
-        $("#pedidos").DataTable({
-          data: pedidos,
+        $("#compras").DataTable({
+          data: compras,
           aaSorting: [],
           searching: true,
           scrollX: false,
@@ -331,68 +330,74 @@ $(document).ready(function () {
           columns: [
             {
               render: function (data, type, datos, meta) {
-                let estado = "<span class='badge badge-success'>Activo</span>";
-                if (datos.estado == "I") {
-                  estado =
-                    "<span class='badge badge-secondary'>Inactivo</span>";
+                let estado = `<span class="badge badge-warning">Crédito</span>`;
+                if (datos.estado == "Contado") {
+                  estado = `<span class="badge badge-success">Contado</span>`;
                 }
-
-                let template = `
-                                <div class="">
-                                    <div class="card bg-light">
-                                        <div class="card-body pt-3">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <h4 class=""><strong>Código: ${datos.id}</strong> ${estado}</h4>
-                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Descripción: ${datos.descripcion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Total: ${datos.total}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Proveedor: ${datos.proveedor}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Fecha: ${datos.fecha_creacion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Estado proceso: ${datos.estado_proceso}</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="text-right">
-                                              <button 
-                                                class="btn btn-outline-info btn-circle btn-lg ver_detalle"
-                                                data-toggle="modal"
-                                                data-target="#ver_detalle"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-search"></i>
-                                              </button>
+                if (datos.estado == "Pagado") {
+                  estado = `<span class="badge badge-info">Pagado</span>`;
+                }
+                let template = "";
+                template += `
+                                <div class="card card-widget widget-user-2">
+                                    <div class="widget-user-header bg-white d-flex" >
+                                        <div>
+                                            <h3 class="widget-user-username" style="margin: 0 20px;"><strong>Código :</strong>${datos.codigo} ${estado}</h3>
+                                            <h5 class="widget-user-desc">
+                                              <strong>Nota: </strong><span>${datos.nota}</span><br>
+                                              <strong>Creación: </strong><span>${datos.fecha_creacion}</span><br>`;
+                if (datos.estado == "Crédito") {
+                  template += `<strong>Vencimiento: </strong><span>${datos.fecha_vencimiento}</span><br>`;
+                }
+                template += `<strong>Total: </strong><span>${datos.total}</span><br>
+                            <strong>Comprobante: </strong><span>${datos.comprobante}</span><br>
+                            <strong>Proveedor: </strong><span>${datos.proveedor}</span><br>
+                            </h5>
                                             `;
-                if (datos.estado_proceso == "espera") {
-                  template += `
-                                              <button 
-                                                class="btn btn-outline-success btn-circle btn-lg realizar_compra"
-                                                data-toggle="modal"
-                                                data-target="#realizar_compra"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-arrow-circle-up"></i>
-                                              </button>
-                                              <button 
-                                                class="btn btn-outline-danger btn-circle btn-lg eliminar"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-trash"></i>
-                                              </button>`;
-                }
                 template += `</div>
-                                        </div>
+                                    </div>
+                                    <div class="card-footer p-0">
+                                        <ul class="nav flex-column">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link">`;
+                if (datos.estado == "A") {
+                  template += `
+                                                        <span style="margin-right: 5px;">
+                                                            <button 
+                                                                class="btn btn-outline-primary btn-circle btn-lg editar_presentacion" 
+                                                                data-toggle="modal" 
+                                                                data-target="#editar_presentacion" 
+                                                                id="${datos.id}"
+                                                                nombre="${datos.nombre}"
+                                                            >
+                                                                <i class="fas fa-pencil-alt"></i>
+                                                            </button>
+                                                        </span>
+                                                        
+                                                        <span style="margin-right: 5px;">
+                                                            <button 
+                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar_presentacion"
+                                                                id="${datos.id}"
+                                                                nombre="${datos.nombre}"
+                                                            >
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </span>
+                                                        `;
+                } else {
+                  template += `<span>
+                                                                        <button 
+                                                                            class="btn btn-outline-success btn-circle btn-lg activar_presentacion"
+                                                                            id="${datos.id}"
+                                                                            nombre="${datos.nombre}"
+                                                                        >
+                                                                            <i class="fas fa-plus"></i>
+                                                                        </button>
+                                                                    </span>`;
+                }
+                template += `</a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                                 `;
@@ -403,7 +408,6 @@ $(document).ready(function () {
           language: espanol,
           destroy: true,
         });
-        */
       } catch (error) {
         console.error(error);
         console.log(response);
