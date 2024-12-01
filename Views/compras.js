@@ -357,50 +357,54 @@ $(document).ready(function () {
                 template += `</div>
                                     </div>
                                     <div class="card-footer p-0">
-                                        <ul class="nav flex-column">
+                                        <ul class="nav flex-column text-right">
                                             <li class="nav-item">
                                                 <a href="#" class="nav-link">`;
-                if (datos.estado == "A") {
-                  template += `
-                                                        <span style="margin-right: 5px;">
-                                                            <button 
-                                                                class="btn btn-outline-primary btn-circle btn-lg editar_presentacion" 
-                                                                data-toggle="modal" 
-                                                                data-target="#editar_presentacion" 
-                                                                id="${datos.id}"
-                                                                nombre="${datos.nombre}"
-                                                            >
-                                                                <i class="fas fa-pencil-alt"></i>
-                                                            </button>
-                                                        </span>
-                                                        
-                                                        <span style="margin-right: 5px;">
-                                                            <button 
-                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar_presentacion"
-                                                                id="${datos.id}"
-                                                                nombre="${datos.nombre}"
-                                                            >
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </span>
-                                                        `;
-                } else {
-                  template += `<span>
-                                                                        <button 
-                                                                            class="btn btn-outline-success btn-circle btn-lg activar_presentacion"
-                                                                            id="${datos.id}"
-                                                                            nombre="${datos.nombre}"
-                                                                        >
-                                                                            <i class="fas fa-plus"></i>
-                                                                        </button>
-                                                                    </span>`;
+                if (datos.estado == "Crédito") {
+                  template += ` 
+                  <span style="margin-right: 5px;">
+                    <button 
+                        class="btn btn-outline-success btn-circle btn-lg pagar" 
+                        id="${datos.id}"
+                        codigo="${datos.codigo}"
+                    >
+                      <i class="fas fa-hand-holding-usd"></i>
+                    </button>
+                  </span>`;
                 }
-                template += `</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                `;
+                template += `<span style="margin-right: 5px;">
+                              <button 
+                                  class="btn btn-outline-info btn-circle btn-lg ver_detalle" 
+                                  id="${datos.id}"
+                                  codigo="${datos.codigo}"
+                              >
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </span>
+                            <span style="margin-right: 5px;">
+                              <button 
+                                  class="btn btn-outline-primary btn-circle btn-lg editar" 
+                                  id="${datos.id}"
+                                  codigo="${datos.codigo}"
+                              >
+                                <i class="fas fa-pencil-alt"></i>
+                              </button>
+                            </span>
+                            <span style="margin-right: 5px;">
+                              <button 
+                                  class="btn btn-outline-danger btn-circle btn-lg eliminar" 
+                                  id="${datos.id}"
+                                  codigo="${datos.codigo}"
+                              >
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            </span>
+                            </a>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+              `;
                 return template;
               },
             },
@@ -424,6 +428,106 @@ $(document).ready(function () {
         text: "Hubo confilcto de código: " + data.status,
       });
     }
+  }
+
+  $(document).on("click", ".pagar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success ml-2",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: `Desea pagar la compra ${codigo} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, pagar !",
+        cancelButtonText: "No, cancelar !",
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          pagar(id).then((respuesta) => {
+            if (respuesta.mensaje == "success") {
+              obtener_compras();
+              swalWithBootstrapButtons.fire(
+                "Pagada!",
+                "La compra " + codigo + " fue pagada correctamente",
+                "success"
+              );
+            } else if (respuesta.mensaje == "error_decrypt") {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "No vulnere los datos...",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                //refresca la pagina (F5)
+                location.reload();
+              });
+            } else if (respuesta.mensaje == "error_session") {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Sesión finalizada...",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                //refresca la pagina (F5)
+                location.href = "/farmaciav2/index.php";
+              });
+            }
+          });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            "Cancelado",
+            "canceló el pago de la compra",
+            "error"
+          );
+        }
+      });
+  });
+
+  async function pagar(id) {
+    let funcion = "pagar";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
   }
 
   //
