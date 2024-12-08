@@ -85,37 +85,45 @@ if ($_POST['funcion'] == 'realizar_compra') {
 } else if ($_POST['funcion'] == 'pagar') {
 	$mensaje = '';
 	if (!empty($_SESSION['id'])) {
-		var_dump($_POST);
-		/*
-		$id		 		= $_POST['id_pedido'];
+
+		$id 			= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_pedido	 	= openssl_decrypt($formateado, CODE, KEY);
+		$id_compra	 	= openssl_decrypt($formateado, CODE, KEY);
 
-		$codigo		 	= $_POST['codigo_compra'];
-		$nota		 	= $_POST['nota_compra'];
-		$vencimiento	= $_POST['vencimiento_compra'];
-		$total		 	= $_POST['total'];
-		$comprobante	= $_POST['comprobante_compra'];
-		$formateado		= str_replace(' ', '+', $comprobante);
-		$id_comprobante	= openssl_decrypt($formateado, CODE, KEY);
-		$estado			= $_POST['estado_pago_compra'];
-		$formateado		= str_replace(' ', '+', $estado);
-		$id_estado		= openssl_decrypt($formateado, CODE, KEY);
-		$proveedor		= $_POST['proveedor_compra'];
-		$formateado		= str_replace(' ', '+', $proveedor);
-		$id_proveedor	= openssl_decrypt($formateado, CODE, KEY);
-		$productos		= json_decode($_POST['productos']);
-
-		if (is_numeric($id_pedido) && is_numeric($id_comprobante) && is_numeric($id_estado) && is_numeric($id_proveedor)) {
-			$compra->crear_compra($codigo, $nota, $vencimiento, $total, $id_comprobante, $id_estado, $id_proveedor, $id_pedido);
+		if (is_numeric($id_compra)) {
+			$compra->pagar($id_compra);
 			// obtener el id del pedido creado
-			$id_compra = $compra->objetos[0]->id_compra;
-			foreach ($productos as $objeto) {
-				$formateado		= str_replace(' ', '+', $objeto->id);
-				$id_producto	= openssl_decrypt($formateado, CODE, KEY);
-				$pedido_compra->crear_detalle($objeto->cantidad, $objeto->precio, $id_producto, $id_pedido);
-				$movimiento->crear($objeto->cantidad, 0, $objeto->precio, $objeto->vencimiento, $objeto->lote, $id_compra, '', $id_producto, 1);
-			}
+
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+
+	echo json_encode($json);
+} else if ($_POST['funcion'] == 'eliminar') {
+	$mensaje = '';
+	if (!empty($_SESSION['id'])) {
+
+		$id 			= $_POST['id'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_compra	 	= openssl_decrypt($formateado, CODE, KEY);
+
+		$pedido_id 		= $_POST['pedido_id'];
+		$formateado		= str_replace(' ', '+', $pedido_id);
+		$pedido_id	 	= openssl_decrypt($formateado, CODE, KEY);
+
+		var_dump($id_compra, $pedido_id);
+
+		/*if (is_numeric($id_compra)) {
+			$compra->pagar($id_compra);
+			// obtener el id del pedido creado
+
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';

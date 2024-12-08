@@ -57,4 +57,17 @@ class Compra
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function pagar($id_compra)
+	{
+		$sql = "UPDATE compra SET id_estado_pago=3
+		WHERE id=:id";
+		$variables = array(
+			':id' => $id_compra,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }
