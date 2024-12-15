@@ -118,16 +118,20 @@ if ($_POST['funcion'] == 'realizar_compra') {
 		$formateado		= str_replace(' ', '+', $pedido_id);
 		$pedido_id	 	= openssl_decrypt($formateado, CODE, KEY);
 
-		var_dump($id_compra, $pedido_id);
-
-		/*if (is_numeric($id_compra)) {
-			$compra->pagar($id_compra);
+		if (is_numeric($id_compra) && is_numeric($pedido_id)) {
+			$compra->validar_compra_venta($id_compra);
+			if (!empty($compra->objetos)) {
+				$movimiento->eliminar($id_compra);
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_compra';
+			}
 			// obtener el id del pedido creado
 
-			$mensaje = 'success';
+
 		} else {
 			$mensaje = 'error_decrypt';
-		}*/
+		}
 	} else {
 		$mensaje = 'error_session';
 	}

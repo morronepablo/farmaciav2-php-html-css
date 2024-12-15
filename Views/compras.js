@@ -564,6 +564,12 @@ $(document).ready(function () {
                 "La compra " + codigo + " fue eliminada correctamente",
                 "success"
               );
+            } else if (respuesta.mensaje == "error_compra") {
+              toastr.error(
+                "No se pudo eliminar la compra, debido ha que hoy productos de esta compra que ya fueron ingresados en una venta",
+                "Error!",
+                { timeOut: 2000 }
+              );
             } else if (respuesta.mensaje == "error_decrypt") {
               Swal.fire({
                 position: "center",

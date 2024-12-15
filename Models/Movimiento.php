@@ -29,4 +29,19 @@ class Movimiento
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+
+	function eliminar($id_compra)
+	{
+		$sql = "
+			DELETE 
+			FROM movimiento 
+			WHERE compra_id=:compra_id
+			AND tipo_movimiento_id=1
+		";
+		$variables = array(
+			':compra_id' => $id_compra,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }

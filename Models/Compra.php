@@ -70,4 +70,17 @@ class Compra
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function validar_compra_venta($id)
+	{
+		$sql = "
+			SELECT * FROM movimiento 
+			WHERE compra_id=:id
+			AND tipo_movimiento_id=2
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute(array(':id' => $id));
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }
