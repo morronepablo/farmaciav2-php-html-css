@@ -79,4 +79,17 @@ class Pedido
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function cambiar_estado_espera($pedido_id)
+	{
+		$sql = "UPDATE pedido 
+				SET estado_proceso='espera'
+				WHERE id=:pedido_id
+		";
+		$variables = array(
+			':pedido_id' => $pedido_id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }

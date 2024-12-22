@@ -120,8 +120,10 @@ if ($_POST['funcion'] == 'realizar_compra') {
 
 		if (is_numeric($id_compra) && is_numeric($pedido_id)) {
 			$compra->validar_compra_venta($id_compra);
-			if (!empty($compra->objetos)) {
+			if (empty($compra->objetos)) {
 				$movimiento->eliminar($id_compra);
+				$compra->eliminar($id_compra);
+				$pedido->cambiar_estado_espera($pedido_id);
 				$mensaje = 'success';
 			} else {
 				$mensaje = 'error_compra';

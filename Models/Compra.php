@@ -83,4 +83,17 @@ class Compra
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function eliminar($id_compra)
+	{
+		$sql = "DELETE FROM compra 
+				WHERE id=:id_compra";
+		$variables = array(
+			':id_compra' => $id_compra,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }

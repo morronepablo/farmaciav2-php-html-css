@@ -377,6 +377,8 @@ $(document).ready(function () {
                                   class="btn btn-outline-info btn-circle btn-lg ver_detalle" 
                                   id="${datos.id}"
                                   codigo="${datos.codigo}"
+                                  data-toggle="modal"
+                                  data-target="#ver_detalle"
                               >
                                 <i class="fas fa-search"></i>
                               </button>
