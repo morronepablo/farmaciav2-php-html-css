@@ -44,4 +44,16 @@ class Movimiento
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+
+	function ver_detalle($id)
+	{
+		$sql = "
+			SELECT * FROM movimiento
+			WHERE compra_id=:compra_id
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute(array(':compra_id' => $id));
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }

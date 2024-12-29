@@ -377,6 +377,8 @@ $(document).ready(function () {
                                   class="btn btn-outline-info btn-circle btn-lg ver_detalle" 
                                   id="${datos.id}"
                                   codigo="${datos.codigo}"
+                                  total="${datos.total}"
+                                  fecha_creacion="${datos.fecha_creacion}"
                                   data-toggle="modal"
                                   data-target="#ver_detalle"
                               >
@@ -616,6 +618,129 @@ $(document).ready(function () {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion + "&&id=" + id + "&&pedido_id=" + pedido_id,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  $(document).on("click", ".ver_detalle", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+    let fecha_creacion = $(elemento).attr("fecha_creacion");
+    let total = $(elemento).attr("total");
+
+    // Parsear la fecha y formatearla
+    let fecha = new Date(fecha_creacion);
+    let dia = fecha.getDate().toString().padStart(2, "0");
+    let mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // Los meses son de 0 a 11
+    let año = fecha.getFullYear();
+    let fechaFormateada = `${dia}/${mes}/${año}`;
+
+    $("#codigo_detalle").text(id);
+    $("#fecha_detalle").text(fechaFormateada);
+    ver_detalle(id).then((respuesta) => {
+      if (respuesta.mensaje == "success") {
+        let productos = respuesta.data;
+        console.log(productos);
+        /*
+        let html = "";
+        productos.forEach((producto) => {
+          html += `
+            <tr>
+              <td>
+                <strong>Nombre: </strong><span>${producto.producto}</span><br>
+                <strong>Concentración: </strong><span>${
+                  producto.concentracion
+                }</span><br>
+                <strong>Laboratorio: </strong><span>${
+                  producto.laboratorio
+                }</span><br>
+                <strong>Subtipo: </strong><span>${producto.subtipo}</span><br>
+                <strong>Presentación: </strong><span>${
+                  producto.presentacion
+                }</span><br>
+              </td>
+              <td class="text-right">${formatNumber(
+                Number(producto.cantidad).toFixed(2)
+              )}</td>
+              <td class="text-right">$ ${formatNumber(
+                Number(producto.precio).toFixed(2)
+              )}</td>
+              <td class="text-right">$ ${formatNumber(
+                (Number(producto.cantidad) * Number(producto.precio)).toFixed(2)
+              )}</td>
+            </tr>
+          `;
+        });
+        html += `
+          <tr>
+            <td colspan="4" class="text-right"><strong>Total: </strong>$ ${formatNumber(
+              Number(total).toFixed(2)
+            )}</td>
+          </tr>
+        `;
+        $("#detalles").html(html);
+        */
+      } else if (respuesta.mensaje == "error_decrypt") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "No vulnere los datos...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.reload();
+        });
+      } else if (respuesta.mensaje == "error_session") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Sesión finalizada...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.href = "/farmaciav2/index.php";
+        });
+      }
+    });
+  });
+
+  function formatNumber(num) {
+    num = num.toString().replace(".", ","); // Reemplaza el punto decimal con una coma
+    let parts = num.split(","); // Divide en parte entera y decimal
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Formatea la parte entera con puntos
+    return parts.join(","); // Une de nuevo las partes
+  }
+
+  async function ver_detalle(id) {
+    let funcion = "ver_detalle";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/MovimientoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id,
     });
     if (data.ok) {
       let response = await data.text();
@@ -975,131 +1100,6 @@ $(document).ready(function () {
         text: "Hubo confilcto de código: " + data.status,
       });
     }
-  }
-
-  $(document).on("click", ".ver_detalle", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let proveedor = $(elemento).attr("proveedor");
-    let fecha_creacion = $(elemento).attr("fecha_creacion");
-    let total = $(elemento).attr("total");
-
-    // Parsear la fecha y formatearla
-    let fecha = new Date(fecha_creacion);
-    let dia = fecha.getDate().toString().padStart(2, "0");
-    let mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // Los meses son de 0 a 11
-    let año = fecha.getFullYear();
-    let fechaFormateada = `${dia}/${mes}/${año}`;
-
-    $("#codigo_detalle").text(id);
-    $("#proveedor_detalle").text(proveedor);
-    $("#fecha_detalle").text(fechaFormateada);
-    ver_detalle(id).then((respuesta) => {
-      if (respuesta.mensaje == "success") {
-        let productos = respuesta.data;
-        console.log(productos);
-        let html = "";
-        productos.forEach((producto) => {
-          html += `
-            <tr>
-              <td>
-                <strong>Nombre: </strong><span>${producto.producto}</span><br>
-                <strong>Concentración: </strong><span>${
-                  producto.concentracion
-                }</span><br>
-                <strong>Laboratorio: </strong><span>${
-                  producto.laboratorio
-                }</span><br>
-                <strong>Subtipo: </strong><span>${producto.subtipo}</span><br>
-                <strong>Presentación: </strong><span>${
-                  producto.presentacion
-                }</span><br>
-              </td>
-              <td class="text-right">${formatNumber(
-                Number(producto.cantidad).toFixed(2)
-              )}</td>
-              <td class="text-right">$ ${formatNumber(
-                Number(producto.precio).toFixed(2)
-              )}</td>
-              <td class="text-right">$ ${formatNumber(
-                (Number(producto.cantidad) * Number(producto.precio)).toFixed(2)
-              )}</td>
-            </tr>
-          `;
-        });
-        html += `
-          <tr>
-            <td colspan="4" class="text-right"><strong>Total: </strong>$ ${formatNumber(
-              Number(total).toFixed(2)
-            )}</td>
-          </tr>
-        `;
-        $("#detalles").html(html);
-      } else if (respuesta.mensaje == "error_decrypt") {
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "No vulnere los datos...",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(function () {
-          //refresca la pagina (F5)
-          location.reload();
-        });
-      } else if (respuesta.mensaje == "error_session") {
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "Sesión finalizada...",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(function () {
-          //refresca la pagina (F5)
-          location.href = "/farmaciav2/index.php";
-        });
-      }
-    });
-  });
-
-  function formatNumber(num) {
-    num = num.toString().replace(".", ","); // Reemplaza el punto decimal con una coma
-    let parts = num.split(","); // Divide en parte entera y decimal
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Formatea la parte entera con puntos
-    return parts.join(","); // Une de nuevo las partes
-  }
-
-  async function ver_detalle(id) {
-    let funcion = "ver_detalle";
-    let respuesta = "";
-    let data = await fetch(
-      "/farmaciav2/Controllers/PedidoCompraController.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "funcion=" + funcion + "&&id=" + id,
-      }
-    );
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
   }
 
   $(document).on("click", ".realizar_compra", (e) => {

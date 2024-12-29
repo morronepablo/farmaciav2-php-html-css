@@ -8,13 +8,12 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content card card-success">
             <div class="modal-header card-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ver pedido</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Ver compra</h5>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <strong>Código: </strong><span id="codigo_detalle"></span><br>
-                        <strong>Proveedor: </strong><span id="proveedor_detalle"></span><br>
                         <strong>Fecha: </strong><span id="fecha_detalle"></span><br>
                     </div>
                     <div class="col-md-12">
