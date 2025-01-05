@@ -48,8 +48,23 @@ class Movimiento
 	function ver_detalle($id)
 	{
 		$sql = "
-			SELECT * FROM movimiento
-			WHERE compra_id=:compra_id
+			SELECT 
+				m.cantidad,
+				m.precio_compra,
+				m.lote,
+				m.fecha_vencimiento,
+				p.nombre AS producto,
+				p.concentracion,
+				l.nombre AS laboratorio,
+				s.nombre AS subtipo,
+				pre.nombre AS presentacion 
+			FROM movimiento m
+			JOIN producto p ON p.id = m.producto_id
+			JOIN laboratorio l ON l.id = p.id_laboratorio
+			JOIN subtipo_producto s ON s.id = p.id_subtipo_producto
+			JOIN presentacion pre ON pre.id = p.id_presentacion
+			WHERE m.tipo_movimiento_id=1
+			AND m.compra_id=:compra_id
 		";
 		$query = $this->acceso->prepare($sql);
 		$query->execute(array(':compra_id' => $id));
