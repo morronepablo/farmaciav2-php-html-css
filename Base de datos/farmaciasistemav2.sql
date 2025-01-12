@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-07-2024 a las 21:16:31
+-- Tiempo de generación: 12-01-2025 a las 17:25:23
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -25,6 +25,14 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `crear_compra` (IN `codigo_param` VARCHAR(500), IN `nota_param` VARCHAR(500), IN `fecha_vencimiento_param` DATE, IN `total_param` FLOAT, IN `comprobante_id_param` INT, IN `id_estado_pago_param` INT, IN `id_proveedor_param` INT, IN `pedido_id_param` INT)   BEGIN
+	INSERT INTO compra(codigo,nota,fecha_vencimiento,total,comprobante_id,id_estado_pago,id_proveedor,pedido_id)
+	VALUES(codigo_param,nota_param,fecha_vencimiento_param,total_param,comprobante_id_param,id_estado_pago_param,id_proveedor_param,pedido_id_param);
+	DELETE FROM pedido_compra WHERE pedido_id=pedido_id_param;
+	UPDATE pedido SET descripcion=nota_param,total=total_param,id_proveedor=id_proveedor_param,estado_proceso='finalizado' WHERE id=pedido_id_param;
+	SELECT MAX(id) AS id_compra FROM compra;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `crear_obtener_id_pedido` (IN `id_proveedor_param` INT, IN `descripcion_param` VARCHAR(500), IN `total_param` FLOAT)   BEGIN
 	INSERT INTO pedido(descripcion,total,id_proveedor) VALUES(descripcion_param,total_param,id_proveedor_param);
 	SELECT MAX(id) AS id FROM pedido;
@@ -70,6 +78,14 @@ CREATE TABLE `compra` (
   `id_proveedor` int(11) NOT NULL,
   `pedido_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `compra`
+--
+
+INSERT INTO `compra` (`id`, `codigo`, `nota`, `fecha_creacion`, `fecha_vencimiento`, `total`, `comprobante_id`, `id_estado_pago`, `id_proveedor`, `pedido_id`) VALUES
+(7, '1111111111', 'ninguno', '2025-01-05 14:07:00', '2025-01-30', 1000, 1, 3, 1, 6),
+(8, '33333', 'aaaaaaaaa', '2025-01-05 14:11:15', '2025-01-30', 40000, 1, 3, 1, 5);
 
 -- --------------------------------------------------------
 
@@ -123,7 +139,8 @@ CREATE TABLE `estado_pago` (
 
 INSERT INTO `estado_pago` (`id`, `nombre`) VALUES
 (1, 'Contado'),
-(2, 'Crédito');
+(2, 'Crédito'),
+(3, 'Pagado');
 
 -- --------------------------------------------------------
 
@@ -2569,16 +2586,26 @@ INSERT INTO `localidad` (`id`, `nombre`, `id_provincia`) VALUES
 CREATE TABLE `movimiento` (
   `id` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
+  `cantidad_res` int(11) NOT NULL,
   `precio_venta` float DEFAULT NULL,
   `precio_compra` float NOT NULL DEFAULT 0,
   `fecha_vencimiento` date NOT NULL,
   `lote` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT '',
   `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `estado` varchar(2) NOT NULL DEFAULT 'A',
   `compra_id` int(11) DEFAULT 0,
   `venta_id` int(11) DEFAULT 0,
   `producto_id` int(11) NOT NULL DEFAULT 0,
   `tipo_movimiento_id` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `movimiento`
+--
+
+INSERT INTO `movimiento` (`id`, `cantidad`, `cantidad_res`, `precio_venta`, `precio_compra`, `fecha_vencimiento`, `lote`, `fecha_creacion`, `estado`, `compra_id`, `venta_id`, `producto_id`, `tipo_movimiento_id`) VALUES
+(6, 1, 1, 0, 1000, '2025-02-26', '22222', '2025-01-05 14:07:00', 'A', 7, 0, 17, 1),
+(7, 20, 20, 0, 2000, '2025-02-26', '222323', '2025-01-05 14:11:15', 'A', 8, 0, 9, 1);
 
 -- --------------------------------------------------------
 
@@ -2601,8 +2628,9 @@ CREATE TABLE `pedido` (
 --
 
 INSERT INTO `pedido` (`id`, `descripcion`, `fecha_creacion`, `total`, `estado`, `estado_proceso`, `id_proveedor`) VALUES
-(1, 'dolor', '2024-07-14 15:26:01', 250, 'A', 'espera', 1),
-(2, 'Algo', '2024-07-14 15:26:38', 1000, 'A', 'espera', 1);
+(3, 'ninguna', '2024-08-11 14:17:39', 37500, 'A', 'espera', 3),
+(5, 'aaaaaaaaa', '2024-10-27 13:35:18', 40000, 'A', 'finalizado', 1),
+(6, 'ninguno', '2024-12-22 11:40:10', 1000, 'A', 'finalizado', 1);
 
 -- --------------------------------------------------------
 
@@ -2624,9 +2652,10 @@ CREATE TABLE `pedido_compra` (
 --
 
 INSERT INTO `pedido_compra` (`id`, `cantidad`, `precio`, `fecha_creacion`, `producto_id`, `pedido_id`) VALUES
-(1, 5, 10, '2024-07-14 15:26:01', 17, 1),
-(2, 10, 20, '2024-07-14 15:26:01', 5, 1),
-(3, 10, 100, '2024-07-14 15:26:38', 13, 2);
+(11, 30, 1200, '2024-10-20 14:25:22', 17, 3),
+(12, 1, 1500, '2024-10-20 14:25:22', 13, 3),
+(19, 1, 1000, '2025-01-05 14:07:00', 17, 6),
+(20, 20, 2000, '2025-01-05 14:11:15', 9, 5);
 
 -- --------------------------------------------------------
 
@@ -2706,7 +2735,7 @@ INSERT INTO `producto` (`id`, `codigo`, `nombre`, `concentracion`, `fracciones`,
 (14, 777756, 'Aerosol A', '1ewrqw', 1, 'eerr66788', 1, 'prod_default.png', 'A', '2023-12-10 23:51:56', '2024-05-05 18:15:13', 6, 4, 4),
 (15, 999999991, 'Pablo', '1ewrqw', 1, 'ddffggr445', 1, 'prod_default.png', 'A', '2023-12-10 23:52:34', '2024-01-14 17:27:56', 4, 4, 4),
 (16, 333333, 'Pablo Martin Morrone', '1ewrqw', 1, 'ssd6677jjh', 1, 'prod_default.png', 'A', '2023-12-10 23:56:02', '2024-01-14 17:28:03', 4, 4, 4),
-(17, 47787, 'ACIDO FUSIDICO 5***', '5***', 1, 'NG4822', 1, '65eddca2af071-1111.jpeg', 'A', '2024-01-21 13:46:47', '2024-03-10 13:15:30', 13, 13, 14);
+(17, 47787, 'ACIDO FUSIDICO 2***', '5***', 1, 'NG4822', 1, '66d496a73abe9-acido_fusidico.png', 'A', '2024-01-21 13:46:47', '2024-09-01 13:30:31', 13, 13, 14);
 
 -- --------------------------------------------------------
 
@@ -2732,7 +2761,8 @@ CREATE TABLE `proveedor` (
 
 INSERT INTO `proveedor` (`id`, `nombre`, `telefono`, `correo`, `direccion`, `avatar`, `estado`, `fecha_creacion`, `fecha_edicion`) VALUES
 (1, 'Distribuidora Morrone', 1138669097, 'morronepablo@gmail.com', 'Av. Rivadavia 10444 6 F', 'prov_default.png', 'A', '2024-05-05 17:58:57', '2024-05-05 17:58:57'),
-(2, 'Distribuidora DOCQ', 1138661609, 'docq@gmail.com', 'pedro goyena 2024', 'prov_default.png', 'I', '2024-05-05 18:00:20', '2024-05-05 18:01:16');
+(2, 'Distribuidora DOCQ', 1138661609, 'docq@gmail.com', 'pedro goyena 2024', 'prov_default.png', 'A', '2024-05-05 18:00:20', '2024-08-11 14:12:54'),
+(3, 'American Distribuidor', 1138669097, 'andreaoviedo@gmail.com', 'Juan Agustin Garcia 6 A', 'prov_default.png', 'A', '2024-08-11 14:14:03', '2024-08-11 14:14:03');
 
 -- --------------------------------------------------------
 
@@ -2902,7 +2932,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id`, `nombre`, `apellido`, `edad`, `dni`, `contrasena`, `telefono`, `direccion`, `correo`, `sexo`, `adicional`, `avatar`, `estado`, `id_tipo`, `id_localidad`) VALUES
-(1, 'Pablo Martin', 'Morrone', '1971-08-14', '22362590', 'pwyAEjJFT3n1RFrsGFOZBw==', 1138669097, 'El arreo 220', 'morronepablo@gmail.com', 'Masculino', 'Porton Negro', '63010cb9e016e-fotopablo.png', 'A', 1, 200),
+(1, 'Pablo Martin', 'Morrone', '1971-08-14', '22362590', 'DXwphpn5rll4qHatYTWjyA==', 1138669097, 'El arreo 220', 'morronepablo@gmail.com', 'Masculino', 'Porton Negro', '674c8976456d5-4x4_light.jpg', 'A', 1, 200),
 (2, 'Guastavo Alfredo', 'Vessani', '1971-04-10', '22778999', '12345678', 1234567890, 'Alvarez Jonte 587', 'gustavovessani@gmail.com', 'Masculino', '', 'default.png', 'A', 2, 164),
 (3, 'Natalia Elvira', 'Oduber Andara', '1983-12-03', '94654750', '12345678', 1138661609, 'El Arreo 220', 'nataliaoduber@gmail.com', 'Femenino', 'Casa particular', 'default.png', 'A', 3, 200),
 (4, 'Diego Martin', 'Trinidad', '2021-10-15', '24123789', '12345678', 1132887745, 'Pergamino 424', 'digotrinidad@gmail.com', 'Masculino', 'Casa mama', 'default.png', 'A', 3, 164);
@@ -3103,7 +3133,7 @@ ALTER TABLE `cliente`
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `comprobante`
@@ -3121,7 +3151,7 @@ ALTER TABLE `detalle_venta`
 -- AUTO_INCREMENT de la tabla `estado_pago`
 --
 ALTER TABLE `estado_pago`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `laboratorio`
@@ -3139,19 +3169,19 @@ ALTER TABLE `localidad`
 -- AUTO_INCREMENT de la tabla `movimiento`
 --
 ALTER TABLE `movimiento`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido_compra`
 --
 ALTER TABLE `pedido_compra`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `presentacion`
@@ -3169,7 +3199,7 @@ ALTER TABLE `producto`
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `provincia`

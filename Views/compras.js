@@ -343,15 +343,21 @@ $(document).ready(function () {
                                     <div class="widget-user-header bg-white d-flex" >
                                         <div>
                                             <h3 class="widget-user-username" style="margin: 0 20px;"><strong>Código :</strong>${datos.codigo} ${estado}</h3>
-                                            <h5 class="widget-user-desc">
-                                              <strong>Nota: </strong><span>${datos.nota}</span><br>
-                                              <strong>Creación: </strong><span>${datos.fecha_creacion}</span><br>`;
+                                            <h5 class="widget-user-desc mt-3">
+                                              <strong>Nota: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${datos.nota}</span><br>
+                                              <strong>Creación: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${datos.fecha_creacion}</span><br>`;
                 if (datos.estado == "Crédito") {
                   template += `<strong>Vencimiento: </strong><span>${datos.fecha_vencimiento}</span><br>`;
                 }
-                template += `<strong>Total: </strong><span>${datos.total}</span><br>
-                            <strong>Comprobante: </strong><span>${datos.comprobante}</span><br>
-                            <strong>Proveedor: </strong><span>${datos.proveedor}</span><br>
+                template += `<strong>Total: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;${formatNumber(
+                  Number(datos.total).toFixed(2)
+                )}</span><br>
+                            <strong>Comprobante: </strong><span>&nbsp;&nbsp;${
+                              datos.comprobante
+                            }</span><br>
+                            <strong>Proveedor: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${
+                              datos.proveedor
+                            }</span><br>
                             </h5>
                                             `;
                 template += `</div>
@@ -656,13 +662,13 @@ $(document).ready(function () {
     let año = fecha.getFullYear();
     let fechaFormateada = `${dia}/${mes}/${año}`;
 
-    $("#codigo_detalle").text(id);
+    $("#codigo_detalle").text(codigo);
     $("#fecha_detalle").text(fechaFormateada);
     ver_detalle(id).then((respuesta) => {
       if (respuesta.mensaje == "success") {
         let productos = respuesta.data;
-        console.log(productos);
-        /*
+        // console.log(productos);
+
         let html = "";
         productos.forEach((producto) => {
           html += `
@@ -679,15 +685,21 @@ $(document).ready(function () {
                 <strong>Presentación: </strong><span>${
                   producto.presentacion
                 }</span><br>
+                <strong>Lote: </strong><span>${producto.lote}</span><br>
+                <strong>Vencimiento: </strong><span>${
+                  producto.fecha_vencimiento
+                }</span><br>
               </td>
               <td class="text-right">${formatNumber(
                 Number(producto.cantidad).toFixed(2)
               )}</td>
               <td class="text-right">$ ${formatNumber(
-                Number(producto.precio).toFixed(2)
+                Number(producto.precio_compra).toFixed(2)
               )}</td>
               <td class="text-right">$ ${formatNumber(
-                (Number(producto.cantidad) * Number(producto.precio)).toFixed(2)
+                (
+                  Number(producto.cantidad) * Number(producto.precio_compra)
+                ).toFixed(2)
               )}</td>
             </tr>
           `;
@@ -700,7 +712,6 @@ $(document).ready(function () {
           </tr>
         `;
         $("#detalles").html(html);
-        */
       } else if (respuesta.mensaje == "error_decrypt") {
         Swal.fire({
           position: "center",
