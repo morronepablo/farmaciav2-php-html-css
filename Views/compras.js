@@ -9,6 +9,62 @@ $(document).ready(function () {
     preventDuplicates: true,
   };
 
+  $("#comprobante").select2({
+    placeholder: "Seleccione un comprobante",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  obtener_comprobantes().then((respuesta) => {
+    // console.log(respuesta);
+    let template = "";
+    respuesta.forEach((comprobante) => {
+      template += `<option value="${comprobante.id}">${comprobante.nombre}</option>`;
+    });
+    $("#comprobante").html(template);
+    $("#comprobante").val("").trigger("change");
+  });
+
+  async function obtener_comprobantes() {
+    let funcion = "obtener_comprobantes";
+    let respuesta = "";
+    let data = await fetch(
+      "/farmaciav2/Controllers/ComprobanteController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion,
+      }
+    );
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
   $("#proveedor").select2({
     placeholder: "Seleccione un proveedor",
     language: {
@@ -20,6 +76,48 @@ $(document).ready(function () {
       },
     },
   });
+
+  obtener_proveedores().then((respuesta) => {
+    let template = "";
+    respuesta.forEach((proveedor) => {
+      if (proveedor.estado == "A") {
+        template += `<option value="${proveedor.id}">${proveedor.nombre}</option>`;
+      }
+    });
+    $("#proveedor").html(template);
+    $("#proveedor").val("").trigger("change");
+  });
+
+  async function obtener_proveedores() {
+    let funcion = "obtener_proveedores";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
 
   function llenar_menu_superior(usuario) {
     let template = `
@@ -396,6 +494,11 @@ $(document).ready(function () {
                                   class="btn btn-outline-primary btn-circle btn-lg editar" 
                                   id="${datos.id}"
                                   codigo="${datos.codigo}"
+                                  nota="${datos.nota}"
+                                  comprobante_id="${datos.comprobante_id}"
+                                  id_proveedor="${datos.id_proveedor}"
+                                  data-toggle="modal"
+                                  data-target="#editar"
                               >
                                 <i class="fas fa-pencil-alt"></i>
                               </button>
@@ -776,35 +879,27 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
-  obtener_proveedores().then((respuesta) => {
-    let template = "";
-    respuesta.forEach((proveedor) => {
-      if (proveedor.estado == "A") {
-        template += `<option value="${proveedor.id}">${proveedor.nombre}</option>`;
-      }
-    });
-    $("#proveedor").html(template);
-    $("#proveedor").val("").trigger("change");
-    $("#proveedor_compra").html(template);
-    $("#proveedor_compra").val("").trigger("change");
+  $(document).on("click", ".editar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+    let nota = $(elemento).attr("nota");
+    let comprobante_id = $(elemento).attr("comprobante_id");
+    let id_proveedor = $(elemento).attr("id_proveedor");
+    $("#id_compra").val(id);
+    $("#codigo").val(codigo);
+    $("#nota").val(nota);
+    $("#comprobante").val(comprobante_id).trigger("change");
+    $("#proveedor").val(id_proveedor).trigger("change");
   });
 
-  async function obtener_proveedores() {
-    let funcion = "obtener_proveedores";
+  async function editar(id, pedido_id) {
+    let funcion = "editar";
     let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
+    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion,
+      body: "funcion=" + funcion + "&&id=" + id + "&&pedido_id=" + pedido_id,
     });
     if (data.ok) {
       let response = await data.text();
@@ -829,49 +924,37 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  obtener_comprobantes().then((respuesta) => {
-    // console.log(respuesta);
-    let template = "";
-    respuesta.forEach((comprobante) => {
-      template += `<option value="${comprobante.id}">${comprobante.nombre}</option>`;
-    });
-    $("#comprobante_compra").html(template);
-    $("#comprobante_compra").val("").trigger("change");
-  });
-
-  async function obtener_comprobantes() {
-    let funcion = "obtener_comprobantes";
-    let respuesta = "";
-    let data = await fetch(
-      "/farmaciav2/Controllers/ComprobanteController.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "funcion=" + funcion,
-      }
-    );
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
-  }
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   obtener_condicion_pago().then((respuesta) => {
     // console.log(respuesta);
