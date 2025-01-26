@@ -52,6 +52,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                     <div class="row">
                         <div class="col-md-12">
                             <input type="hidden" id="id_compra" name="id_compra">
+                            <input type="hidden" id="pedido_id" name="pedido_id">
                             <div class="form-group">
                                 <label for="">Código:</label>
                                 <input type="text" class="form-control" name="codigo" id="codigo" required>

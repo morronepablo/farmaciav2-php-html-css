@@ -497,6 +497,7 @@ $(document).ready(function () {
                                   nota="${datos.nota}"
                                   comprobante_id="${datos.comprobante_id}"
                                   id_proveedor="${datos.id_proveedor}"
+                                  pedido_id="${datos.pedido_id}"
                                   data-toggle="modal"
                                   data-target="#editar"
                               >
@@ -886,20 +887,64 @@ $(document).ready(function () {
     let nota = $(elemento).attr("nota");
     let comprobante_id = $(elemento).attr("comprobante_id");
     let id_proveedor = $(elemento).attr("id_proveedor");
+    let pedido_id = $(elemento).attr("pedido_id");
     $("#id_compra").val(id);
+    $("#pedido_id").val(pedido_id);
     $("#codigo").val(codigo);
     $("#nota").val(nota);
     $("#comprobante").val(comprobante_id).trigger("change");
     $("#proveedor").val(id_proveedor).trigger("change");
   });
 
-  async function editar(id, pedido_id) {
+  $("#form-editar").submit(function (e) {
+    let datos = new FormData($("#form-editar")[0]);
     let funcion = "editar";
+    datos.append("funcion", funcion);
+    editar(datos).then((respuesta) => {
+      if (respuesta.mensaje == "success") {
+        obtener_compras();
+        // swalWithBootstrapButtons.fire(
+        //   "Eliminada!",
+        //   "La compra " + codigo + " fue eliminada correctamente",
+        //   "success"
+        // );
+        $("#comprobante").val("").trigger("change");
+        $("#proveedor").val("").trigger("change");
+        $("#form-editar").trigger("reset");
+        $("#editar").modal("hide");
+      } else if (respuesta.mensaje == "error_decrypt") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "No vulnere los datos...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.reload();
+        });
+      } else if (respuesta.mensaje == "error_session") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Sesión finalizada...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.href = "/farmaciav2/index.php";
+        });
+      }
+    });
+    e.preventDefault();
+  });
+
+  async function editar(datos) {
     let respuesta = "";
     let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id + "&&pedido_id=" + pedido_id,
+      // headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: datos,
     });
     if (data.ok) {
       let response = await data.text();

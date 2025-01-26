@@ -142,4 +142,50 @@ if ($_POST['funcion'] == 'realizar_compra') {
 	);
 
 	echo json_encode($json);
+} else if ($_POST['funcion'] == 'editar') {
+	$mensaje = '';
+	if (!empty($_SESSION['id'])) {
+
+		$id 			= $_POST['id_compra'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_compra	 	= openssl_decrypt($formateado, CODE, KEY);
+
+		$pedido_id 		= $_POST['pedido_id'];
+		$formateado		= str_replace(' ', '+', $pedido_id);
+		$pedido_id	 	= openssl_decrypt($formateado, CODE, KEY);
+
+		$codigo 		= $_POST['codigo'];
+		$nota 			= $_POST['nota'];
+
+		$comprobante 	= $_POST['comprobante'];
+		$formateado		= str_replace(' ', '+', $comprobante);
+		$comprobante_id	= openssl_decrypt($formateado, CODE, KEY);
+
+		$proveedor 		= $_POST['proveedor'];
+		$formateado		= str_replace(' ', '+', $proveedor);
+		$id_proveedor	= openssl_decrypt($formateado, CODE, KEY);
+
+		if (is_numeric($id_compra) && is_numeric($pedido_id) && is_numeric($comprobante_id) && is_numeric($id_proveedor)) {
+			/*
+			$compra->validar_compra_venta($id_compra);
+			if (empty($compra->objetos)) {
+				$movimiento->eliminar($id_compra);
+				$compra->eliminar($id_compra);
+				$pedido->cambiar_estado_espera($pedido_id);
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_compra';
+			}
+			*/
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje
+	);
+
+	echo json_encode($json);
 }
