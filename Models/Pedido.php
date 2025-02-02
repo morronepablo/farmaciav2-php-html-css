@@ -92,4 +92,21 @@ class Pedido
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+
+	function editar($id, $nota, $id_proveedor)
+	{
+		$sql = "UPDATE pedido 
+				SET 
+				descripcion=:descripcion,
+				id_proveedor=:id_proveedor
+				WHERE id=:id
+		";
+		$variables = array(
+			':id' => $id,
+			':descripcion' => $nota,
+			':id_proveedor' => $id_proveedor,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }

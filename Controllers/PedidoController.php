@@ -13,7 +13,8 @@ if ($_POST['funcion'] == 'obtener_pedidos') {
 	$pedido->obtener_pedidos();
 	foreach ($pedido->objetos as $objeto) {
 		$json[] = array(
-			'id'				=> openssl_encrypt($objeto->id, CODE, KEY),
+			// 'id'				=> openssl_encrypt($objeto->id, CODE, KEY),
+			'id'				=> $objeto->id,
 			'descripcion'		=> $objeto->descripcion,
 			'fecha_creacion'	=> $objeto->fecha_creacion,
 			'total' 			=> $objeto->total,

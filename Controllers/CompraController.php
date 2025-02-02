@@ -166,17 +166,9 @@ if ($_POST['funcion'] == 'realizar_compra') {
 		$id_proveedor	= openssl_decrypt($formateado, CODE, KEY);
 
 		if (is_numeric($id_compra) && is_numeric($pedido_id) && is_numeric($comprobante_id) && is_numeric($id_proveedor)) {
-			/*
-			$compra->validar_compra_venta($id_compra);
-			if (empty($compra->objetos)) {
-				$movimiento->eliminar($id_compra);
-				$compra->eliminar($id_compra);
-				$pedido->cambiar_estado_espera($pedido_id);
-				$mensaje = 'success';
-			} else {
-				$mensaje = 'error_compra';
-			}
-			*/
+			$compra->editar($id_compra, $codigo, $nota, $comprobante_id, $id_proveedor);
+			$pedido->editar($pedido_id, $nota, $id_proveedor);
+			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';
 		}

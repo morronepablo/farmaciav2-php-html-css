@@ -96,4 +96,26 @@ class Compra
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function editar($id, $codigo, $nota, $comprobante_id, $id_proveedor)
+	{
+		$sql = "UPDATE compra 
+		SET 
+		codigo=:codigo,
+		nota=:nota,
+		comprobante_id=:comprobante_id,
+		id_proveedor=:id_proveedor
+		WHERE id=:id";
+		$variables = array(
+			':id' 				=> $id,
+			':codigo' 			=> $codigo,
+			':nota' 			=> $nota,
+			':comprobante_id' 	=> $comprobante_id,
+			':id_proveedor' 	=> $id_proveedor,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }
