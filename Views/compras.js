@@ -9,6 +9,18 @@ $(document).ready(function () {
     preventDuplicates: true,
   };
 
+  $("#proveedor").select2({
+    placeholder: "Seleccione un proveedor",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
   $("#comprobante").select2({
     placeholder: "Seleccione un comprobante",
     language: {
@@ -64,18 +76,6 @@ $(document).ready(function () {
     }
     return respuesta;
   }
-
-  $("#proveedor").select2({
-    placeholder: "Seleccione un proveedor",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
 
   obtener_proveedores().then((respuesta) => {
     let template = "";
@@ -330,8 +330,8 @@ $(document).ready(function () {
                         </p>
                     </a>
                 </li>
-                <li id="gestion_lote" class="nav-item">
-                    <a href="adm_lote.php" class="nav-link">
+                <li id="" class="nav-item">
+                    <a href="/farmaciav2/Views/lotes.php" class="nav-link">
                         <i class="nav-icon fas fa-cubes"></i>
                         <p>
                             Gestión lote

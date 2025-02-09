@@ -9,8 +9,6 @@ $(document).ready(function () {
     preventDuplicates: true,
   };
 
-  $("#vencimiento").hide();
-
   $("#proveedor").select2({
     placeholder: "Seleccione un proveedor",
     language: {
@@ -23,43 +21,7 @@ $(document).ready(function () {
     },
   });
 
-  $("#proveedor_compra").select2({
-    placeholder: "Seleccione un proveedor",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
-
-  $("#producto").select2({
-    placeholder: "Seleccione un producto",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
-
-  $("#producto_compra").select2({
-    placeholder: "Seleccione un producto",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
-  });
-
-  $("#comprobante_compra").select2({
+  $("#comprobante").select2({
     placeholder: "Seleccione un comprobante",
     language: {
       noResult: function () {
@@ -71,17 +33,91 @@ $(document).ready(function () {
     },
   });
 
-  $("#estado_pago_compra").select2({
-    placeholder: "Seleccione un estado",
-    language: {
-      noResult: function () {
-        return "No hay resultados.";
-      },
-      searching: function () {
-        return "Buscando...";
-      },
-    },
+  obtener_comprobantes().then((respuesta) => {
+    // console.log(respuesta);
+    let template = "";
+    respuesta.forEach((comprobante) => {
+      template += `<option value="${comprobante.id}">${comprobante.nombre}</option>`;
+    });
+    $("#comprobante").html(template);
+    $("#comprobante").val("").trigger("change");
   });
+
+  async function obtener_comprobantes() {
+    let funcion = "obtener_comprobantes";
+    let respuesta = "";
+    let data = await fetch(
+      "/farmaciav2/Controllers/ComprobanteController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion,
+      }
+    );
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  obtener_proveedores().then((respuesta) => {
+    let template = "";
+    respuesta.forEach((proveedor) => {
+      if (proveedor.estado == "A") {
+        template += `<option value="${proveedor.id}">${proveedor.nombre}</option>`;
+      }
+    });
+    $("#proveedor").html(template);
+    $("#proveedor").val("").trigger("change");
+  });
+
+  async function obtener_proveedores() {
+    let funcion = "obtener_proveedores";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
 
   function llenar_menu_superior(usuario) {
     let template = `
@@ -295,7 +331,7 @@ $(document).ready(function () {
                     </a>
                 </li>
                 <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/lotes.php" class="nav-link">
+                    <a href="/farmaciav2/Views/lotes.php" class="active nav-link">
                         <i class="nav-icon fas fa-cubes"></i>
                         <p>
                             Gestión lote
@@ -304,7 +340,7 @@ $(document).ready(function () {
                 </li>
                 <li id="gestion_compras" class="nav-header">Compras</li>
                 <li id="" class="nav-item">
-                    <a href="/farmaciav2/Views/pedidos.php" class="active nav-link">
+                    <a href="/farmaciav2/Views/pedidos.php" class="nav-link">
                         <i class="nav-icon fas fa-clipboard-list"></i>
                         <p>
                             Gestión pedidos
@@ -347,7 +383,7 @@ $(document).ready(function () {
         if (usuario.length != 0 && usuario.id_tipo != 3) {
           llenar_menu_superior(usuario);
           llenar_menu_lateral(usuario);
-          obtener_pedidos();
+          obtener_compras();
           CloseLoader();
         } else {
           location.href = "/farmaciav2/";
@@ -370,23 +406,9 @@ $(document).ready(function () {
     }
   }
 
-  obtener_proveedores().then((respuesta) => {
-    let template = "";
-    respuesta.forEach((proveedor) => {
-      if (proveedor.estado == "A") {
-        template += `<option value="${proveedor.id}">${proveedor.nombre}</option>`;
-      }
-    });
-    $("#proveedor").html(template);
-    $("#proveedor").val("").trigger("change");
-    $("#proveedor_compra").html(template);
-    $("#proveedor_compra").val("").trigger("change");
-  });
-
-  async function obtener_proveedores() {
-    let funcion = "obtener_proveedores";
-    let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/ProveedorController.php", {
+  async function obtener_compras() {
+    let funcion = "obtener_compras";
+    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion,
@@ -394,7 +416,117 @@ $(document).ready(function () {
     if (data.ok) {
       let response = await data.text();
       try {
-        respuesta = JSON.parse(response);
+        let compras = JSON.parse(response);
+        console.log(compras);
+
+        $("#compras").DataTable({
+          data: compras,
+          aaSorting: [],
+          searching: true,
+          scrollX: false,
+          autoWidth: false,
+          columns: [
+            {
+              render: function (data, type, datos, meta) {
+                let estado = `<span class="badge badge-warning">Crédito</span>`;
+                if (datos.estado == "Contado") {
+                  estado = `<span class="badge badge-success">Contado</span>`;
+                }
+                if (datos.estado == "Pagado") {
+                  estado = `<span class="badge badge-info">Pagado</span>`;
+                }
+                let template = "";
+                template += `
+                                <div class="card card-widget widget-user-2">
+                                    <div class="widget-user-header bg-white d-flex" >
+                                        <div>
+                                            <h3 class="widget-user-username" style="margin: 0 20px;"><strong>Código :</strong>${datos.codigo} ${estado}</h3>
+                                            <h5 class="widget-user-desc mt-3">
+                                              <strong>Nota: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${datos.nota}</span><br>
+                                              <strong>Creación: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${datos.fecha_creacion}</span><br>`;
+                if (datos.estado == "Crédito") {
+                  template += `<strong>Vencimiento: </strong><span>${datos.fecha_vencimiento}</span><br>`;
+                }
+                template += `<strong>Total: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;${formatNumber(
+                  Number(datos.total).toFixed(2)
+                )}</span><br>
+                            <strong>Comprobante: </strong><span>&nbsp;&nbsp;${
+                              datos.comprobante
+                            }</span><br>
+                            <strong>Proveedor: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${
+                              datos.proveedor
+                            }</span><br>
+                            </h5>
+                                            `;
+                template += `</div>
+                                    </div>
+                                    <div class="card-footer p-0">
+                                        <ul class="nav flex-column text-right">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link">`;
+                if (datos.estado == "Crédito") {
+                  template += ` 
+                  <span style="margin-right: 5px;">
+                    <button 
+                        class="btn btn-outline-success btn-circle btn-lg pagar" 
+                        id="${datos.id}"
+                        codigo="${datos.codigo}"
+                    >
+                      <i class="fas fa-hand-holding-usd"></i>
+                    </button>
+                  </span>`;
+                }
+                template += `<span style="margin-right: 5px;">
+                              <button 
+                                  class="btn btn-outline-info btn-circle btn-lg ver_detalle" 
+                                  id="${datos.id}"
+                                  codigo="${datos.codigo}"
+                                  total="${datos.total}"
+                                  fecha_creacion="${datos.fecha_creacion}"
+                                  data-toggle="modal"
+                                  data-target="#ver_detalle"
+                              >
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </span>
+                            <span style="margin-right: 5px;">
+                              <button 
+                                  class="btn btn-outline-primary btn-circle btn-lg editar" 
+                                  id="${datos.id}"
+                                  codigo="${datos.codigo}"
+                                  nota="${datos.nota}"
+                                  comprobante_id="${datos.comprobante_id}"
+                                  id_proveedor="${datos.id_proveedor}"
+                                  pedido_id="${datos.pedido_id}"
+                                  data-toggle="modal"
+                                  data-target="#editar"
+                              >
+                                <i class="fas fa-pencil-alt"></i>
+                              </button>
+                            </span>
+                            <span style="margin-right: 5px;">
+                              <button 
+                                  class="btn btn-outline-danger btn-circle btn-lg eliminar" 
+                                  id="${datos.id}"
+                                  codigo="${datos.codigo}"
+                                  pedido_id="${datos.pedido_id}"
+                              >
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            </span>
+                            </a>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+              `;
+                return template;
+              },
+            },
+          ],
+          language: espanol,
+          destroy: true,
+        });
       } catch (error) {
         console.error(error);
         console.log(response);
@@ -411,37 +543,84 @@ $(document).ready(function () {
         text: "Hubo confilcto de código: " + data.status,
       });
     }
-    return respuesta;
   }
 
-  obtener_productos().then((respuesta) => {
-    // console.log(respuesta);
-    let template = "";
-    respuesta.forEach((producto) => {
-      if (producto.estado == "A") {
-        template += `<option value="${producto.id}" 
-                              codigo="${producto.codigo}"
-                              nombre="${producto.nombre}"
-                              concentracion="${producto.concentracion}"
-                              laboratorio="${producto.laboratorio}"
-                              subtipo="${producto.subtipo}"
-                              presentacion="${producto.presentacion}"
-                      >Código: ${producto.codigo} | Nombre: ${producto.nombre} | Concen: ${producto.concentracion} | Lab: ${producto.laboratorio} | Subtipo: ${producto.subtipo} | Present: ${producto.presentacion}</option>`;
-      }
+  $(document).on("click", ".pagar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success ml-2",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
     });
-    $("#producto").html(template);
-    $("#producto").val("").trigger("change");
-    $("#producto_compra").html(template);
-    $("#producto_compra").val("").trigger("change");
+
+    swalWithBootstrapButtons
+      .fire({
+        title: `Desea pagar la compra ${codigo} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, pagar !",
+        cancelButtonText: "No, cancelar !",
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          pagar(id).then((respuesta) => {
+            if (respuesta.mensaje == "success") {
+              obtener_compras();
+              swalWithBootstrapButtons.fire(
+                "Pagada!",
+                "La compra " + codigo + " fue pagada correctamente",
+                "success"
+              );
+            } else if (respuesta.mensaje == "error_decrypt") {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "No vulnere los datos...",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                //refresca la pagina (F5)
+                location.reload();
+              });
+            } else if (respuesta.mensaje == "error_session") {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Sesión finalizada...",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                //refresca la pagina (F5)
+                location.href = "/farmaciav2/index.php";
+              });
+            }
+          });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            "Cancelado",
+            "canceló el pago de la compra",
+            "error"
+          );
+        }
+      });
   });
 
-  async function obtener_productos() {
-    let funcion = "obtener_gestion_productos";
+  async function pagar(id) {
+    let funcion = "pagar";
     let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
+    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion,
+      body: "funcion=" + funcion + "&&id=" + id,
     });
     if (data.ok) {
       let response = await data.text();
@@ -466,27 +645,90 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  obtener_comprobantes().then((respuesta) => {
-    // console.log(respuesta);
-    let template = "";
-    respuesta.forEach((comprobante) => {
-      template += `<option value="${comprobante.id}">${comprobante.nombre}</option>`;
+  $(document).on("click", ".eliminar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+    let pedido_id = $(elemento).attr("pedido_id");
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success ml-2",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
     });
-    $("#comprobante_compra").html(template);
-    $("#comprobante_compra").val("").trigger("change");
+
+    swalWithBootstrapButtons
+      .fire({
+        title: `Desea eliminar la compra ${codigo} ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, eliminar !",
+        cancelButtonText: "No, cancelar !",
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          eliminar(id, pedido_id).then((respuesta) => {
+            if (respuesta.mensaje == "success") {
+              obtener_compras();
+              swalWithBootstrapButtons.fire(
+                "Eliminada!",
+                "La compra " + codigo + " fue eliminada correctamente",
+                "success"
+              );
+            } else if (respuesta.mensaje == "error_compra") {
+              toastr.error(
+                "No se pudo eliminar la compra, debido ha que hoy productos de esta compra que ya fueron ingresados en una venta",
+                "Error!",
+                { timeOut: 2000 }
+              );
+            } else if (respuesta.mensaje == "error_decrypt") {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "No vulnere los datos...",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                //refresca la pagina (F5)
+                location.reload();
+              });
+            } else if (respuesta.mensaje == "error_session") {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Sesión finalizada...",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                //refresca la pagina (F5)
+                location.href = "/farmaciav2/index.php";
+              });
+            }
+          });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            "Cancelado",
+            "canceló la eliminación de la compra",
+            "error"
+          );
+        }
+      });
   });
 
-  async function obtener_comprobantes() {
-    let funcion = "obtener_comprobantes";
+  async function eliminar(id, pedido_id) {
+    let funcion = "eliminar";
     let respuesta = "";
-    let data = await fetch(
-      "/farmaciav2/Controllers/ComprobanteController.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "funcion=" + funcion,
-      }
-    );
+    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id + "&&pedido_id=" + pedido_id,
+    });
     if (data.ok) {
       let response = await data.text();
       try {
@@ -509,6 +751,255 @@ $(document).ready(function () {
     }
     return respuesta;
   }
+
+  $(document).on("click", ".ver_detalle", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+    let fecha_creacion = $(elemento).attr("fecha_creacion");
+    let total = $(elemento).attr("total");
+
+    // Parsear la fecha y formatearla
+    let fecha = new Date(fecha_creacion);
+    let dia = fecha.getDate().toString().padStart(2, "0");
+    let mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // Los meses son de 0 a 11
+    let año = fecha.getFullYear();
+    let fechaFormateada = `${dia}/${mes}/${año}`;
+
+    $("#codigo_detalle").text(codigo);
+    $("#fecha_detalle").text(fechaFormateada);
+    ver_detalle(id).then((respuesta) => {
+      if (respuesta.mensaje == "success") {
+        let productos = respuesta.data;
+        // console.log(productos);
+
+        let html = "";
+        productos.forEach((producto) => {
+          html += `
+            <tr>
+              <td>
+                <strong>Nombre: </strong><span>${producto.producto}</span><br>
+                <strong>Concentración: </strong><span>${
+                  producto.concentracion
+                }</span><br>
+                <strong>Laboratorio: </strong><span>${
+                  producto.laboratorio
+                }</span><br>
+                <strong>Subtipo: </strong><span>${producto.subtipo}</span><br>
+                <strong>Presentación: </strong><span>${
+                  producto.presentacion
+                }</span><br>
+                <strong>Lote: </strong><span>${producto.lote}</span><br>
+                <strong>Vencimiento: </strong><span>${
+                  producto.fecha_vencimiento
+                }</span><br>
+              </td>
+              <td class="text-right">${formatNumber(
+                Number(producto.cantidad).toFixed(2)
+              )}</td>
+              <td class="text-right">$ ${formatNumber(
+                Number(producto.precio_compra).toFixed(2)
+              )}</td>
+              <td class="text-right">$ ${formatNumber(
+                (
+                  Number(producto.cantidad) * Number(producto.precio_compra)
+                ).toFixed(2)
+              )}</td>
+            </tr>
+          `;
+        });
+        html += `
+          <tr>
+            <td colspan="4" class="text-right"><strong>Total: </strong>$ ${formatNumber(
+              Number(total).toFixed(2)
+            )}</td>
+          </tr>
+        `;
+        $("#detalles").html(html);
+      } else if (respuesta.mensaje == "error_decrypt") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "No vulnere los datos...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.reload();
+        });
+      } else if (respuesta.mensaje == "error_session") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Sesión finalizada...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.href = "/farmaciav2/index.php";
+        });
+      }
+    });
+  });
+
+  function formatNumber(num) {
+    num = num.toString().replace(".", ","); // Reemplaza el punto decimal con una coma
+    let parts = num.split(","); // Divide en parte entera y decimal
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Formatea la parte entera con puntos
+    return parts.join(","); // Une de nuevo las partes
+  }
+
+  async function ver_detalle(id) {
+    let funcion = "ver_detalle";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/MovimientoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  $(document).on("click", ".editar", (e) => {
+    let elemento = $(this)[0].activeElement;
+    let id = $(elemento).attr("id");
+    let codigo = $(elemento).attr("codigo");
+    let nota = $(elemento).attr("nota");
+    let comprobante_id = $(elemento).attr("comprobante_id");
+    let id_proveedor = $(elemento).attr("id_proveedor");
+    let pedido_id = $(elemento).attr("pedido_id");
+    $("#id_compra").val(id);
+    $("#pedido_id").val(pedido_id);
+    $("#codigo").val(codigo);
+    $("#nota").val(nota);
+    $("#comprobante").val(comprobante_id).trigger("change");
+    $("#proveedor").val(id_proveedor).trigger("change");
+  });
+
+  $("#form-editar").submit(function (e) {
+    let datos = new FormData($("#form-editar")[0]);
+    let funcion = "editar";
+    datos.append("funcion", funcion);
+    editar(datos).then((respuesta) => {
+      if (respuesta.mensaje == "success") {
+        obtener_compras();
+        // swalWithBootstrapButtons.fire(
+        //   "Eliminada!",
+        //   "La compra " + codigo + " fue eliminada correctamente",
+        //   "success"
+        // );
+        $("#comprobante").val("").trigger("change");
+        $("#proveedor").val("").trigger("change");
+        $("#form-editar").trigger("reset");
+        $("#editar").modal("hide");
+      } else if (respuesta.mensaje == "error_decrypt") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "No vulnere los datos...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.reload();
+        });
+      } else if (respuesta.mensaje == "error_session") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Sesión finalizada...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.href = "/farmaciav2/index.php";
+        });
+      }
+    });
+    e.preventDefault();
+  });
+
+  async function editar(datos) {
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
+      method: "POST",
+      // headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: datos,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   obtener_condicion_pago().then((respuesta) => {
     // console.log(respuesta);
@@ -550,18 +1041,6 @@ $(document).ready(function () {
     }
     return respuesta;
   }
-
-  var html = `
-  <tr>
-    <td colspan="2">
-      <div class="col-md-12 bg-danger text-center p-2">
-        No hay productos
-      </div>
-    </td>
-  </tr>
-  `;
-
-  $("#lista_pedido").html(html);
 
   $(document).on("click", "#agregar_producto", (e) => {
     let producto = $("#producto").val();
@@ -761,343 +1240,6 @@ $(document).ready(function () {
       });
     }
   }
-
-  async function obtener_pedidos() {
-    let funcion = "obtener_pedidos";
-    let data = await fetch("/farmaciav2/Controllers/PedidoController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        let pedidos = JSON.parse(response);
-        console.log(pedidos);
-
-        $("#pedidos").DataTable({
-          data: pedidos,
-          aaSorting: [],
-          searching: true,
-          scrollX: false,
-          autoWidth: false,
-          columns: [
-            {
-              render: function (data, type, datos, meta) {
-                let estado = "<span class='badge badge-success'>Activo</span>";
-                if (datos.estado == "I") {
-                  estado =
-                    "<span class='badge badge-secondary'>Inactivo</span>";
-                }
-
-                let template = `
-                                <div class="">
-                                    <div class="card bg-light">
-                                        <div class="card-body pt-3">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <h4 class=""><strong>Código: ${datos.id}</strong> ${estado}</h4>
-                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Descripción: ${datos.descripcion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Total: ${datos.total}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Proveedor: ${datos.proveedor}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Fecha: ${datos.fecha_creacion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Estado proceso: ${datos.estado_proceso}</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="text-right">
-                                              <button 
-                                                class="btn btn-outline-info btn-circle btn-lg ver_detalle"
-                                                data-toggle="modal"
-                                                data-target="#ver_detalle"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-search"></i>
-                                              </button>
-                                            `;
-                if (datos.estado_proceso == "espera") {
-                  template += `
-                                              <button 
-                                                class="btn btn-outline-success btn-circle btn-lg realizar_compra"
-                                                data-toggle="modal"
-                                                data-target="#realizar_compra"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-arrow-circle-up"></i>
-                                              </button>
-                                              <button 
-                                                class="btn btn-outline-danger btn-circle btn-lg eliminar"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-trash"></i>
-                                              </button>`;
-                }
-                template += `</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                `;
-                return template;
-              },
-            },
-          ],
-          language: espanol,
-          destroy: true,
-        });
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-  }
-
-  $(document).on("click", ".ver_detalle", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let proveedor = $(elemento).attr("proveedor");
-    let fecha_creacion = $(elemento).attr("fecha_creacion");
-    let total = $(elemento).attr("total");
-
-    // Parsear la fecha y formatearla
-    let fecha = new Date(fecha_creacion);
-    let dia = fecha.getDate().toString().padStart(2, "0");
-    let mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // Los meses son de 0 a 11
-    let año = fecha.getFullYear();
-    let fechaFormateada = `${dia}/${mes}/${año}`;
-
-    $("#codigo_detalle").text(id);
-    $("#proveedor_detalle").text(proveedor);
-    $("#fecha_detalle").text(fechaFormateada);
-    ver_detalle(id).then((respuesta) => {
-      if (respuesta.mensaje == "success") {
-        let productos = respuesta.data;
-        console.log(productos);
-        let html = "";
-        productos.forEach((producto) => {
-          html += `
-            <tr>
-              <td>
-                <strong>Nombre: </strong><span>${producto.producto}</span><br>
-                <strong>Concentración: </strong><span>${
-                  producto.concentracion
-                }</span><br>
-                <strong>Laboratorio: </strong><span>${
-                  producto.laboratorio
-                }</span><br>
-                <strong>Subtipo: </strong><span>${producto.subtipo}</span><br>
-                <strong>Presentación: </strong><span>${
-                  producto.presentacion
-                }</span><br>
-              </td>
-              <td class="text-right">${formatNumber(
-                Number(producto.cantidad).toFixed(2)
-              )}</td>
-              <td class="text-right">$ ${formatNumber(
-                Number(producto.precio).toFixed(2)
-              )}</td>
-              <td class="text-right">$ ${formatNumber(
-                (Number(producto.cantidad) * Number(producto.precio)).toFixed(2)
-              )}</td>
-            </tr>
-          `;
-        });
-        html += `
-          <tr>
-            <td colspan="4" class="text-right"><strong>Total: </strong>$ ${formatNumber(
-              Number(total).toFixed(2)
-            )}</td>
-          </tr>
-        `;
-        $("#detalles").html(html);
-      } else if (respuesta.mensaje == "error_decrypt") {
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "No vulnere los datos...",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(function () {
-          //refresca la pagina (F5)
-          location.reload();
-        });
-      } else if (respuesta.mensaje == "error_session") {
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "Sesión finalizada...",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(function () {
-          //refresca la pagina (F5)
-          location.href = "/farmaciav2/index.php";
-        });
-      }
-    });
-  });
-
-  function formatNumber(num) {
-    num = num.toString().replace(".", ","); // Reemplaza el punto decimal con una coma
-    let parts = num.split(","); // Divide en parte entera y decimal
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Formatea la parte entera con puntos
-    return parts.join(","); // Une de nuevo las partes
-  }
-
-  async function ver_detalle(id) {
-    let funcion = "ver_detalle";
-    let respuesta = "";
-    let data = await fetch(
-      "/farmaciav2/Controllers/PedidoCompraController.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "funcion=" + funcion + "&&id=" + id,
-      }
-    );
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
-  }
-
-  async function eliminar(id) {
-    let funcion = "eliminar";
-    let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/PedidoController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
-  }
-
-  $(document).on("click", ".eliminar", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success ml-2",
-        cancelButton: "btn btn-danger",
-      },
-      buttonsStyling: false,
-    });
-
-    swalWithBootstrapButtons
-      .fire({
-        title: `Desea eliminar el pedido ${id} ?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Si, eliminar !",
-        cancelButtonText: "No, cancelar !",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          eliminar(id).then((respuesta) => {
-            if (respuesta.mensaje == "success") {
-              obtener_pedidos();
-              swalWithBootstrapButtons.fire(
-                "Eliminado!",
-                "El pedido fue eliminado correctamente",
-                "success"
-              );
-            } else if (respuesta.mensaje == "error_decrypt") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "No vulnere los datos...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.reload();
-              });
-            } else if (respuesta.mensaje == "error_session") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Sesión finalizada...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.href = "/farmaciav2/index.php";
-              });
-            }
-          });
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-            "Cancelado",
-            "canceló la eliminación del pedido",
-            "error"
-          );
-        }
-      });
-  });
-
-  $("#lista_compra").html(html);
 
   $(document).on("click", ".realizar_compra", (e) => {
     let elemento = $(this)[0].activeElement;

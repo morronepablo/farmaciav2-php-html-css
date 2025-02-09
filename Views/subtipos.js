@@ -286,13 +286,13 @@ $(document).ready(function () {
                       </p>
                   </a>
                 </li>
-                <li id="gestion_lote" class="nav-item">
-                  <a href="adm_lote.php" class="nav-link">
-                      <i class="nav-icon fas fa-cubes"></i>
-                      <p>
-                          Gestión lote
-                      </p>
-                  </a>
+                <li id="" class="nav-item">
+                    <a href="/farmaciav2/Views/lotes.php" class="nav-link">
+                        <i class="nav-icon fas fa-cubes"></i>
+                        <p>
+                            Gestión lote
+                        </p>
+                    </a>
                 </li>
                 <li id="gestion_compras" class="nav-header">Compras</li>
                 <li id="" class="nav-item">
