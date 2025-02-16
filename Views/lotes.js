@@ -383,7 +383,7 @@ $(document).ready(function () {
         if (usuario.length != 0 && usuario.id_tipo != 3) {
           llenar_menu_superior(usuario);
           llenar_menu_lateral(usuario);
-          obtener_compras();
+          obtener_lotes();
           CloseLoader();
         } else {
           location.href = "/farmaciav2/";
@@ -406,9 +406,9 @@ $(document).ready(function () {
     }
   }
 
-  async function obtener_compras() {
-    let funcion = "obtener_compras";
-    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
+  async function obtener_lotes() {
+    let funcion = "obtener_lotes";
+    let data = await fetch("/farmaciav2/Controllers/MovimientoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion,
@@ -416,9 +416,9 @@ $(document).ready(function () {
     if (data.ok) {
       let response = await data.text();
       try {
-        let compras = JSON.parse(response);
-        console.log(compras);
-
+        let lotes = JSON.parse(response);
+        console.log(lotes);
+        /*
         $("#compras").DataTable({
           data: compras,
           aaSorting: [],
@@ -527,6 +527,7 @@ $(document).ready(function () {
           language: espanol,
           destroy: true,
         });
+        */
       } catch (error) {
         console.error(error);
         console.log(response);
@@ -544,6 +545,59 @@ $(document).ready(function () {
       });
     }
   }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   $(document).on("click", ".pagar", (e) => {
     let elemento = $(this)[0].activeElement;

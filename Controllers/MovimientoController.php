@@ -45,4 +45,14 @@ if ($_POST['funcion'] == 'ver_detalle') {
 	);
 
 	echo json_encode($json);
+} elseif ($_POST['funcion'] == 'obtener_lotes') {
+	$movimiento->obtener_lotes();
+	var_dump($movimiento->objetos);
+	/*
+	$json = array(
+		'mensaje'	=>	$mensaje,
+	);
+
+	echo json_encode($json);
+	*/
 }

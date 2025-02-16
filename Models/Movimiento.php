@@ -71,4 +71,36 @@ class Movimiento
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function obtener_lotes()
+	{
+		$sql = "
+			SELECT 
+				m.id,
+				c.codigo AS compra,
+				m.cantidad_res,
+				m.cantidad,
+				m.precio_compra,
+				m.lote,
+				m.fecha_vencimiento,
+				p.nombre AS producto,
+				p.concentracion,
+				l.nombre AS laboratorio,
+				s.nombre AS subtipo,
+				pre.nombre AS presentacion
+			FROM movimiento m
+			JOIN compra c ON c.id=m.compra_id
+			JOIN producto p ON p.id=m.producto_id
+			JOIN laboratorio l ON l.id=p.id_laboratorio
+			JOIN subtipo_producto s ON s.id=p.id_subtipo_producto
+			JOIN presentacion pre ON pre.id=p.id_presentacion
+			WHERE m.tipo_movimiento_id=1
+			AND m.estado='A'
+			ORDER BY p.nombre ASC
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute();
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }
