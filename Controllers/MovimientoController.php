@@ -81,7 +81,10 @@ if ($_POST['funcion'] == 'ver_detalle') {
 			'laboratorio' 	=> $objeto->laboratorio,
 			'subtipo' 		=> $objeto->subtipo,
 			'presentacion' 	=> $objeto->presentacion,
-			'estado' 		=> $estado
+			'estado' 		=> $estado,
+			'year' 			=> $year,
+			'mes' 			=> $mes,
+			'dia' 			=> $dia,
 		);
 	}
 

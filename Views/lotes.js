@@ -417,10 +417,57 @@ $(document).ready(function () {
       let response = await data.text();
       try {
         let lotes = JSON.parse(response);
-        console.log(lotes);
-        /*
-        $("#compras").DataTable({
-          data: compras,
+        // console.log(lotes);
+
+        // $("#lotes").DataTable({
+        //   data: lotes,
+        //   aaSorting: [],
+        //   searching: true,
+        //   scrollX: false,
+        //   autoWidth: false,
+        //   columns: [
+        //     {
+        //       render: function (data, type, datos, meta) {
+        //         console.log(datos);
+
+        //         let template = `
+        //           <div class="card">
+        //             <div class="card-header bg-${datos.estado}">
+        //               <h3 class="card-title"><strong> Código: </strong>${datos.lote}</h3>
+        //             </div>
+        //             <div class="card-body bg-${datos.estado}" style="font-size: 14px">
+        //               <div class="row">
+        //                 <div class="col-md-6">
+        //                   <strong>Compra: </strong><span>${datos.compra}</span><br />
+        //                   <strong>Producto: </strong><span>${datos.producto}</span><br />
+        //                   <strong>Concentración: </strong><span>${datos.concentracion}</span><br />
+        //                   <strong>Laboratorio: </strong><span>${datos.laboratorio}</span><br />
+        //                   <strong>Subtipo: </strong><span>${datos.subtipo}</span><br />
+        //                 </div>
+        //                 <div class="col-md-6">
+        //                   <strong>Presentación: </strong><span>${datos.presentacion}</span><br />
+        //                   <strong>Fecha de vencimiento: </strong><span>${datos.vencimiento}</span><br />
+        //                   <strong>Cantidad: </strong><span>${datos.cantidad_res}</span><br />
+        //                   <strong>Precio compra: </strong><span>${datos.precio_compra}</span><br />
+        //                   <strong>Compra: </strong><span>${datos.compra}</span><br />
+        //                 </div>
+        //               </div>
+        //             </div>
+        //             <div class="card-footer bg-${datos.estado}">
+
+        //             </div>
+        //           </div>
+        //         `;
+
+        //         return template;
+        //       },
+        //     },
+        //   ],
+        //   language: espanol,
+        //   destroy: true,
+        // });
+        $("#lotes").DataTable({
+          data: lotes,
           aaSorting: [],
           searching: true,
           scrollX: false,
@@ -428,98 +475,72 @@ $(document).ready(function () {
           columns: [
             {
               render: function (data, type, datos, meta) {
-                let estado = `<span class="badge badge-warning">Crédito</span>`;
-                if (datos.estado == "Contado") {
-                  estado = `<span class="badge badge-success">Contado</span>`;
+                console.log(datos);
+
+                let tiempo = "";
+                if (datos.estado == "light") {
+                  tiempo = `Falta ${datos.year} año/s, ${datos.mes} mes/es y ${datos.dia} dia/s`;
                 }
-                if (datos.estado == "Pagado") {
-                  estado = `<span class="badge badge-info">Pagado</span>`;
+                if (datos.estado == "warning") {
+                  tiempo = `Falta ${datos.mes} mes/es y ${datos.dia} dia/s`;
                 }
-                let template = "";
-                template += `
-                                <div class="card card-widget widget-user-2">
-                                    <div class="widget-user-header bg-white d-flex" >
-                                        <div>
-                                            <h3 class="widget-user-username" style="margin: 0 20px;"><strong>Código :</strong>${datos.codigo} ${estado}</h3>
-                                            <h5 class="widget-user-desc mt-3">
-                                              <strong>Nota: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${datos.nota}</span><br>
-                                              <strong>Creación: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${datos.fecha_creacion}</span><br>`;
-                if (datos.estado == "Crédito") {
-                  template += `<strong>Vencimiento: </strong><span>${datos.fecha_vencimiento}</span><br>`;
+                if (datos.estado == "danger") {
+                  if (datos.year > 0) {
+                    tiempo = `Vencido ${datos.year} año/s, ${datos.mes} mes/es y ${datos.dia} dia/s`;
+                  } else if (datos.mes > 0) {
+                    tiempo = `Vencido ${datos.mes} mes/es y ${datos.dia} dia/s`;
+                  } else {
+                    tiempo = `Vencido ${datos.dia} dia/s`;
+                  }
                 }
-                template += `<strong>Total: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$&nbsp;${formatNumber(
-                  Number(datos.total).toFixed(2)
-                )}</span><br>
-                            <strong>Comprobante: </strong><span>&nbsp;&nbsp;${
-                              datos.comprobante
-                            }</span><br>
-                            <strong>Proveedor: </strong><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${
-                              datos.proveedor
-                            }</span><br>
-                            </h5>
-                                            `;
-                template += `</div>
-                                    </div>
-                                    <div class="card-footer p-0">
-                                        <ul class="nav flex-column text-right">
-                                            <li class="nav-item">
-                                                <a href="#" class="nav-link">`;
-                if (datos.estado == "Crédito") {
-                  template += ` 
-                  <span style="margin-right: 5px;">
-                    <button 
-                        class="btn btn-outline-success btn-circle btn-lg pagar" 
-                        id="${datos.id}"
-                        codigo="${datos.codigo}"
-                    >
-                      <i class="fas fa-hand-holding-usd"></i>
-                    </button>
-                  </span>`;
-                }
-                template += `<span style="margin-right: 5px;">
-                              <button 
-                                  class="btn btn-outline-info btn-circle btn-lg ver_detalle" 
-                                  id="${datos.id}"
-                                  codigo="${datos.codigo}"
-                                  total="${datos.total}"
-                                  fecha_creacion="${datos.fecha_creacion}"
-                                  data-toggle="modal"
-                                  data-target="#ver_detalle"
-                              >
-                                <i class="fas fa-search"></i>
-                              </button>
-                            </span>
-                            <span style="margin-right: 5px;">
-                              <button 
-                                  class="btn btn-outline-primary btn-circle btn-lg editar" 
-                                  id="${datos.id}"
-                                  codigo="${datos.codigo}"
-                                  nota="${datos.nota}"
-                                  comprobante_id="${datos.comprobante_id}"
-                                  id_proveedor="${datos.id_proveedor}"
-                                  pedido_id="${datos.pedido_id}"
-                                  data-toggle="modal"
-                                  data-target="#editar"
-                              >
-                                <i class="fas fa-pencil-alt"></i>
-                              </button>
-                            </span>
-                            <span style="margin-right: 5px;">
-                              <button 
-                                  class="btn btn-outline-danger btn-circle btn-lg eliminar" 
-                                  id="${datos.id}"
-                                  codigo="${datos.codigo}"
-                                  pedido_id="${datos.pedido_id}"
-                              >
-                                <i class="fas fa-trash"></i>
-                              </button>
-                            </span>
-                            </a>
-                          </li>
-                      </ul>
+
+                // Formatear el precio_compra como $ 1.000,00
+                let precio = parseFloat(datos.precio_compra); // Convertir a número
+                let precioFormateado =
+                  "$ " +
+                  precio
+                    .toFixed(2)
+                    .replace(/\d(?=(\d{3})+\.)/g, "$&.")
+                    .replace(".", ","); // Formato manual
+
+                // Formatear la fecha de vencimiento como d-m-Y
+                let fecha = new Date(datos.vencimiento);
+                let fechaFormateada = fecha
+                  .toLocaleDateString("es-ES", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })
+                  .replace(/\//g, "-"); // Reemplaza "/" por "-" para obtener "d-m-Y"
+
+                let template = `
+                  <div class="card">
+                    <div class="card-header bg-${datos.estado}">
+                      <h3 class="card-title"><strong> Código: </strong>${datos.lote}</h3>
+                    </div>
+                    <div class="card-body bg-${datos.estado}" style="font-size: 14px">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <strong>Compra: </strong><span>${datos.compra}</span><br />
+                          <strong>Producto: </strong><span>${datos.producto}</span><br />
+                          <strong>Concentración: </strong><span>${datos.concentracion}</span><br />
+                          <strong>Laboratorio: </strong><span>${datos.laboratorio}</span><br />
+                          <strong>Subtipo: </strong><span>${datos.subtipo}</span><br />
+                        </div>
+                        <div class="col-md-6">
+                          <strong>Presentación: </strong><span>${datos.presentacion}</span><br />
+                          <strong>Fecha de vencimiento: </strong><span>${fechaFormateada}</span><br />
+                          <strong>Cantidad: </strong><span>${datos.cantidad_res}</span><br />
+                          <strong>Precio compra: </strong><span>${precioFormateado}</span><br />
+                          <strong>Tiempo restante: </strong><span>${tiempo}</span><br />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer bg-${datos.estado}">
+                    </div>
                   </div>
-              </div>
-              `;
+                `;
+
                 return template;
               },
             },
@@ -527,7 +548,6 @@ $(document).ready(function () {
           language: espanol,
           destroy: true,
         });
-        */
       } catch (error) {
         console.error(error);
         console.log(response);
