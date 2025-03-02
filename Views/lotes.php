@@ -81,6 +81,14 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
     </div>
 </div>
 <!-- Fin Modal Editar Avatar -->
+<style>
+    .bg-critical {
+        background-color: #ff8c00 !important;
+        /* Naranja oscuro */
+        color: #fff;
+        /* Opcional, para que el texto sea legible */
+    }
+</style>
 <title>Gestión lotes | Morrone</title>
 <div class="content-wrapper" style="min-height: 678.917px;">
     <section class="content-header">

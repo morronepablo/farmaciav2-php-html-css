@@ -51,23 +51,40 @@ if ($_POST['funcion'] == 'ver_detalle') {
 	$fecha_actual = date('Y-m-d H:i:s');
 	$fecha_actual = new DateTime($fecha_actual);
 
+	// Truncar la hora de la fecha actual (solo considerar día, mes, año)
+	$fecha_actual->setTime(0, 0, 0);
+
 	foreach ($movimiento->objetos as $objeto) {
 		$vencimiento = new DateTime($objeto->fecha_vencimiento);
-		$diferencia = $vencimiento->diff($fecha_actual);
+
+		// Truncar la hora de la fecha de vencimiento (solo considerar día, mes, año)
+		$vencimiento->setTime(0, 0, 0);
+
+		if ($vencimiento < $fecha_actual) {
+			$diferencia = $fecha_actual->diff($vencimiento);
+			$verificado = 0;
+		} else {
+			$diferencia = $vencimiento->diff($fecha_actual);
+			$verificado = 1;
+		}
+
 		$year = $diferencia->y;
 		$mes = $diferencia->m;
 		$dia = $diferencia->d;
-		$verificado = $diferencia->invert;
 
-		$estado = 'light';
-		if ($verificado == 0) {
+		$dias_totales = $diferencia->days;
+		if ($verificado == 0 || $dias_totales == 0) { // Si la fecha ya pasó o es hoy, estado = 'danger'
 			$estado = 'danger';
 		} else {
-			$meses_totales = ($year * 12) + $mes;
-			if ($meses_totales <= 5) {
-				$estado = 'warning';
+			if ($dias_totales <= 15) {
+				$estado = 'critical'; // 1-15 días
 			} else {
-				$estado = 'light';
+				$meses_totales = ($year * 12) + $mes;
+				if ($meses_totales <= 5) {
+					$estado = 'warning'; // Entre 15 días y 5 meses
+				} else {
+					$estado = 'light'; // Más de 5 meses
+				}
 			}
 		}
 
@@ -88,37 +105,35 @@ if ($_POST['funcion'] == 'ver_detalle') {
 			'year'          => $year,
 			'mes'           => $mes,
 			'dia'           => $dia,
+			'verificado'    => $verificado,
 		);
 	}
 
-	// Ordenar el arreglo $json
 	usort($json, function ($a, $b) use ($fecha_actual) {
-		// Prioridad por estado: danger > warning > light
 		$estadoPrioridad = [
 			'danger' => 1,
-			'warning' => 2,
-			'light' => 3
+			'critical' => 2,
+			'warning' => 3,
+			'light' => 4
 		];
 
 		$prioridadA = $estadoPrioridad[$a['estado']];
 		$prioridadB = $estadoPrioridad[$b['estado']];
 
-		// Si los estados son diferentes, ordenar por prioridad de estado
 		if ($prioridadA !== $prioridadB) {
-			return $prioridadA - $prioridadB; // Menor prioridad primero (danger > warning > light)
+			return $prioridadA - $prioridadB;
 		}
 
-		// Si los estados son iguales, ordenar por fecha de vencimiento
 		$fechaA = new DateTime($a['vencimiento']);
 		$fechaB = new DateTime($b['vencimiento']);
+		$fechaA->setTime(0, 0, 0);
+		$fechaB->setTime(0, 0, 0);
 
-		// Para los vencidos (danger), ordenar de más recientemente vencido a más antiguo
 		if ($a['estado'] === 'danger') {
-			return $fechaB <=> $fechaA; // Orden descendente (más reciente primero)
+			return $fechaB <=> $fechaA;
 		}
 
-		// Para warning y light, ordenar de más próximo a más lejano
-		return $fechaA <=> $fechaB; // Orden ascendente (más próximo primero)
+		return $fechaA <=> $fechaB;
 	});
 
 	echo json_encode($json);

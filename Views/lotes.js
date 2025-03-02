@@ -422,16 +422,13 @@ $(document).ready(function () {
         $("#lotes").DataTable({
           data: lotes,
           aaSorting: [],
-          ordering: false, // Desactiva completamente el ordenamiento por el usuario
+          ordering: false,
           searching: true,
           scrollX: false,
           autoWidth: false,
           columns: [
             {
               render: function (data, type, datos, meta) {
-                console.log(datos);
-
-                // Generar el texto de tiempo restante o vencido, omitiendo valores en 0
                 let tiempoPartes = [];
                 if (datos.year > 0) {
                   tiempoPartes.push(
@@ -451,23 +448,38 @@ $(document).ready(function () {
 
                 let tiempoTexto = "";
                 if (tiempoPartes.length === 0) {
-                  tiempoTexto = "Vence hoy";
-                } else if (tiempoPartes.length === 1) {
-                  tiempoTexto = tiempoPartes[0];
-                } else if (tiempoPartes.length === 2) {
-                  tiempoTexto = `${tiempoPartes[0]} y ${tiempoPartes[1]}`;
+                  if (datos.verificado == 1) {
+                    tiempoTexto = "vencer hoy";
+                  } else {
+                    tiempoTexto = "1 día";
+                  }
                 } else {
-                  tiempoTexto = `${tiempoPartes.slice(0, -1).join(", ")} y ${
-                    tiempoPartes[tiempoPartes.length - 1]
-                  }`;
+                  if (tiempoPartes.length === 1) {
+                    tiempoTexto = tiempoPartes[0];
+                  } else if (tiempoPartes.length === 2) {
+                    tiempoTexto = `${tiempoPartes[0]} y ${tiempoPartes[1]}`;
+                  } else {
+                    tiempoTexto = `${tiempoPartes.slice(0, -1).join(", ")} y ${
+                      tiempoPartes[tiempoPartes.length - 1]
+                    }`;
+                  }
                 }
 
-                let tiempo =
-                  datos.estado === "danger"
-                    ? `Vencido ${tiempoTexto}`
-                    : `Falta ${tiempoTexto}`;
+                // Ajustar el texto según el estado y los días
+                let tiempo = "";
+                if (datos.estado === "danger") {
+                  if (datos.verificado == 0) {
+                    // Si ya venció
+                    tiempo = `Vencido ${tiempoTexto}`;
+                  } else {
+                    // Si vence hoy ($dias_totales == 0)
+                    tiempo = `Vence hoy`;
+                  }
+                } else {
+                  // Para critical, warning, light (future dates)
+                  tiempo = `Falta ${tiempoTexto}`;
+                }
 
-                // Formatear el precio_compra como $ 1.000,00
                 let precio = parseFloat(datos.precio_compra);
                 let precioFormateado =
                   "$ " +
@@ -476,15 +488,13 @@ $(document).ready(function () {
                     .replace(/\d(?=(\d{3})+\.)/g, "$&.")
                     .replace(".", ",");
 
-                // Formatear la fecha de vencimiento como d-m-Y
-                let fecha = new Date(datos.vencimiento);
-                let fechaFormateada = fecha
-                  .toLocaleDateString("es-ES", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })
-                  .replace(/\//g, "-");
+                // Formatear la fecha manualmente como d-m-Y
+                let fechaSinHora = datos.vencimiento.split(" ")[0]; // "2025-03-02 00:00:00" → "2025-03-02"
+                let partesFecha = fechaSinHora.split("-"); // ["2025", "03", "02"]
+                let dia = partesFecha[2].padStart(2, "0");
+                let mes = partesFecha[1].padStart(2, "0");
+                let año = partesFecha[0];
+                let fechaFormateada = `${dia}-${mes}-${año}`; // "02-03-2025"
 
                 let template = `
                   <div class="card">
