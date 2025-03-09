@@ -88,6 +88,11 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
         color: #fff;
         /* Opcional, para que el texto sea legible */
     }
+
+    .text-critical {
+        color: #ff8c00 !important;
+        /* Opcional, para que el texto sea legible */
+    }
 </style>
 <title>Gestión lotes | Morrone</title>
 <div class="content-wrapper" style="min-height: 678.917px;">
@@ -115,7 +120,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                 <table id="lotes" class="table table-hover">
                     <thead class="bg-success">
                         <tr>
-                            <th width="100%">Lotes <span class="text-light ml-5"> <i class="fas fa-square"></i> Normal</span> <span class="text-warning ml-2"> <i class="fas fa-square"></i> Por vencer</span> <span class="text-danger ml-2"> <i class="fas fa-square"></i> Vencido</span></th>
+                            <th width="100%">Lotes <span class="text-light ml-5"> <i class="fas fa-square"></i> Normal</span> <span class="text-warning ml-2"> <i class="fas fa-square"></i> Por vencer</span> <span class="text-critical ml-2"> <i class="fas fa-square"></i> Por vencer desde 15 días a vencido </span> <span class="text-danger ml-2"> <i class="fas fa-square"></i> Vencido</span></th>
                         </tr>
                     </thead>
                     <tbody>

@@ -89,23 +89,24 @@ if ($_POST['funcion'] == 'ver_detalle') {
 		}
 
 		$json[] = array(
-			'id'            => openssl_encrypt($objeto->id, CODE, KEY),
-			'compra'        => $objeto->compra,
-			'cantidad_res'  => $objeto->cantidad_res,
-			'cantidad'      => $objeto->cantidad,
-			'precio_compra' => $objeto->precio_compra,
-			'lote'          => $objeto->lote,
-			'vencimiento'   => $objeto->fecha_vencimiento,
-			'producto'      => str_replace("***", "%", $objeto->producto),
-			'concentracion' => str_replace("***", "%", $objeto->concentracion),
-			'laboratorio'   => $objeto->laboratorio,
-			'subtipo'       => $objeto->subtipo,
-			'presentacion'  => $objeto->presentacion,
-			'estado'        => $estado,
-			'year'          => $year,
-			'mes'           => $mes,
-			'dia'           => $dia,
-			'verificado'    => $verificado,
+			'id'            	=> openssl_encrypt($objeto->id, CODE, KEY),
+			'compra'        	=> $objeto->compra,
+			'cantidad_res'  	=> $objeto->cantidad_res,
+			'cantidad'      	=> $objeto->cantidad,
+			'precio_compra' 	=> $objeto->precio_compra,
+			'lote'          	=> $objeto->lote,
+			'vencimiento'  		=> $objeto->fecha_vencimiento,
+			'producto'      	=> str_replace("***", "%", $objeto->producto),
+			'codigo_producto' 	=> $objeto->codigo_producto,
+			'concentracion' 	=> str_replace("***", "%", $objeto->concentracion),
+			'laboratorio'   	=> $objeto->laboratorio,
+			'subtipo'       	=> $objeto->subtipo,
+			'presentacion'  	=> $objeto->presentacion,
+			'estado'        	=> $estado,
+			'year'          	=> $year,
+			'mes'           	=> $mes,
+			'dia'           	=> $dia,
+			'verificado'    	=> $verificado,
 		);
 	}
 
@@ -135,6 +136,43 @@ if ($_POST['funcion'] == 'ver_detalle') {
 
 		return $fechaA <=> $fechaB;
 	});
+
+	echo json_encode($json);
+} elseif ($_POST['funcion'] == 'dar_baja') {
+	$detalles = array();
+	$mensaje = '';
+	if (!empty($_SESSION['id'])) {
+
+		$id		 		= $_POST['id'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_lote	 	= openssl_decrypt($formateado, CODE, KEY);
+
+		if (is_numeric($id_lote)) {
+			/*
+			$movimiento->ver_detalle($id_lote);
+			foreach ($movimiento->objetos as $objeto) {
+				$detalles[] = array(
+					'cantidad' 			=> $objeto->cantidad,
+					'precio_compra' 	=> $objeto->precio_compra,
+					'lote' 				=> $objeto->lote,
+					'fecha_vencimiento' => $objeto->fecha_vencimiento,
+					'producto' 			=> str_replace("***", "%", $objeto->producto),
+					'concentracion' 	=> str_replace("***", "%", $objeto->concentracion),
+					'laboratorio' 		=> $objeto->laboratorio,
+					'subtipo' 			=> $objeto->subtipo,
+					'presentacion' 		=> $objeto->presentacion
+				);
+			} */
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje,
+	);
 
 	echo json_encode($json);
 }

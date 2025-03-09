@@ -499,13 +499,13 @@ $(document).ready(function () {
                 let template = `
                   <div class="card">
                     <div class="card-header bg-${datos.estado}">
-                      <h3 class="card-title"><strong> Código: </strong>${datos.lote}</h3>
+                      <h3 class="card-title"><strong> Lote: </strong>${datos.lote}</h3>
                     </div>
                     <div class="card-body bg-${datos.estado}" style="font-size: 14px">
                       <div class="row">
                         <div class="col-md-6">
                           <strong>Compra: </strong><span>${datos.compra}</span><br />
-                          <strong>Producto: </strong><span>${datos.producto}</span><br />
+                          <strong>Producto: </strong><span>${datos.producto}</span>&nbsp;&nbsp;&nbsp;<strong>Código: </strong>${datos.codigo_producto}</span><br />
                           <strong>Concentración: </strong><span>${datos.concentracion}</span><br />
                           <strong>Laboratorio: </strong><span>${datos.laboratorio}</span><br />
                           <strong>Subtipo: </strong><span>${datos.subtipo}</span><br />
@@ -519,7 +519,9 @@ $(document).ready(function () {
                         </div>
                       </div>
                     </div>
-                    <div class="card-footer bg-${datos.estado}">
+                    <div class="card-footer text-right">
+                      <button type="button" class="editar btn btn-outline-primary btn-circle btn-lg float-center"><i class="fas fa-pencil-alt"></i></button>
+                      <button id="${datos.id}" codigo="${datos.lote}" type="button" class="dar_baja btn btn-outline-danger btn-circle btn-lg float-center"><i class="fas fa-level-down-alt"></i></button>
                     </div>
                   </div>
                 `;
@@ -549,60 +551,7 @@ $(document).ready(function () {
     }
   }
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
-  $(document).on("click", ".pagar", (e) => {
+  $(document).on("click", ".dar_baja", (e) => {
     let elemento = $(this)[0].activeElement;
     let id = $(elemento).attr("id");
     let codigo = $(elemento).attr("codigo");
@@ -617,16 +566,19 @@ $(document).ready(function () {
 
     swalWithBootstrapButtons
       .fire({
-        title: `Desea pagar la compra ${codigo} ?`,
+        title: `Desea dar de baja el lote ${codigo} ?`,
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "Si, pagar !",
+        confirmButtonText: "Si, dar de baja !",
         cancelButtonText: "No, cancelar !",
         reverseButtons: true,
       })
       .then((result) => {
         if (result.isConfirmed) {
-          pagar(id).then((respuesta) => {
+          dar_baja(id).then((respuesta) => {
+            console.log(respuesta);
+
+            /*
             if (respuesta.mensaje == "success") {
               obtener_compras();
               swalWithBootstrapButtons.fire(
@@ -657,6 +609,7 @@ $(document).ready(function () {
                 location.href = "/farmaciav2/index.php";
               });
             }
+            */
           });
         } else if (
           /* Read more about handling dismissals below */
@@ -664,17 +617,17 @@ $(document).ready(function () {
         ) {
           swalWithBootstrapButtons.fire(
             "Cancelado",
-            "canceló el pago de la compra",
+            "canceló dar de baja el lote " + codigo,
             "error"
           );
         }
       });
   });
 
-  async function pagar(id) {
-    let funcion = "pagar";
+  async function dar_baja(id) {
+    let funcion = "dar_baja";
     let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/CompraController.php", {
+    let data = await fetch("/farmaciav2/Controllers/MovimientoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "funcion=" + funcion + "&&id=" + id,
@@ -701,6 +654,59 @@ $(document).ready(function () {
     }
     return respuesta;
   }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   $(document).on("click", ".eliminar", (e) => {
     let elemento = $(this)[0].activeElement;

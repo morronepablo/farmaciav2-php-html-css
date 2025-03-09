@@ -84,6 +84,7 @@ class Movimiento
 				m.lote,
 				m.fecha_vencimiento,
 				p.nombre AS producto,
+				p.codigo AS codigo_producto,
 				p.concentracion,
 				l.nombre AS laboratorio,
 				s.nombre AS subtipo,

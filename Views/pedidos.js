@@ -791,64 +791,64 @@ $(document).ready(function () {
                 }
 
                 let template = `
-                                <div class="">
-                                    <div class="card bg-light">
-                                        <div class="card-body pt-3">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <h4 class=""><strong>Código: ${datos.id}</strong> ${estado}</h4>
-                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Descripción: ${datos.descripcion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Total: ${datos.total}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Proveedor: ${datos.proveedor}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Fecha: ${datos.fecha_creacion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Estado proceso: ${datos.estado_proceso}</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="text-right">
-                                              <button 
-                                                class="btn btn-outline-info btn-circle btn-lg ver_detalle"
-                                                data-toggle="modal"
-                                                data-target="#ver_detalle"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-search"></i>
-                                              </button>
-                                            `;
+                                  <div class="">
+                                      <div class="card bg-light">
+                                          <div class="card-body pt-3">
+                                              <div class="row">
+                                                  <div class="col-md-12">
+                                                      <h4 class=""><strong>Código: ${datos.id_desencriptado}</strong> ${estado}</h4>
+                                                      <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                          <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Descripción: ${datos.descripcion}</li>
+                                                          <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Total: ${datos.total}</li>
+                                                          <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Proveedor: ${datos.proveedor}</li>
+                                                          <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Fecha: ${datos.fecha_creacion}</li>
+                                                          <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Estado proceso: ${datos.estado_proceso}</li>
+                                                      </ul>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="card-footer">
+                                              <div class="text-right">
+                                                <button 
+                                                  class="btn btn-outline-info btn-circle btn-lg ver_detalle"
+                                                  data-toggle="modal"
+                                                  data-target="#ver_detalle"
+                                                  id="${datos.id}"
+                                                  proveedor="${datos.proveedor}"
+                                                  fecha_creacion="${datos.fecha_creacion}"
+                                                  total="${datos.total}"
+                                                >
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                              `;
                 if (datos.estado_proceso == "espera") {
                   template += `
-                                              <button 
-                                                class="btn btn-outline-success btn-circle btn-lg realizar_compra"
-                                                data-toggle="modal"
-                                                data-target="#realizar_compra"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-arrow-circle-up"></i>
-                                              </button>
-                                              <button 
-                                                class="btn btn-outline-danger btn-circle btn-lg eliminar"
-                                                id="${datos.id}"
-                                                proveedor="${datos.proveedor}"
-                                                fecha_creacion="${datos.fecha_creacion}"
-                                                total="${datos.total}"
-                                              >
-                                                  <i class="fas fa-trash"></i>
-                                              </button>`;
+                                                <button 
+                                                  class="btn btn-outline-success btn-circle btn-lg realizar_compra"
+                                                  data-toggle="modal"
+                                                  data-target="#realizar_compra"
+                                                  id="${datos.id}"
+                                                  proveedor="${datos.proveedor}"
+                                                  fecha_creacion="${datos.fecha_creacion}"
+                                                  total="${datos.total}"
+                                                >
+                                                    <i class="fas fa-arrow-circle-up"></i>
+                                                </button>
+                                                <button 
+                                                  class="btn btn-outline-danger btn-circle btn-lg eliminar"
+                                                  id="${datos.id}"
+                                                  proveedor="${datos.proveedor}"
+                                                  fecha_creacion="${datos.fecha_creacion}"
+                                                  total="${datos.total}"
+                                                >
+                                                    <i class="fas fa-trash"></i>
+                                                </button>`;
                 }
                 template += `</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                `;
+                                          </div>
+                                      </div>
+                                  </div>
+                                  `;
                 return template;
               },
             },

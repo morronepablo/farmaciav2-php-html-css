@@ -11,9 +11,9 @@ $fecha_actual = date('d-m-Y');
 if ($_POST['funcion'] == 'ver_detalle') {
 	$mensaje = '';
 	if (!empty($_SESSION['id'])) {
-		$id 		= $_POST['id'];
+		$id 			= $_POST['id'];
 		$formateado		= str_replace(' ', '+', $id);
-		$id_pedido 	= openssl_decrypt($formateado, CODE, KEY);
+		$id_pedido 		= openssl_decrypt($formateado, CODE, KEY);
 		$json = array();
 		if (is_numeric($id_pedido)) {
 			$pedido_compra->ver_detalle($id_pedido);
