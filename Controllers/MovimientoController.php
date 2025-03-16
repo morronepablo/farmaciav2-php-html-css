@@ -148,21 +148,7 @@ if ($_POST['funcion'] == 'ver_detalle') {
 		$id_lote	 	= openssl_decrypt($formateado, CODE, KEY);
 
 		if (is_numeric($id_lote)) {
-			/*
-			$movimiento->ver_detalle($id_lote);
-			foreach ($movimiento->objetos as $objeto) {
-				$detalles[] = array(
-					'cantidad' 			=> $objeto->cantidad,
-					'precio_compra' 	=> $objeto->precio_compra,
-					'lote' 				=> $objeto->lote,
-					'fecha_vencimiento' => $objeto->fecha_vencimiento,
-					'producto' 			=> str_replace("***", "%", $objeto->producto),
-					'concentracion' 	=> str_replace("***", "%", $objeto->concentracion),
-					'laboratorio' 		=> $objeto->laboratorio,
-					'subtipo' 			=> $objeto->subtipo,
-					'presentacion' 		=> $objeto->presentacion
-				);
-			} */
+			$movimiento->dar_baja($id_lote);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_decrypt';

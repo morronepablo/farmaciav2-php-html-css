@@ -104,4 +104,19 @@ class Movimiento
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function dar_baja($id)
+	{
+		$sql = "
+			UPDATE movimiento 
+			SET cantidad_res = 0,
+			estado = 'I'
+			WHERE id=:id
+		";
+		$variables = array(
+			':id' => $id,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }
