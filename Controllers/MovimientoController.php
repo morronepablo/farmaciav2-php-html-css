@@ -161,4 +161,26 @@ if ($_POST['funcion'] == 'ver_detalle') {
 	);
 
 	echo json_encode($json);
+} elseif ($_POST['funcion'] == 'editar_cantidad') {
+	$mensaje = '';
+	if (!empty($_SESSION['id'])) {
+		$id		 		= $_POST['id'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_lote	 	= openssl_decrypt($formateado, CODE, KEY);
+		$cantidad 		= $_POST['cantidad'];
+
+		if (is_numeric($id_lote)) {
+			$movimiento->editar_cantidad($id_lote, $cantidad);
+			$mensaje = 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	$json = array(
+		'mensaje'	=>	$mensaje,
+	);
+
+	echo json_encode($json);
 }

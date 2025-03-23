@@ -668,18 +668,49 @@ $(document).ready(function () {
   $("#form-editar").submit(function (e) {
     let id = $("#id_lote").val();
     let cantidad = $("#cantidad_editar").val();
-    console.log(id, cantidad);
+    editar_cantidad(id, cantidad).then((respuesta) => {
+      if (respuesta.mensaje == "success") {
+        obtener_lotes();
+        toastr.success("Se ha editado la cantidad del lote", "Éxito!", {
+          timeOut: 2000,
+        });
+        $("#editar").modal("hide");
+        $("#form-editar").trigger("reset");
+      } else if (respuesta.mensaje == "error_decrypt") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "No vulnere los datos...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.reload();
+        });
+      } else if (respuesta.mensaje == "error_session") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Sesión finalizada...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.href = "/farmaciav2/index.php";
+        });
+      }
+    });
 
     e.preventDefault();
   });
 
-  async function editar_cantidad(id) {
+  async function editar_cantidad(id, cantidad) {
     let funcion = "editar_cantidad";
     let respuesta = "";
     let data = await fetch("/farmaciav2/Controllers/MovimientoController.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id,
+      body: "funcion=" + funcion + "&&id=" + id + "&&cantidad=" + cantidad,
     });
     if (data.ok) {
       let response = await data.text();

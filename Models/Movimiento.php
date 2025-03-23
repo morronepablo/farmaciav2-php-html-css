@@ -119,4 +119,19 @@ class Movimiento
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+
+	function editar_cantidad($id, $cantidad)
+	{
+		$sql = "
+			UPDATE movimiento 
+			SET cantidad_res = :cantidad
+			WHERE id=:id
+		";
+		$variables = array(
+			':id' 		=> $id,
+			':cantidad' => $cantidad,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }
