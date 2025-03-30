@@ -534,7 +534,11 @@ $(document).ready(function () {
                     "<span class='badge badge-pill badge-secondary'>Inactivo</span>";
                 }
                 let stock = "";
-                if (datos.stock == null || datos.stock == "") {
+                if (
+                  datos.stock == null ||
+                  datos.stock == "" ||
+                  datos.stock == 0
+                ) {
                   stock = "Sin Stock";
                 } else {
                   stock = datos.stock;
@@ -1048,6 +1052,12 @@ $(document).ready(function () {
                 "Eliminado!",
                 "El producto fue eliminado correctamente",
                 "success"
+              );
+            } else if (respuesta.mensaje == "error_stock") {
+              swalWithBootstrapButtons.fire(
+                "No se puedo eliminar!",
+                "El producto tiene stock en el inventario.",
+                "error"
               );
             } else if (respuesta.mensaje == "error_decrypt") {
               Swal.fire({

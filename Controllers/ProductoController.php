@@ -1,5 +1,6 @@
 <?php
 include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Producto.php';
+include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Models/Movimiento.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Util/Config/config.php';
 require_once('../vendor/autoload.php');
 
@@ -10,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
 $producto = new Producto();
+$movimiento = new Movimiento();
 session_start();
 if ($_POST['funcion'] == 'obtener_productos') {
 	$producto->obtener_productos();
@@ -40,14 +42,17 @@ if ($_POST['funcion'] == 'obtener_productos') {
 	$producto->obtener_gestion_productos();
 	$json = array();
 	foreach ($producto->objetos as $objeto) {
-		/*$producto->obtener_stock($objeto->id);
-		$stock = $producto->objetos[0]->total;*/
+		$movimiento->obtener_stock($objeto->id);
+		$stock = 0;
+		if (!empty($movimiento->objetos)) {
+			$stock = $movimiento->objetos[0]->total;
+		}
 		$json[] = array(
 			'id'				 => openssl_encrypt($objeto->id, CODE, KEY),
 			'nombre'			 => str_replace('***', '%', $objeto->nombre),
 			'concentracion'		 => str_replace('***', '%', $objeto->concentracion),
 			'precio'			 => $objeto->precio,
-			// 'stock'				 => $stock,
+			'stock'				 => $stock,
 			'laboratorio'		 => $objeto->laboratorio,
 			'id_laboratorio'	 => openssl_encrypt($objeto->id_laboratorio, CODE, KEY),
 			'subtipo'			 => $objeto->subtipo,
@@ -162,8 +167,17 @@ if ($_POST['funcion'] == 'obtener_productos') {
 		$formateado		= str_replace(' ', '+', $id);
 		$id_producto	= openssl_decrypt($formateado, CODE, KEY);
 		if (is_numeric($id_producto)) {
-			$producto->eliminar($id_producto);
-			$mensaje = 'success';
+			$movimiento->obtener_stock($id_producto);
+			$stock = 0;
+			if (!empty($movimiento->objetos)) {
+				$stock = $movimiento->objetos[0]->total;
+			}
+			if ($stock == 0) {
+				$producto->eliminar($id_producto);
+				$mensaje = 'success';
+			} else {
+				$mensaje = 'error_stock';
+			}
 		} else {
 			$mensaje = 'error_decrypt';
 		}

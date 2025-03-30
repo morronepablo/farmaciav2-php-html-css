@@ -134,4 +134,22 @@ class Movimiento
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
 	}
+
+	function obtener_stock($id)
+	{
+		$sql = "
+			SELECT SUM(cantidad_res) AS total 
+			FROM movimiento
+			WHERE producto_id=:id
+			AND tipo_movimiento_id=1
+			AND estado='A'
+			GROUP BY producto_id
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute(
+			array(':id' => $id)
+		);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }
