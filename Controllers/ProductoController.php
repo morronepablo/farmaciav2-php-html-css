@@ -17,14 +17,17 @@ if ($_POST['funcion'] == 'obtener_productos') {
 	$producto->obtener_productos();
 	$json = array();
 	foreach ($producto->objetos as $objeto) {
-		/*$producto->obtener_stock($objeto->id);
-		$stock = $producto->objetos[0]->total;*/
+		$movimiento->obtener_stock_sin_vencer($objeto->id);
+		$stock = 0;
+		if (!empty($movimiento->objetos[0]->total)) {
+			$stock = $movimiento->objetos[0]->total;
+		}
 		$json[] = array(
 			'id'				 => openssl_encrypt($objeto->id, CODE, KEY),
 			'nombre'			 => str_replace('***', '%', $objeto->nombre),
 			'concentracion'		 => str_replace('***', '%', $objeto->concentracion),
 			'precio'			 => $objeto->precio,
-			// 'stock'				 => $stock,
+			'stock'				 => $stock,
 			'laboratorio'		 => $objeto->laboratorio,
 			'subtipo'			 => $objeto->subtipo,
 			'presentacion'		 => $objeto->presentacion,

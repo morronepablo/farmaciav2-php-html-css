@@ -152,4 +152,23 @@ class Movimiento
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function obtener_stock_sin_vencer($id)
+	{
+		$sql = "
+			SELECT SUM(cantidad_res) AS total 
+			FROM movimiento
+			WHERE producto_id=:id
+			AND tipo_movimiento_id=1
+			AND estado='A'
+			AND fecha_vencimiento>DATE(NOW())
+			GROUP BY producto_id
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute(
+			array(':id' => $id)
+		);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }

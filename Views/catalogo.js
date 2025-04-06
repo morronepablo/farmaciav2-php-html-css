@@ -317,6 +317,8 @@ $(document).ready(function () {
           columns: [
             {
               render: function (data, type, datos, meta) {
+                console.log(datos);
+
                 let stock = "";
                 if (datos.stock == null || datos.stock == "") {
                   stock = "Sin Stock";
@@ -332,7 +334,7 @@ $(document).ready(function () {
                 } else {
                   reg_sanitario = datos.registro_sanitario;
                 }
-                return `
+                let template = `
                                 <div class="">
                                     <div class="card bg-light">
                                         <div class="h5 card-header text-muted border-bottom-0">
@@ -364,26 +366,29 @@ $(document).ready(function () {
                                             </div>
                                         </div>
                                         <div class="card-footer">
-                                            <div class="text-right">
-                                                <button id="${datos.id}" 
-                                                        codigo="${datos.codigo}"
-                                                        nombre="${datos.nombre}"
-                                                        concentracion="${datos.concentracion}"
-                                                        adicional="${datos.adicional}"
-                                                        laboratorio="${datos.laboratorio}"
-                                                        presentacion="${datos.presentacion}"
-                                                        tipo="${datos.tipo}"
-                                                        stock="${datos.stock}"
-                                                        precio="${datos.precio}"
-                                                        class="agregar-carrito btn btn-sm bg-gradient-primary"
-                                                >
-                                                    <i class="fas fa-plus mr-1"></i>Agregar al carrito
-                                                </button>   
-                                            </div>
+                                            <div class="text-right">`;
+                if (datos.stock != 0) {
+                  template += `<button id="${datos.id}" 
+                                                  codigo="${datos.codigo}"
+                                                  nombre="${datos.nombre}"
+                                                  concentracion="${datos.concentracion}"
+                                                  adicional="${datos.adicional}"
+                                                  laboratorio="${datos.laboratorio}"
+                                                  presentacion="${datos.presentacion}"
+                                                  tipo="${datos.tipo}"
+                                                  stock="${datos.stock}"
+                                                  precio="${datos.precio}"
+                                                  class="agregar-carrito btn btn-sm bg-gradient-primary"
+                                          >
+                                              <i class="fas fa-plus mr-1"></i>Agregar al carrito
+                                          </button>`;
+                }
+                template += `</div>
                                         </div>
                                     </div>
                                 </div>
                                 `;
+                return template;
               },
             },
           ],
