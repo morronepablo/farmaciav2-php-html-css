@@ -484,6 +484,7 @@ $(document).ready(function () {
         columns: [
           {
             render: function (data, type, datos, meta) {
+              /*
               let template = `
                             <div class="card bg-secondary">
                                 <div class="card-body">
@@ -516,6 +517,31 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             `;
+                            */
+              let template = `
+                <div class="card bg-secondary">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-5">
+                        <span class="text-warning"><i class="fas fa-lg fa-pills"></i></span> ${datos.nombre}
+                        <div className="form-group">
+                        <label class="text-warning">Cantidad:</label>
+                        <input type="number" value="${datos.cantidad}" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="col-md-5 text-center">
+                        <span class="text-warning"><i class="fas fa-lg fa-mortar-pestle"></i></span> ${datos.concentracion}
+                        <span title="Mas información" class="mas_info h4 text-warning"><i class="fas fa-info-circle"></i></span>
+                      </div>
+                      <div class="col-md-2 text-center">
+                        <button id="${datos.id}" nombre="${datos.nombre}" type="button" class="borrar_producto btn btn-outline-danger btn-circle btn-lg mt-3">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
               return template;
             },
           },
