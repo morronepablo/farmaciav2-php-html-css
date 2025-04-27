@@ -24,11 +24,13 @@ class Producto
 			  p.fecha_creacion as fecha_creacion,
 			  p.fecha_edicion as fecha_edicion,
 			  l.nombre as laboratorio,
+			  tt.nombre as tipo,
 			  t.nombre as subtipo,
 			  pre.nombre as presentacion
 			  FROM producto p
 			  JOIN laboratorio l ON p.id_laboratorio=l.id
 			  JOIN subtipo_producto t ON p.id_subtipo_producto=t.id
+			  JOIN tipo_producto tt ON tt.id=t.id_tipo_producto
 			  JOIN presentacion pre ON p.id_presentacion=pre.id
 			  WHERE p.estado='A' ORDER BY p.nombre
 		";

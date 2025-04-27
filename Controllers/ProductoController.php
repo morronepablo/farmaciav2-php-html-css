@@ -29,6 +29,7 @@ if ($_POST['funcion'] == 'obtener_productos') {
 			'precio'			 => $objeto->precio,
 			'stock'				 => $stock,
 			'laboratorio'		 => $objeto->laboratorio,
+			'tipo'			 	 => $objeto->tipo,
 			'subtipo'			 => $objeto->subtipo,
 			'presentacion'		 => $objeto->presentacion,
 			'avatar'			 => $objeto->avatar,

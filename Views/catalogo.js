@@ -348,13 +348,13 @@ $(document).ready(function () {
                                                         <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-barcode"></i></span> Código: ${datos.codigo}</li>
                                                         <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-coins"></i></span> Precio: ${datos.precio}</li>
                                                         <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
                                                     </ul>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
                                                         <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
+                                                        <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Sub Tipo: ${datos.subtipo}</li>
                                                         <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
                                                         <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Fracciones: ${datos.fracciones}</li>
                                                         <li class="h8"><span class="fa-li"><i class="fas fa-lg fa-angle-double-right"></i></span> Reg. Sanitario: ${reg_sanitario}</li>
@@ -372,10 +372,10 @@ $(document).ready(function () {
                                                   codigo="${datos.codigo}"
                                                   nombre="${datos.nombre}"
                                                   concentracion="${datos.concentracion}"
-                                                  adicional="${datos.adicional}"
                                                   laboratorio="${datos.laboratorio}"
                                                   presentacion="${datos.presentacion}"
                                                   tipo="${datos.tipo}"
+                                                  subtipo="${datos.subtipo}"
                                                   stock="${datos.stock}"
                                                   precio="${datos.precio}"
                                                   class="agregar-carrito btn btn-sm bg-gradient-primary"
@@ -419,10 +419,10 @@ $(document).ready(function () {
     let codigo = $(elemento).attr("codigo");
     let nombre = $(elemento).attr("nombre");
     let concentracion = $(elemento).attr("concentracion");
-    let adicional = $(elemento).attr("adicional");
     let laboratorio = $(elemento).attr("laboratorio");
     let presentacion = $(elemento).attr("presentacion");
     let tipo = $(elemento).attr("tipo");
+    let subtipo = $(elemento).attr("subtipo");
     let stock = $(elemento).attr("stock");
     let precio = $(elemento).attr("precio");
     if (stock != "null") {
@@ -430,10 +430,10 @@ $(document).ready(function () {
         id: id,
         nombre: nombre,
         concentracion: concentracion,
-        adicional: adicional,
         precio: precio,
         laboratorio: laboratorio,
         tipo: tipo,
+        subtipo: subtipo,
         presentacion: presentacion,
         stock: stock,
         cantidad: 1,
@@ -484,40 +484,6 @@ $(document).ready(function () {
         columns: [
           {
             render: function (data, type, datos, meta) {
-              /*
-              let template = `
-                            <div class="card bg-secondary">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <ul class="ml-4 mb-0 fa-ul">
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-heading"></i></span> Nombre: ${datos.nombre}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-mortar-pestle"></i></span> Concentración: ${datos.concentracion}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-prescription-bottle-alt"></i></span> Adicional: ${datos.adicional}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-5 mt-1">
-                                            <ul class="ml-4 mb-0 fa-ul">
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-flask"></i></span> Laboratorio: ${datos.laboratorio}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-copyright"></i></span> Tipo: ${datos.tipo}</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-pills"></i></span> Presentación: ${datos.presentacion}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-2 mt-1 text-center">
-                                            <button 
-                                                id="${datos.id}" 
-                                                nombre="${datos.nombre}"
-                                                type="button" 
-                                                class="borrar_producto btn btn-outline-danger btn-circle btn-lg mt-3"
-                                            >
-                                                <i class="far fa-trash-alt"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-                            */
               let template = `
                 <div class="card bg-secondary">
                   <div class="card-body">
@@ -531,7 +497,12 @@ $(document).ready(function () {
                       </div>
                       <div class="col-md-5 text-center">
                         <span class="text-warning"><i class="fas fa-lg fa-mortar-pestle"></i></span> ${datos.concentracion}
-                        <span title="Mas información" class="mas_info h4 text-warning"><i class="fas fa-info-circle"></i></span>
+                        <span laboratorio="${datos.laboratorio}" 
+                              presentacion="${datos.presentacion}" 
+                              tipo="${datos.tipo}" 
+                              subtipo="${datos.subtipo}" 
+                              title="Mas información" class="mas_info h4 text-warning"><i class="fas fa-info-circle"></i>
+                        </span>
                       </div>
                       <div class="col-md-2 text-center">
                         <button id="${datos.id}" nombre="${datos.nombre}" type="button" class="borrar_producto btn btn-outline-danger btn-circle btn-lg mt-3">
@@ -627,6 +598,26 @@ $(document).ready(function () {
     });
     localStorage.setItem("productos", JSON.stringify(productos));
   }
+
+  $(document).on("click", ".mas_info", function () {
+    let elemento = $(this)[0];
+    let laboratorio = $(elemento).attr("laboratorio");
+    let presentacion = $(elemento).attr("presentacion");
+    let tipo = $(elemento).attr("tipo");
+    let subtipo = $(elemento).attr("subtipo");
+    toastr.info(
+      `
+      <i class="fas fa-lg fa-flask"></i> Laboratorio: ${laboratorio}<br>
+      <i class="fas fa-lg fa-prescription-bottle-alt"></i> Tipo: ${tipo}<br>
+      <i class="fas fa-lg fa-prescription-bottle-alt"></i> Subtipo: ${subtipo}<br>
+      <i class="fas fa-lg fa-pills"></i> Presentación: ${presentacion}<br>
+      `,
+      "Info!",
+      {
+        timeOut: 2000,
+      }
+    );
+  });
 
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {
