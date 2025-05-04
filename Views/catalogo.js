@@ -492,7 +492,7 @@ $(document).ready(function () {
                         <span class="text-warning"><i class="fas fa-lg fa-pills"></i></span> ${datos.nombre}
                         <div className="form-group">
                         <label class="text-warning">Cantidad:</label>
-                        <input type="number" value="${datos.cantidad}" class="form-control" />
+                        <input id="${datos.id}" stock="${datos.stock}" cantidad="${datos.cantidad}" type="number" value="${datos.cantidad}" class="cantidad form-control" />
                         </div>
                       </div>
                       <div class="col-md-5 text-center">
@@ -617,6 +617,29 @@ $(document).ready(function () {
         timeOut: 2000,
       }
     );
+  });
+
+  $(document).on("blur", ".cantidad", function () {
+    let elemento = $(this)[0];
+    let cantidad = Number($(elemento).val());
+    let id = $(elemento).attr("id");
+    let stock = Number($(elemento).attr("stock"));
+    let cantidad_validar = Number($(elemento).attr("cantidad"));
+    if (cantidad > 0) {
+      if (cantidad <= stock) {
+        console.log("Permitido");
+      } else {
+        toastr.error("La cantidad supera el stock del producto", "Error!", {
+          timeOut: 2000,
+        });
+        $(elemento).val(cantidad_validar).trigger("change");
+      }
+    } else {
+      toastr.error("No se permite cantidad 0 o negativa", "Error!", {
+        timeOut: 2000,
+      });
+      $(elemento).val(cantidad_validar).trigger("change");
+    }
   });
 
   function Loader(mensaje) {
