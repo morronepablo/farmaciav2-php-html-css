@@ -317,7 +317,7 @@ $(document).ready(function () {
           columns: [
             {
               render: function (data, type, datos, meta) {
-                console.log(datos);
+                // console.log(datos);
 
                 let stock = "";
                 if (datos.stock == null || datos.stock == "") {
@@ -627,18 +627,27 @@ $(document).ready(function () {
     let cantidad_validar = Number($(elemento).attr("cantidad"));
     if (cantidad > 0) {
       if (cantidad <= stock) {
-        console.log("Permitido");
+        let productos = RecuperarLS();
+        productos.forEach((prod) => {
+          if (prod.id === id) {
+            prod.cantidad = cantidad;
+          }
+        });
+        localStorage.setItem("productos", JSON.stringify(productos));
+        $(elemento).attr("cantidad", cantidad);
       } else {
         toastr.error("La cantidad supera el stock del producto", "Error!", {
           timeOut: 2000,
         });
-        $(elemento).val(cantidad_validar).trigger("change");
+        $(elemento).attr("cantidad", cantidad_validar);
+        $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
       }
     } else {
       toastr.error("No se permite cantidad 0 o negativa", "Error!", {
         timeOut: 2000,
       });
-      $(elemento).val(cantidad_validar).trigger("change");
+      $(elemento).attr("cantidad", cantidad_validar);
+      $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
     }
   });
 
