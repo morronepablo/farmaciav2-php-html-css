@@ -619,7 +619,7 @@ $(document).ready(function () {
     );
   });
 
-  $(document).on("blur", ".cantidad", function () {
+  $(document).on("change", ".cantidad", function () {
     let elemento = $(this)[0];
     let cantidad = Number($(elemento).val());
     let id = $(elemento).attr("id");
@@ -649,6 +649,10 @@ $(document).ready(function () {
       $(elemento).attr("cantidad", cantidad_validar);
       $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
     }
+  });
+
+  $(document).on("click", ".generar_venta", function () {
+    location.href = "/farmaciav2/Views/venta.php";
   });
 
   function Loader(mensaje) {
