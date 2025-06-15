@@ -9,6 +9,30 @@ $(document).ready(function () {
     preventDuplicates: true,
   };
 
+  $("#cliente").select2({
+    placeholder: "Seleccione un cliente",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
+  $("#comprobante").select2({
+    placeholder: "Seleccione un comprobante",
+    language: {
+      noResult: function () {
+        return "No hay resultados.";
+      },
+      searching: function () {
+        return "Buscando...";
+      },
+    },
+  });
+
   function llenar_menu_superior(usuario) {
     let template = `
         <ul class="navbar-nav">

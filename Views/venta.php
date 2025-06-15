@@ -108,7 +108,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
             <div class="card-header">
                 <h3 class="card-title"></h3>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <div class="header">
                     <div class="logo_venta">
                         <img src="/farmaciav2/img/logo.png" width="100" height="100" alt="logo">
@@ -117,10 +117,66 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        3253253
+                        <div class="card p-0 bg-warning">
+                            <div class="info-box mb-3 bg-warning">
+                                <span class="info-box-icon"><i class="fas fa-user-nurse"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Vendedor</span>
+                                    <span class="info-box-number" id="vendedor">Andres</span>
+                                </div>
+                            </div>
+                            <div class="info-box mb-3 bg-warning">
+                                <span class="info-box-icon"><i class="fas fa-users"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Cliente</span>
+                                    <span class="info-box-number">
+                                        <select name="cliente" id="cliente" class="form-control select2-warning" style="width:100%" data-dropdown-css-class="select2-warning"></select>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="info-box mb-3 bg-warning">
+                                <span class="info-box-icon"><i class="fas fa-sticky-note"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Comprobante</span>
+                                    <span class="info-box-number">
+                                        <select name="comprobante" id="comprobante" class="form-control select2-warning" style="width:100%" data-dropdown-css-class="select2-warning"></select>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        53345325
+                        <div class="card card-widget widget-user">
+                            <div class="widget-user-header bg-warning">
+                                <h3 class="widget-user-username" id="nombre_cliente">Alexander Pierce</h3>
+                                <h5 class="widget-user-desc" id="apellido_cliente">Founder &amp; CEO</h5>
+                            </div>
+                            <div class="widget-user-image">
+                                <img id="avatar_cliente" class="img-circle elevation-2" src="../dist/img/user1-128x128.jpg" alt="User Avatar">
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-sm-4 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header" id="dni_cliente">----</h5>
+                                            <span class="description-text" id="sexo_cliente">----</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 border-right">
+                                        <div class="description-block">
+                                            <h5 class="description-header" id="telefono_cliente">----</h5>
+                                            <span class="description-text" id="correo_cliente">----</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="description-block">
+                                            <h5 class="description-header" id="edad_cliente">----</h5>
+                                            <span class="description-text">----</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
