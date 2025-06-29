@@ -33,6 +33,90 @@ $(document).ready(function () {
     },
   });
 
+  obtener_clientes().then((respuesta) => {
+    let template = ``;
+    respuesta.forEach((cliente) => {
+      template += `<option value="${cliente.id}">${cliente.nombre}</option>`;
+    });
+    $("#cliente").html(template);
+    $("#cliente").val("").trigger("change.select2");
+  });
+
+  async function obtener_clientes() {
+    let funcion = "obtener_clientes";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
+  obtener_comprobantes().then((respuesta) => {
+    // console.log(respuesta);
+    let template = "";
+    respuesta.forEach((comprobante) => {
+      template += `<option value="${comprobante.id}">${comprobante.nombre}</option>`;
+    });
+    $("#comprobante").html(template);
+    $("#comprobante").val("").trigger("change");
+  });
+
+  async function obtener_comprobantes() {
+    let funcion = "obtener_comprobantes";
+    let respuesta = "";
+    let data = await fetch(
+      "/farmaciav2/Controllers/ComprobanteController.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "funcion=" + funcion,
+      }
+    );
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
+
   function llenar_menu_superior(usuario) {
     let template = `
         <ul class="navbar-nav">
@@ -295,9 +379,10 @@ $(document).ready(function () {
       try {
         let usuario = JSON.parse(response);
         if (usuario.length != 0 && usuario.id_tipo != 3) {
+          $("#vendedor").text(`${usuario.nombre} ${usuario.apellido}`);
+
           llenar_menu_superior(usuario);
           llenar_menu_lateral(usuario);
-          obtener_tipos();
           CloseLoader();
         } else {
           location.href = "/farmaciav2/";
@@ -319,518 +404,6 @@ $(document).ready(function () {
       });
     }
   }
-
-  async function obtener_tipos() {
-    let funcion = "obtener_tipos";
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        let tipos = JSON.parse(response);
-        console.log(tipos);
-
-        $("#tipos").DataTable({
-          data: tipos,
-          aaSorting: [],
-          searching: true,
-          scrollX: false,
-          autoWidth: false,
-          columns: [
-            {
-              render: function (data, type, datos, meta) {
-                let template = "";
-                template += `
-                                <div class="card card-widget widget-user-2">
-                                    <div class="widget-user-header bg-success d-flex" >
-                                        <div class="widget-user-image" style="width: 80px; height: 80px; object-fit: cover;">
-                                            <img class="img-circle elevation-2" src="/farmaciav2/Util/img/presentacion.jpg" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
-                                        </div>
-                                        <div>
-                                            <h3 class="widget-user-username" style="margin: 0 20px;">${datos.nombre}</h3>`;
-                if (datos.estado == "A") {
-                  template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-warning">Activo</span></h5>`;
-                } else {
-                  template += `<h5 class="widget-user-desc" style="margin: 0 20px;"><span class="badge badge-secondary">Inactivo</span></h5>`;
-                }
-
-                template += `</div>
-                                    </div>
-                                    <div class="card-footer p-0">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a href="#" class="nav-link">`;
-                if (datos.estado == "A") {
-                  template += `
-                                                        <span style="margin-right: 5px;">
-                                                            <button 
-                                                                class="btn btn-outline-primary btn-circle btn-lg editar_tipo" 
-                                                                data-toggle="modal" 
-                                                                data-target="#editar_tipo" 
-                                                                id="${datos.id}"
-                                                                nombre="${datos.nombre}"
-                                                            >
-                                                                <i class="fas fa-pencil-alt"></i>
-                                                            </button>
-                                                        </span>
-                                                        
-                                                        <span style="margin-right: 5px;">
-                                                            <button 
-                                                                class="btn btn-outline-danger btn-circle btn-lg eliminar_tipo"
-                                                                id="${datos.id}"
-                                                                nombre="${datos.nombre}"
-                                                            >
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </span>
-                                                        `;
-                } else {
-                  template += `<span>
-                                                                        <button 
-                                                                            class="btn btn-outline-success btn-circle btn-lg activar_tipo"
-                                                                            id="${datos.id}"
-                                                                            nombre="${datos.nombre}"
-                                                                        >
-                                                                            <i class="fas fa-plus"></i>
-                                                                        </button>
-                                                                    </span>`;
-                }
-                template += `</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                `;
-                return template;
-              },
-            },
-          ],
-          language: espanol,
-          destroy: true,
-        });
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-  }
-
-  async function crear_tipo(datos) {
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      body: datos,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        let respuesta = JSON.parse(response);
-        if (respuesta.mensaje == "success") {
-          toastr.success("Se ha creado el tipo correctamente", "Éxito!", {
-            timeOut: 2000,
-          });
-          obtener_tipos();
-          $("#crear_tipo").modal("hide");
-          $("#form-crear_tipo").trigger("reset");
-        } else if (respuesta.mensaje == "error_tip") {
-          Swal.fire({
-            icon: "error",
-            title: "El tipo ya existe...",
-            text: "El tipo ya existe, póngase en contacto con el administrador del sistema.",
-          });
-          $("#form-crear_tipo").trigger("reset");
-        } else if (respuesta.mensaje == "error_session") {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Sesión finalizada...",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(function () {
-            //refresca la pagina (F5)
-            location.href = "/farmaciav2/index.php";
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo conflicto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo conflicto de código: " + data.status,
-      });
-    }
-  }
-
-  $.validator.setDefaults({
-    submitHandler: function () {
-      let datos = new FormData($("#form-crear_tipo")[0]);
-      let funcion = "crear_tipo";
-      datos.append("funcion", funcion);
-      crear_tipo(datos);
-    },
-  });
-
-  $("#form-crear_tipo").validate({
-    rules: {
-      nombre: {
-        required: true,
-        minlength: 3,
-      },
-    },
-    messages: {
-      nombre: {
-        required: "* Dato requerido",
-        minlength: "* Se permite mínimo 3 caracteres",
-      },
-    },
-    errorElement: "span",
-    errorPlacement: function (error, element) {
-      error.addClass("invalid-feedback");
-      element.closest(".form-group").append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass("is-invalid");
-      $(element).removeClass("is-valid");
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass("is-invalid");
-      $(element).addClass("is-valid");
-    },
-  });
-
-  $(document).on("click", ".editar_tipo", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let nombre = $(elemento).attr("nombre");
-    $("#id_tipo").val(id);
-    $("#nombre_edit").val(nombre);
-    $("#nombre_card").text(nombre);
-    $("#avatar_card").attr("src", "/farmaciav2/Util/img/presentacion.jpg");
-  });
-
-  async function editar_tipo(datos) {
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      body: datos,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        let respuesta = JSON.parse(response);
-        if (respuesta.mensaje == "success") {
-          toastr.success("Se ha editado el tipo correctamente", "Exito!", {
-            timeOut: 2000,
-          });
-          obtener_tipos();
-          $("#editar_tipo").modal("hide");
-          $("#form-editar_tipo").trigger("reset");
-        } else if (respuesta.mensaje == "error_tip") {
-          Swal.fire({
-            icon: "error",
-            title: "El tipo ya existe...",
-            text: "El tipo ya existe, póngase en contacto con el administrador del sistema.",
-          });
-        } else if (respuesta.mensaje == "error_decrypt") {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "No vulnere los datos",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(function () {
-            location.reload();
-          });
-        } else if (respuesta.mensaje == "error_session") {
-          Swal.fire({
-            position: "center",
-            icon: "error",
-            title: "Sesión finalizada...",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(function () {
-            //refresca la pagina (F5)
-            location.href = "/farmaciav2/index.php";
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-  }
-
-  $.validator.setDefaults({
-    submitHandler: function () {
-      let datos = new FormData($("#form-editar_tipo")[0]);
-      let funcion = "editar_tipo";
-      datos.append("funcion", funcion);
-      editar_tipo(datos);
-    },
-  });
-
-  $("#form-editar_tipo").validate({
-    rules: {
-      nombre_edit: {
-        required: true,
-        minlength: 3,
-      },
-    },
-    messages: {
-      nombre_edit: {
-        required: "* Dato requerido",
-        minlength: "* Se permite mínimo 3 caracteres",
-      },
-    },
-    errorElement: "span",
-    errorPlacement: function (error, element) {
-      error.addClass("invalid-feedback");
-      element.closest(".form-group").append(error);
-    },
-    highlight: function (element, errorClass, validClass) {
-      $(element).addClass("is-invalid");
-      $(element).removeClass("is-valid");
-    },
-    unhighlight: function (element, errorClass, validClass) {
-      $(element).removeClass("is-invalid");
-      $(element).addClass("is-valid");
-    },
-  });
-
-  async function eliminar(id) {
-    let funcion = "eliminar";
-    let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
-  }
-
-  $(document).on("click", ".eliminar_tipo", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let avatar = "presentacion.jpg";
-    let nombre = $(elemento).attr("nombre");
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success ml-2",
-        cancelButton: "btn btn-danger",
-      },
-      buttonsStyling: false,
-    });
-
-    swalWithBootstrapButtons
-      .fire({
-        title: `Desea eliminar el tipo ${nombre} ?`,
-        imageUrl: "/farmaciav2/Util/img/" + avatar,
-        imageWidth: 200,
-        imageHeight: 200,
-        showCancelButton: true,
-        confirmButtonText: "Si, eliminar !",
-        cancelButtonText: "No, cancelar !",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          eliminar(id).then((respuesta) => {
-            if (respuesta.mensaje == "success") {
-              obtener_tipos();
-              swalWithBootstrapButtons.fire(
-                "Eliminado!",
-                "El tipo fue eliminado correctamente",
-                "success"
-              );
-            } else if (respuesta.mensaje == "error_decrypt") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "No vulnere los datos...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.reload();
-              });
-            } else if (respuesta.mensaje == "error_session") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Sesión finalizada...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.href = "/farmaciav2/index.php";
-              });
-            }
-          });
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-            "Cancelado",
-            "canceló la eliminación del tipo",
-            "error"
-          );
-        }
-      });
-  });
-
-  async function activar(id) {
-    let funcion = "activar";
-    let respuesta = "";
-    let data = await fetch("/farmaciav2/Controllers/TipoController.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "funcion=" + funcion + "&&id=" + id,
-    });
-    if (data.ok) {
-      let response = await data.text();
-      try {
-        respuesta = JSON.parse(response);
-      } catch (error) {
-        console.error(error);
-        console.log(response);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
-        });
-      }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: data.statusText,
-        text: "Hubo confilcto de código: " + data.status,
-      });
-    }
-    return respuesta;
-  }
-
-  $(document).on("click", ".activar_tipo", (e) => {
-    let elemento = $(this)[0].activeElement;
-    let id = $(elemento).attr("id");
-    let avatar = "presentacion.jpg";
-    let nombre = $(elemento).attr("nombre");
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success ml-2",
-        cancelButton: "btn btn-danger",
-      },
-      buttonsStyling: false,
-    });
-
-    swalWithBootstrapButtons
-      .fire({
-        title: `Desea volver activar el tipo ${nombre} ?`,
-        imageUrl: "/farmaciav2/Util/img/" + avatar,
-        imageWidth: 200,
-        imageHeight: 200,
-        showCancelButton: true,
-        confirmButtonText: "Si, activar !",
-        cancelButtonText: "No, cancelar !",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          activar(id).then((respuesta) => {
-            if (respuesta.mensaje == "success") {
-              obtener_tipos();
-              swalWithBootstrapButtons.fire(
-                "Activado!",
-                "El tipo fue activado correctamente",
-                "success"
-              );
-            } else if (respuesta.mensaje == "error_decrypt") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "No vulnere los datos...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.reload();
-              });
-            } else if (respuesta.mensaje == "error_session") {
-              Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Sesión finalizada...",
-                showConfirmButton: false,
-                timer: 1500,
-              }).then(function () {
-                //refresca la pagina (F5)
-                location.href = "/farmaciav2/index.php";
-              });
-            }
-          });
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-            "Cancelado",
-            "canceló la activación del tipo",
-            "error"
-          );
-        }
-      });
-  });
 
   function Loader(mensaje) {
     if (mensaje == "" || mensaje == null) {

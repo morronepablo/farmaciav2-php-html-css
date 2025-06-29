@@ -122,7 +122,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                                 <span class="info-box-icon"><i class="fas fa-user-nurse"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Vendedor:</span>
-                                    <span class="info-box-number" id="vendedor">Andres</span>
+                                    <span class="info-box-number" id="vendedor"></span>
                                 </div>
                             </div>
                             <div class="info-box mb-3 bg-warning">
