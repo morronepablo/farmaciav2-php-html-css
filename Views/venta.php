@@ -148,30 +148,30 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                     <div class="col-md-6">
                         <div class="card card-widget widget-user">
                             <div class="widget-user-header bg-warning">
-                                <h3 class="widget-user-username" id="nombre_cliente">Alexander Pierce</h3>
-                                <h5 class="widget-user-desc" id="apellido_cliente">Founder &amp; CEO</h5>
+                                <h3 class="widget-user-username" id="nombre_cliente">---</h3>
+                                <h5 class="widget-user-desc" id="apellido_cliente">---</h5>
                             </div>
                             <div class="widget-user-image">
-                                <img id="avatar_cliente" class="img-circle elevation-2" src="../dist/img/user1-128x128.jpg" alt="User Avatar">
+                                <img id="avatar_cliente" class="img-circle elevation-2" src="/farmaciav2/img/avatar.png" alt="User Avatar">
                             </div>
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-sm-4 border-right">
                                         <div class="description-block">
                                             <h5 class="description-header" id="dni_cliente">----</h5>
-                                            <span class="description-text" id="sexo_cliente">----</span>
+                                            <h5 class="description-header" id="sexo_cliente">----</h5>
                                         </div>
                                     </div>
                                     <div class="col-sm-4 border-right">
                                         <div class="description-block">
                                             <h5 class="description-header" id="telefono_cliente">----</h5>
-                                            <span class="description-text" id="correo_cliente">----</span>
+                                            <h5 class="description-header" id="correo_cliente">----</h5>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="description-block">
                                             <h5 class="description-header" id="edad_cliente">----</h5>
-                                            <span class="description-text">----</span>
+                                            <h5 class="description-header">----</h5>
                                         </div>
                                     </div>
                                 </div>

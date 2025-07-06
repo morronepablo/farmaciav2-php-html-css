@@ -33,7 +33,7 @@ $(document).ready(function () {
     },
   });
 
-  obtener_clientes().then((respuesta) => {
+  obtener_clientes_select().then((respuesta) => {
     let template = ``;
     respuesta.forEach((cliente) => {
       template += `<option value="${cliente.id}">${cliente.nombre}</option>`;
@@ -42,8 +42,8 @@ $(document).ready(function () {
     $("#cliente").val("").trigger("change.select2");
   });
 
-  async function obtener_clientes() {
-    let funcion = "obtener_clientes";
+  async function obtener_clientes_select() {
+    let funcion = "obtener_clientes_select";
     let respuesta = "";
     let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
       method: "POST",
@@ -403,6 +403,79 @@ $(document).ready(function () {
         text: "Hubo confilcto de código: " + data.status,
       });
     }
+  }
+
+  $(document).on("change", "#cliente", function () {
+    let cliente = $("#cliente").val();
+    obtener_cliente(cliente).then((respuesta) => {
+      if (respuesta.mensaje == "success") {
+        let cliente = respuesta.data;
+        $("#avatar_cliente").attr(
+          "src",
+          "/farmaciav2/Util/img/" + cliente.avatar
+        );
+        $("#nombre_cliente").text(cliente.nombre);
+        $("#apellido_cliente").text(cliente.apellido);
+        $("#dni_cliente").text("DNI: " + cliente.dni);
+        $("#sexo_cliente").text("Sexo: " + cliente.sexo);
+        $("#telefono_cliente").text("Teléfono: " + cliente.telefono);
+        $("#correo_cliente").text("Email: " + cliente.correo);
+        $("#edad_cliente").text("Nac.: " + cliente.edad);
+      } else if (respuesta.mensaje == "error_decrypt") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "No vulnere los datos...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.reload();
+        });
+      } else if (respuesta.mensaje == "error_session") {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Sesión finalizada...",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          //refresca la pagina (F5)
+          location.href = "/farmaciav2/index.php";
+        });
+      }
+    });
+  });
+
+  async function obtener_cliente(id) {
+    let funcion = "obtener_cliente";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/ClienteController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
   }
 
   function Loader(mensaje) {

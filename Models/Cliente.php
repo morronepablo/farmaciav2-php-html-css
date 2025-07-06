@@ -33,6 +33,30 @@ class Cliente
 		return $this->objetos;
 	}
 
+	function obtener_clientes_select()
+	{
+		$sql = "SELECT 
+			  id, 
+			  nombre,
+			  apellido,
+			  edad,
+			  dni,
+			  telefono,
+			  correo,
+			  sexo,
+			  adicional,
+			  avatar,
+			  estado
+			  FROM cliente c
+			  WHERE c.estado='A'
+			  ORDER BY id
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute();
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
+
 	function encontrar_cliente($dni)
 	{
 		$sql = "SELECT *
@@ -107,5 +131,19 @@ class Cliente
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);
+	}
+
+	function obtener_cliente($id)
+	{
+		$sql = "SELECT *
+			  FROM cliente
+			  WHERE id=:id";
+		$variables = array(
+			':id' => $id
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
 	}
 }
