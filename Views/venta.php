@@ -78,11 +78,11 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
         font-size: 30px;
         font-weight: normal;
         text-align: center;
-        background: url(/farmaciav2/img/dimension.png);
+        background: url(/farmaciav2/Util/img/dimension.png);
     }
 
     .header {
-        background: url(/farmaciav2/img/relieve.jpg);
+        background: url(/farmaciav2/Util/img/relieve.jpg);
     }
 </style>
 
@@ -111,7 +111,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
             <div class="card-body p-0">
                 <div class="header">
                     <div class="logo_venta">
-                        <img src="/farmaciav2/img/logo.png" width="100" height="100" alt="logo">
+                        <img src="/farmaciav2/Util/img/logo.png" width="100" height="100" alt="logo">
                     </div>
                     <h1 class="titulo_venta">SOLICITUD DE VENTA</h1>
                 </div>
@@ -152,7 +152,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                                 <h5 class="widget-user-desc" id="apellido_cliente">---</h5>
                             </div>
                             <div class="widget-user-image">
-                                <img id="avatar_cliente" class="img-circle elevation-2" src="/farmaciav2/img/avatar.png" alt="User Avatar">
+                                <img id="avatar_cliente" class="img-circle elevation-2" src="/farmaciav2/Util/img/avatar.png" alt="User Avatar">
                             </div>
                             <div class="card-footer">
                                 <div class="row">

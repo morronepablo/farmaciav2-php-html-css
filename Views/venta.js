@@ -380,9 +380,9 @@ $(document).ready(function () {
         let usuario = JSON.parse(response);
         if (usuario.length != 0 && usuario.id_tipo != 3) {
           $("#vendedor").text(`${usuario.nombre} ${usuario.apellido}`);
-
           llenar_menu_superior(usuario);
           llenar_menu_lateral(usuario);
+          obtener_productos_carrito();
           CloseLoader();
         } else {
           location.href = "/farmaciav2/";
@@ -476,6 +476,75 @@ $(document).ready(function () {
       });
     }
     return respuesta;
+  }
+
+  function obtener_productos_carrito() {
+    Contar_productos();
+    let productos = RecuperarLS();
+    let template = ``;
+    productos.forEach((producto) => {
+      // Usamos la función formatNumber que acabamos de crear
+      const precioFormateado = "$ " + formatNumber(producto.precio);
+      let subtotal = Number(producto.precio) * Number(producto.cantidad);
+      const subtotalFormateado = "$ " + formatNumber(subtotal);
+      template += `
+      <tr>
+        <td>${producto.nombre}</td>
+        <td class="text-right">${precioFormateado}</td>
+        <td>
+          <input type="number" class="form-control text-right" value="${producto.cantidad}">
+        </td>
+        <td class="text-right">${subtotalFormateado}</td>
+        <td><button type="button" class="borrar_producto btn btn-outline-danger btn-circle"><i class="fas fa-times"></i></button></td>
+      </tr>
+      `;
+    });
+    $("#productos_carrito").html(template);
+  }
+
+  function RecuperarLS() {
+    let productos;
+    if (localStorage.getItem("productos") === null) {
+      productos = [];
+    } else {
+      productos = JSON.parse(localStorage.getItem("productos"));
+    }
+    return productos;
+  }
+
+  function Contar_productos() {
+    let productos = RecuperarLS();
+    if (productos.length == 0) {
+      location.href = "/farmaciav2/";
+    }
+    $("#contador_venta").html(productos.length);
+  }
+
+  function formatNumber(
+    number,
+    decimals = 2,
+    dec_point = ",",
+    thousands_sep = "."
+  ) {
+    number = (number + "").replace(/[^0-9+\-Ee.]/g, "");
+    var n = !isFinite(+number) ? 0 : +number,
+      prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+      sep = typeof thousands_sep === "undefined" ? "," : thousands_sep,
+      dec = typeof dec_point === "undefined" ? "." : dec_point,
+      s = "",
+      toFixedFix = function (n, prec) {
+        var k = Math.pow(10, prec);
+        return "" + Math.round(n * k) / k;
+      };
+    s = (prec ? toFixedFix(n, prec) : "" + Math.round(n)).split(".");
+    if (s[0].length > 3) {
+      s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || "").length < prec) {
+      s[1] = s[1] || "";
+      s[1] += new Array(prec - s[1].length + 1).join("0");
+    }
+    return s.join(dec);
   }
 
   function Loader(mensaje) {
