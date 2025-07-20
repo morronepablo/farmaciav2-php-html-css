@@ -489,10 +489,19 @@ $(document).ready(function () {
       const subtotalFormateado = "$ " + formatNumber(subtotal);
       template += `
       <tr>
-        <td>${producto.nombre}</td>
+        <td>
+          ${producto.nombre}
+          <span laboratorio="${producto.laboratorio}" 
+            presentacion="${producto.presentacion}" 
+            concentracion="${producto.concentracion}" 
+            tipo="${producto.tipo}" 
+            subtipo="${producto.subtipo}" 
+            title="Mas información" class="mas_info h4 text-warning"><i class="fas fa-info-circle"></i>
+          </span>
+        </td>
         <td class="text-right">${precioFormateado}</td>
         <td>
-          <input type="number" class="form-control text-right" value="${producto.cantidad}">
+          <input type="number" id="${producto.id}" stock="${producto.stock}" nombre="${producto.nombre}" cantidad="${producto.cantidad}" class="cantidad form-control text-right" value="${producto.cantidad}">
         </td>
         <td class="text-right">${subtotalFormateado}</td>
         <td><button type="button" class="borrar_producto btn btn-outline-danger btn-circle"><i class="fas fa-times"></i></button></td>
@@ -501,6 +510,61 @@ $(document).ready(function () {
     });
     $("#productos_carrito").html(template);
   }
+
+  $(document).on("click", ".mas_info", function () {
+    let elemento = $(this)[0];
+    let laboratorio = $(elemento).attr("laboratorio");
+    let presentacion = $(elemento).attr("presentacion");
+    let concentracion = $(elemento).attr("concentracion");
+    let tipo = $(elemento).attr("tipo");
+    let subtipo = $(elemento).attr("subtipo");
+    toastr.info(
+      `
+      <i class="fas fa-lg fa-mortar-pestle"></i> Concentración: ${concentracion}<br>
+      <i class="fas fa-lg fa-flask"></i> Laboratorio: ${laboratorio}<br>
+      <i class="fas fa-lg fa-prescription-bottle-alt"></i> Tipo: ${tipo}<br>
+      <i class="fas fa-lg fa-prescription-bottle-alt"></i> Subtipo: ${subtipo}<br>
+      <i class="fas fa-lg fa-pills"></i> Presentación: ${presentacion}<br>
+      `,
+      "Info!",
+      {
+        timeOut: 2000,
+      }
+    );
+  });
+
+  $(document).on("change", ".cantidad", function () {
+    let elemento = $(this)[0];
+    let cantidad = Number($(elemento).val());
+    let id = $(elemento).attr("id");
+    let stock = Number($(elemento).attr("stock"));
+    let cantidad_validar = Number($(elemento).attr("cantidad"));
+    if (cantidad > 0) {
+      if (cantidad <= stock) {
+        let productos = RecuperarLS();
+        productos.forEach((prod) => {
+          if (prod.id === id) {
+            prod.cantidad = cantidad;
+          }
+        });
+        localStorage.setItem("productos", JSON.stringify(productos));
+        $(elemento).attr("cantidad", cantidad);
+      } else {
+        toastr.error("La cantidad supera el stock del producto", "Error!", {
+          timeOut: 2000,
+        });
+        $(elemento).attr("cantidad", cantidad_validar);
+        $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
+      }
+    } else {
+      toastr.error("No se permite cantidad 0 o negativa", "Error!", {
+        timeOut: 2000,
+      });
+      $(elemento).attr("cantidad", cantidad_validar);
+      $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
+    }
+    obtener_productos_carrito();
+  });
 
   function RecuperarLS() {
     let productos;
