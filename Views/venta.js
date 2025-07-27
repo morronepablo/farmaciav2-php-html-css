@@ -478,6 +478,9 @@ $(document).ready(function () {
     return respuesta;
   }
 
+  var total_bruto = 0;
+  var total_bruto_formateado = "";
+
   function obtener_productos_carrito() {
     Contar_productos();
     let productos = RecuperarLS();
@@ -486,7 +489,9 @@ $(document).ready(function () {
       // Usamos la función formatNumber que acabamos de crear
       const precioFormateado = "$ " + formatNumber(producto.precio);
       let subtotal = Number(producto.precio) * Number(producto.cantidad);
+      total_bruto += subtotal;
       const subtotalFormateado = "$ " + formatNumber(subtotal);
+      total_bruto_formateado = "$ " + formatNumber(total_bruto);
       template += `
       <tr>
         <td>
@@ -504,10 +509,12 @@ $(document).ready(function () {
           <input type="number" id="${producto.id}" stock="${producto.stock}" nombre="${producto.nombre}" cantidad="${producto.cantidad}" class="cantidad form-control text-right" value="${producto.cantidad}">
         </td>
         <td class="text-right">${subtotalFormateado}</td>
-        <td><button type="button" class="borrar_producto btn btn-outline-danger btn-circle"><i class="fas fa-times"></i></button></td>
+        <td><button type="button" id="${producto.id}" nombre="${producto.nombre}" class="borrar_producto btn btn-outline-danger btn-circle"><i class="fas fa-times"></i></button></td>
       </tr>
       `;
     });
+    console.log(total_bruto_formateado);
+
     $("#productos_carrito").html(template);
   }
 
@@ -565,6 +572,32 @@ $(document).ready(function () {
     }
     obtener_productos_carrito();
   });
+
+  $(document).on("click", ".borrar_producto", function () {
+    let elemento = $(this)[0];
+    let id = $(elemento).attr("id");
+    let nombre = $(elemento).attr("nombre");
+    Eliminar_producto_LS(id);
+    toastr.success(
+      "El producto " + nombre + " fué eliminado del carrito!",
+      "Éxito!",
+      {
+        timeOut: 2500,
+      }
+    );
+    obtener_productos_carrito();
+  });
+
+  function Eliminar_producto_LS(id) {
+    let productos;
+    productos = RecuperarLS();
+    productos.forEach(function (producto, indice) {
+      if (producto.id === id) {
+        productos.splice(indice, 1);
+      }
+    });
+    localStorage.setItem("productos", JSON.stringify(productos));
+  }
 
   function RecuperarLS() {
     let productos;
