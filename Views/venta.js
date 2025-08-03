@@ -478,10 +478,12 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  var total_bruto = 0;
-  var total_bruto_formateado = "";
+  // var total_bruto = 0;
+  // var total_bruto_formateado = "";
 
   function obtener_productos_carrito() {
+    let total_bruto = 0;
+    let total_bruto_formateado = "";
     Contar_productos();
     let productos = RecuperarLS();
     let template = ``;
@@ -513,9 +515,25 @@ $(document).ready(function () {
       </tr>
       `;
     });
-    console.log(total_bruto_formateado);
+    // console.log(total_bruto_formateado);
 
     $("#productos_carrito").html(template);
+    calcular_cantidades(total_bruto);
+  }
+
+  function calcular_cantidades(total_bruto) {
+    let grabada = 0;
+    let total_iva = 0;
+    grabada = total_bruto / 1.21;
+    grabada = Number(grabada.toFixed(2));
+    const grabadaFormateado = "$ " + formatNumber(grabada);
+    total_iva = total_bruto - grabada;
+    total_iva = Number(total_iva.toFixed(2));
+    const total_ivaFormateado = "$ " + formatNumber(total_iva);
+    const total_bruto_formateado = "$ " + formatNumber(total_bruto);
+    $("#grabada").text(grabadaFormateado);
+    $("#iva").text(total_ivaFormateado);
+    $("#total").text(total_bruto_formateado);
   }
 
   $(document).on("click", ".mas_info", function () {
