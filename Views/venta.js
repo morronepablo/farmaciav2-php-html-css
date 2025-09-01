@@ -478,12 +478,12 @@ $(document).ready(function () {
     return respuesta;
   }
 
-  // var total_bruto = 0;
-  // var total_bruto_formateado = "";
+  var total_bruto = 0;
+  var total_bruto_formateado = "";
 
   function obtener_productos_carrito() {
-    let total_bruto = 0;
-    let total_bruto_formateado = "";
+    total_bruto = 0;
+    total_bruto_formateado = "";
     Contar_productos();
     let productos = RecuperarLS();
     let template = ``;
@@ -518,12 +518,17 @@ $(document).ready(function () {
     // console.log(total_bruto_formateado);
 
     $("#productos_carrito").html(template);
-    calcular_cantidades(total_bruto);
+    calcular_cantidades();
   }
 
-  function calcular_cantidades(total_bruto) {
+  function calcular_cantidades() {
+    if (descuento_global != 0) {
+      total_bruto = total_bruto - descuento_global;
+    }
     let grabada = 0;
     let total_iva = 0;
+    let total_cambio = 0;
+    let total_cambioFormateado = "---";
     grabada = total_bruto / 1.21;
     grabada = Number(grabada.toFixed(2));
     const grabadaFormateado = "$ " + formatNumber(grabada);
@@ -534,7 +539,65 @@ $(document).ready(function () {
     $("#grabada").text(grabadaFormateado);
     $("#iva").text(total_ivaFormateado);
     $("#total").text(total_bruto_formateado);
+    // total_cambio = total_bruto;
+    if (recibe_global != 0) {
+      total_cambio = recibe_global - total_bruto;
+      total_cambioFormateado = "$ " + formatNumber(total_cambio);
+    }
+    $("#cambio").text(total_cambioFormateado);
   }
+
+  var descuento_global = 0;
+
+  $(document).on("change", "#descuento", function () {
+    let descuento = $("#descuento").val();
+    if (descuento >= 0 && descuento != "") {
+      if (descuento <= total_bruto) {
+        descuento_global = descuento;
+      } else {
+        toastr.error("El descuento no puede ser mayor al total", "Error!", {
+          timeOut: 2000,
+        });
+        $("#descuento").val(0);
+        descuento_global = 0;
+      }
+    } else {
+      toastr.error("El descuento no puede ser menor que 0", "Error!", {
+        timeOut: 2000,
+      });
+      $("#descuento").val(0);
+      descuento_global = 0;
+    }
+    obtener_productos_carrito();
+  });
+
+  var recibe_global = 0;
+
+  $(document).on("change", "#recibe", function () {
+    let recibe = $("#recibe").val();
+    if (recibe >= 0 && recibe != "") {
+      if (recibe >= total_bruto) {
+        recibe_global = recibe;
+      } else {
+        toastr.error(
+          "No se puede recibir menor dinero que el total",
+          "Error!",
+          {
+            timeOut: 2000,
+          }
+        );
+        $("#recibe").val(0);
+        recibe_global = 0;
+      }
+    } else {
+      toastr.error("No se puede recibir dinero menor que 0", "Error!", {
+        timeOut: 2000,
+      });
+      $("#recibe").val(0);
+      recibe_global = 0;
+    }
+    obtener_productos_carrito();
+  });
 
   $(document).on("click", ".mas_info", function () {
     let elemento = $(this)[0];
@@ -588,6 +651,10 @@ $(document).ready(function () {
       $(elemento).attr("cantidad", cantidad_validar);
       $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
     }
+    $("#descuento").val(0);
+    descuento_global = 0;
+    $("#recibe").val(0);
+    recibe_global = 0;
     obtener_productos_carrito();
   });
 
@@ -603,6 +670,11 @@ $(document).ready(function () {
         timeOut: 2500,
       }
     );
+    $("#descuento").val(0);
+    descuento_global = 0;
+    $("#recibe").val(0);
+    recibe_global = 0;
+    Eliminar_producto_LS(id);
     obtener_productos_carrito();
   });
 

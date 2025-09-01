@@ -258,7 +258,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                                 <span class="info-box-icon"><i class="fas fa-tags"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Vuelto:</span>
-                                    <span class="info-box-number" id="vuelto">---</span>
+                                    <span class="info-box-number" id="cambio">---</span>
                                 </div>
                             </div>
                         </div>
