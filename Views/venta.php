@@ -275,6 +275,17 @@ include_once $_SERVER["DOCUMENT_ROOT"] . '/farmaciav2/Views/layouts/header.php';
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-4">
+
+                    </div>
+                    <div class="col-md-4">
+
+                    </div>
+                    <div class="col-md-4 p-3">
+                        <button id="generar_venta" class="btn btn-block btn-success"><i class="fas fa-check"></i> Registrar venta</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

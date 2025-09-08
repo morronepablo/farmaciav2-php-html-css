@@ -678,6 +678,65 @@ $(document).ready(function () {
     obtener_productos_carrito();
   });
 
+  $(document).on("click", "#generar_venta", function () {
+    let cliente = $("#cliente").val();
+    let comprobante = $("#comprobante").val();
+    let bandera = 0;
+    if (cliente == null) {
+      bandera++;
+      toastr.error("Es necesario ingresar un cliente", "Error!", {
+        timeOut: 2500,
+      });
+    }
+    if (comprobante == null) {
+      bandera++;
+      toastr.error(
+        "Es necesario ingresar un el tipo de comprobante",
+        "Error!",
+        {
+          timeOut: 2500,
+        }
+      );
+    }
+    if (bandera == 0) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger mr-1",
+        },
+        buttonsStyling: false,
+      });
+      swalWithBootstrapButtons
+        .fire({
+          title: "Desea realizar la venta?",
+          text: "Revise muy bien los datos antes de continuar!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si",
+          cancelButtonText: "No",
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+              title: "Se realizó la venta!",
+              text: "La venta se ha registrado con exito, puede verla en Listar ventas",
+              icon: "success",
+            });
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire({
+              title: "Cancelado",
+              text: "La venta no se ha registrado",
+              icon: "error",
+            });
+          }
+        });
+    }
+  });
+
   function Eliminar_producto_LS(id) {
     let productos;
     productos = RecuperarLS();
