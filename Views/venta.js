@@ -678,6 +678,18 @@ $(document).ready(function () {
     obtener_productos_carrito();
   });
 
+  // Función auxiliar
+  function parseCurrency(currencyStr) {
+    if (!currencyStr) return 0;
+    let clean = currencyStr
+      .replace(/\$/g, "")
+      .replace(/\s/g, "")
+      .replace(/\./g, "")
+      .replace(",", ".");
+    let num = parseFloat(clean);
+    return isNaN(num) ? 0 : Math.round((num + Number.EPSILON) * 100) / 100;
+  }
+
   $(document).on("click", "#generar_venta", function () {
     let cliente = $("#cliente").val();
     let comprobante = $("#comprobante").val();
@@ -718,10 +730,25 @@ $(document).ready(function () {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            swalWithBootstrapButtons.fire({
-              title: "Se realizó la venta!",
-              text: "La venta se ha registrado con exito, puede verla en Listar ventas",
-              icon: "success",
+            let datos = {
+              cliente: cliente,
+              comprobante: comprobante,
+              descuento: $("#descuento").val(),
+              grabada: parseCurrency($("#grabada").text()),
+              iva: parseCurrency($("#iva").text()),
+              recibe: $("#recibe").val(),
+              cambio: $("#cambio").text(),
+              total: total_bruto,
+              productos: RecuperarLS(),
+            };
+            registrar_venta(datos).then((respuesta) => {
+              if (respuesta.mensaje == "success") {
+                swalWithBootstrapButtons.fire({
+                  title: "Se realizó la venta!",
+                  text: "La venta se ha registrado con exito, puede verla en Listar ventas",
+                  icon: "success",
+                });
+              }
             });
           } else if (
             /* Read more about handling dismissals below */
@@ -736,6 +763,37 @@ $(document).ready(function () {
         });
     }
   });
+
+  async function registrar_venta(datos) {
+    let funcion = "registrar_venta";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/VentaController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&datos=" + JSON.stringify(datos),
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
 
   function Eliminar_producto_LS(id) {
     let productos;
