@@ -243,4 +243,24 @@ if ($_POST['funcion'] == 'obtener_productos') {
 	);
 	$jsonstring = json_encode($json);
 	echo $jsonstring;
+} else if ($_POST['funcion'] == 'obtener_stock') {
+	$mensaje = '';
+	$stock = 0;
+	if (!empty($_SESSION['id'])) {
+		$id				= $_POST['id'];
+		$formateado		= str_replace(' ', '+', $id);
+		$id_producto	= openssl_decrypt($formateado, CODE, KEY);
+		if (is_numeric($id_producto)) {
+			$movimiento->obtener_stock_sin_vencer($id_producto);
+			if (!empty($movimiento->objetos[0]->total)) {
+				$stock = $movimiento->objetos[0]->total;
+			}
+			$mensaje 	= 'success';
+		} else {
+			$mensaje = 'error_decrypt';
+		}
+	} else {
+		$mensaje = 'error_session';
+	}
+	echo json_encode(array('mensaje' => $mensaje, 'stock' => $stock));
 }

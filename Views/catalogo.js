@@ -423,47 +423,37 @@ $(document).ready(function () {
     let presentacion = $(elemento).attr("presentacion");
     let tipo = $(elemento).attr("tipo");
     let subtipo = $(elemento).attr("subtipo");
-    let stock = $(elemento).attr("stock");
     let precio = $(elemento).attr("precio");
-    if (stock != "null") {
-      let producto = {
-        id: id,
-        nombre: nombre,
-        concentracion: concentracion,
-        precio: precio,
-        laboratorio: laboratorio,
-        tipo: tipo,
-        subtipo: subtipo,
-        presentacion: presentacion,
-        stock: stock,
-        cantidad: 1,
-      };
-      let bandera = false;
-      let productos = RecuperarLS();
-      productos.forEach((prod) => {
-        if (prod.id === producto.id) {
-          bandera = true;
-        }
-      });
-      if (bandera) {
-        toastr.error(
-          "El producto " + nombre + " # " + codigo + " ya fué agregado",
-          "Error!",
-          { timeOut: 2000 }
-        );
-      } else {
-        AgregarLS(producto);
-        Contar_productos();
-        toastr.success(
-          "Producto " + nombre + " # " + codigo + " agregado",
-          "Exito!",
-          { timeOut: 2000 }
-        );
+    let producto = {
+      id: id,
+      nombre: nombre,
+      concentracion: concentracion,
+      precio: precio,
+      laboratorio: laboratorio,
+      tipo: tipo,
+      subtipo: subtipo,
+      presentacion: presentacion,
+      cantidad: 1,
+    };
+    let bandera = false;
+    let productos = RecuperarLS();
+    productos.forEach((prod) => {
+      if (prod.id === producto.id) {
+        bandera = true;
       }
+    });
+    if (bandera) {
+      toastr.error(
+        "El producto " + nombre + " # " + codigo + " ya fué agregado",
+        "Error!",
+        { timeOut: 2000 }
+      );
     } else {
-      toastr.warning(
-        "El producto " + nombre + " # " + codigo + " no tiene stock",
-        "No se pudo agregar!",
+      AgregarLS(producto);
+      Contar_productos();
+      toastr.success(
+        "Producto " + nombre + " # " + codigo + " agregado",
+        "Exito!",
         { timeOut: 2000 }
       );
     }
@@ -492,7 +482,7 @@ $(document).ready(function () {
                         <span class="text-warning"><i class="fas fa-lg fa-pills"></i></span> ${datos.nombre}
                         <div className="form-group">
                         <label class="text-warning">Cantidad:</label>
-                        <input id="${datos.id}" stock="${datos.stock}" cantidad="${datos.cantidad}" type="number" value="${datos.cantidad}" class="cantidad form-control" />
+                        <input id="${datos.id}" cantidad="${datos.cantidad}" type="number" value="${datos.cantidad}" class="cantidad form-control" />
                         </div>
                       </div>
                       <div class="col-md-5 text-center">
@@ -623,10 +613,12 @@ $(document).ready(function () {
     let elemento = $(this)[0];
     let cantidad = Number($(elemento).val());
     let id = $(elemento).attr("id");
-    let stock = Number($(elemento).attr("stock"));
     let cantidad_validar = Number($(elemento).attr("cantidad"));
     if (cantidad > 0) {
-      if (cantidad <= stock) {
+      obtener_stock(id).then((respuesta) => {
+        console.log(respuesta);
+      });
+      /*if (cantidad <= stock) {
         let productos = RecuperarLS();
         productos.forEach((prod) => {
           if (prod.id === id) {
@@ -641,7 +633,7 @@ $(document).ready(function () {
         });
         $(elemento).attr("cantidad", cantidad_validar);
         $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
-      }
+      }*/
     } else {
       toastr.error("No se permite cantidad 0 o negativa", "Error!", {
         timeOut: 2000,
@@ -650,6 +642,37 @@ $(document).ready(function () {
       $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
     }
   });
+
+  async function obtener_stock(id) {
+    let funcion = "obtener_stock";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
 
   $(document).on("click", ".generar_venta", function () {
     location.href = "/farmaciav2/Views/venta.php";
