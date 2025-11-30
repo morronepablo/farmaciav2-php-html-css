@@ -617,23 +617,47 @@ $(document).ready(function () {
     if (cantidad > 0) {
       obtener_stock(id).then((respuesta) => {
         console.log(respuesta);
-      });
-      /*if (cantidad <= stock) {
-        let productos = RecuperarLS();
-        productos.forEach((prod) => {
-          if (prod.id === id) {
-            prod.cantidad = cantidad;
+        if (respuesta.mensaje == "success") {
+          if (cantidad <= respuesta.stock) {
+            let productos = RecuperarLS();
+            productos.forEach((prod) => {
+              if (prod.id === id) {
+                prod.cantidad = cantidad;
+              }
+            });
+            localStorage.setItem("productos", JSON.stringify(productos));
+            $(elemento).attr("cantidad", cantidad);
+          } else {
+            toastr.error("La cantidad supera el stock del producto", "Error!", {
+              timeOut: 2000,
+            });
+            $(elemento).attr("cantidad", cantidad_validar);
+            $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
           }
-        });
-        localStorage.setItem("productos", JSON.stringify(productos));
-        $(elemento).attr("cantidad", cantidad);
-      } else {
-        toastr.error("La cantidad supera el stock del producto", "Error!", {
-          timeOut: 2000,
-        });
-        $(elemento).attr("cantidad", cantidad_validar);
-        $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
-      }*/
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
+      });
     } else {
       toastr.error("No se permite cantidad 0 o negativa", "Error!", {
         timeOut: 2000,

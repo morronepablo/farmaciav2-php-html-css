@@ -508,7 +508,7 @@ $(document).ready(function () {
         </td>
         <td class="text-right">${precioFormateado}</td>
         <td>
-          <input type="number" id="${producto.id}" stock="${producto.stock}" nombre="${producto.nombre}" cantidad="${producto.cantidad}" class="cantidad form-control text-right" value="${producto.cantidad}">
+          <input type="number" id="${producto.id}" nombre="${producto.nombre}" cantidad="${producto.cantidad}" class="cantidad form-control text-right" value="${producto.cantidad}">
         </td>
         <td class="text-right">${subtotalFormateado}</td>
         <td><button type="button" id="${producto.id}" nombre="${producto.nombre}" class="borrar_producto btn btn-outline-danger btn-circle"><i class="fas fa-times"></i></button></td>
@@ -628,35 +628,98 @@ $(document).ready(function () {
     let stock = Number($(elemento).attr("stock"));
     let cantidad_validar = Number($(elemento).attr("cantidad"));
     if (cantidad > 0) {
-      if (cantidad <= stock) {
-        let productos = RecuperarLS();
-        productos.forEach((prod) => {
-          if (prod.id === id) {
-            prod.cantidad = cantidad;
+      obtener_stock(id).then((respuesta) => {
+        console.log(respuesta);
+        if (respuesta.mensaje == "success") {
+          if (cantidad <= respuesta.stock) {
+            let productos = RecuperarLS();
+            productos.forEach((prod) => {
+              if (prod.id === id) {
+                prod.cantidad = cantidad;
+              }
+            });
+            localStorage.setItem("productos", JSON.stringify(productos));
+            $(elemento).attr("cantidad", cantidad);
+          } else {
+            toastr.error("La cantidad supera el stock del producto", "Error!", {
+              timeOut: 2000,
+            });
+            $(elemento).attr("cantidad", cantidad_validar);
+            $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
           }
-        });
-        localStorage.setItem("productos", JSON.stringify(productos));
-        $(elemento).attr("cantidad", cantidad);
-      } else {
-        toastr.error("La cantidad supera el stock del producto", "Error!", {
-          timeOut: 2000,
-        });
-        $(elemento).attr("cantidad", cantidad_validar);
-        $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
-      }
+        } else if (respuesta.mensaje == "error_decrypt") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No vulnere los datos...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.reload();
+          });
+        } else if (respuesta.mensaje == "error_session") {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Sesión finalizada...",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            //refresca la pagina (F5)
+            location.href = "/farmaciav2/index.php";
+          });
+        }
+        $("#descuento").val(0);
+        descuento_global = 0;
+        $("#recibe").val(0);
+        recibe_global = 0;
+        obtener_productos_carrito();
+      });
     } else {
       toastr.error("No se permite cantidad 0 o negativa", "Error!", {
         timeOut: 2000,
       });
       $(elemento).attr("cantidad", cantidad_validar);
       $(elemento).val(cantidad_validar).trigger("change"); // trigger hace que el evento sea recursivo
+      $("#descuento").val(0);
+      descuento_global = 0;
+      $("#recibe").val(0);
+      recibe_global = 0;
+      obtener_productos_carrito();
     }
-    $("#descuento").val(0);
-    descuento_global = 0;
-    $("#recibe").val(0);
-    recibe_global = 0;
-    obtener_productos_carrito();
   });
+
+  async function obtener_stock(id) {
+    let funcion = "obtener_stock";
+    let respuesta = "";
+    let data = await fetch("/farmaciav2/Controllers/ProductoController.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "funcion=" + funcion + "&&id=" + id,
+    });
+    if (data.ok) {
+      let response = await data.text();
+      try {
+        respuesta = JSON.parse(response);
+      } catch (error) {
+        console.error(error);
+        console.log(response);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo confilcto en el sistema, póngase en contacto con el administrador",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: data.statusText,
+        text: "Hubo confilcto de código: " + data.status,
+      });
+    }
+    return respuesta;
+  }
 
   $(document).on("click", ".borrar_producto", function () {
     let elemento = $(this)[0];
@@ -742,6 +805,8 @@ $(document).ready(function () {
               productos: RecuperarLS(),
             };
             registrar_venta(datos).then((respuesta) => {
+              console.log(respuesta);
+
               if (respuesta.mensaje == "success") {
                 swalWithBootstrapButtons.fire({
                   title: "Se realizó la venta!",
