@@ -10,13 +10,17 @@ class Venta
 		$this->acceso = $db->pdo;
 	}
 
-	function crear($descripcion, $total, $proveedor)
+	function crear($grabada, $descuento, $iva, $total, $comprobante, $cliente, $usuario)
 	{
-		$sql = "CALL crear_obtener_id_pedido(:proveedor,:descripcion,:total)";
+		$sql = "CALL crear_venta(:grabada, :descuento, :iva, :total, :comprobante, :cliente, :usuario)";
 		$variables = array(
-			':descripcion' => $descripcion,
-			':total' => $total,
-			':proveedor' => $proveedor,
+			':grabada' 		=> $grabada,
+			':descuento' 	=> $descuento,
+			':iva' 			=> $iva,
+			':total' 		=> $total,
+			':comprobante' 	=> $comprobante,
+			':cliente' 		=> $cliente,
+			':usuario' 		=> $usuario,
 		);
 		$query = $this->acceso->prepare($sql);
 		$query->execute($variables);

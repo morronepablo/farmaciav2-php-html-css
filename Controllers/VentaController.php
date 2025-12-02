@@ -45,8 +45,8 @@ if ($_POST['funcion'] == 'registrar_venta') {
 			}
 		}
 		if ($bandera == 0) {
-			//$venta->crear($grabada, $descuento, $iva, $total, $comprobante, $cliente);
-			var_dump($grabada, $descuento, $iva, $total, $comprobante, $cliente);
+			$venta->crear($grabada, $descuento, $iva, $total, $comprobante, $cliente, $usuario);
+			var_dump($venta->objetos[0]);
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_cantidad_falsa';
