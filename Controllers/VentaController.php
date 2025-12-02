@@ -24,6 +24,13 @@ if ($_POST['funcion'] == 'registrar_venta') {
 	$mensaje		= '';
 	//var_dump($cliente, $comprobante, $descuento, $grabada, $iva, $total, $recibe, $cambio, $productos);
 	if (is_numeric($cliente) && is_numeric($comprobante)) {
+		foreach ($productos as $producto) {
+			$cantidad = $producto->cantidad;
+			$formateado		= str_replace(' ', '+', $producto->id);
+			$id_producto	= openssl_decrypt($formateado, CODE, KEY);
+			@$producto->id	= $id_producto;
+		}
+		var_dump($productos);
 		$mensaje = 'success';
 	} else {
 		$mensaje = 'error_decrypt';
