@@ -43,7 +43,7 @@ if ($_POST['funcion'] == 'realizar_compra') {
 				$formateado		= str_replace(' ', '+', $objeto->id);
 				$id_producto	= openssl_decrypt($formateado, CODE, KEY);
 				$pedido_compra->crear_detalle($objeto->cantidad, $objeto->precio, $id_producto, $id_pedido);
-				$movimiento->crear($objeto->cantidad, 0, $objeto->precio, $objeto->vencimiento, $objeto->lote, $id_compra, '', $id_producto, 1);
+				$movimiento->crear($objeto->cantidad, $objeto->cantidad, 0, $objeto->precio, $objeto->vencimiento, $objeto->lote, '', $id_compra, '', $id_producto, 1);
 			}
 			$mensaje = 'success';
 		} else {

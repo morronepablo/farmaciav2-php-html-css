@@ -10,17 +10,18 @@ class Movimiento
 		$this->acceso = $db->pdo;
 	}
 
-	function crear($cantidad, $precio_venta, $precio_compra, $fecha_vencimiento, $lote, $compra_id, $venta_id, $producto_id, $tipo_movimiento_id)
+	function crear($cantidad, $cantidad_res, $precio_venta, $precio_compra, $fecha_vencimiento, $lote, $id_lote, $compra_id, $venta_id, $producto_id, $tipo_movimiento_id)
 	{
-		$sql = "INSERT INTO movimiento(cantidad,cantidad_res,precio_venta,precio_compra,fecha_vencimiento,lote,compra_id,venta_id,producto_id,tipo_movimiento_id)
-		VALUES(:cantidad,:cantidad_res,:precio_venta,:precio_compra,:fecha_vencimiento,:lote,:compra_id,:venta_id,:producto_id,:tipo_movimiento_id)";
+		$sql = "INSERT INTO movimiento(cantidad,cantidad_res,precio_venta,precio_compra,fecha_vencimiento,lote,id_lote,compra_id,venta_id,producto_id,tipo_movimiento_id)
+		VALUES(:cantidad,:cantidad_res,:precio_venta,:precio_compra,:fecha_vencimiento,:lote,:id_lote,:compra_id,:venta_id,:producto_id,:tipo_movimiento_id)";
 		$variables = array(
 			':cantidad' 			=> $cantidad,
-			':cantidad_res' 		=> $cantidad,
+			':cantidad_res' 		=> $cantidad_res,
 			':precio_venta'			=> $precio_venta,
 			':precio_compra'		=> $precio_compra,
 			':fecha_vencimiento'	=> $fecha_vencimiento,
 			':lote' 				=> $lote,
+			':id_lote' 				=> $id_lote,
 			':compra_id' 			=> $compra_id,
 			':venta_id' 			=> $venta_id,
 			':producto_id' 			=> $producto_id,
