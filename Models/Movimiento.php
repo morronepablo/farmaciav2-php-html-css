@@ -191,4 +191,21 @@ class Movimiento
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function editar_lote($id, $cantidad, $estado)
+	{
+		$sql = "
+			UPDATE movimiento
+			SET cantidad_res=:cantidad,
+			estado=:estado
+			WHERE id=:id
+		";
+		$variables = array(
+			':id' 		=> $id,
+			':cantidad' => $cantidad,
+			':estado' 	=> $estado,
+		);
+		$query = $this->acceso->prepare($sql);
+		$query->execute($variables);
+	}
 }
