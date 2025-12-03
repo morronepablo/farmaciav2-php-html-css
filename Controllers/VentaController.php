@@ -45,9 +45,14 @@ if ($_POST['funcion'] == 'registrar_venta') {
 			}
 		}
 		if ($bandera == 0) {
-			$venta->crear($grabada, $descuento, $iva, $total, $comprobante, $cliente, $usuario);
-			var_dump($venta->objetos[0]);
-			//0000000
+			//$venta->crear($grabada, $descuento, $iva, $total, $comprobante, $cliente, $usuario);
+			//$id_vanta = $venta->objetos[0]->id_venta;
+			$id_venta = 1;
+			foreach ($productos as $producto) {
+				$cantidad = $producto->cantidad;
+				$movimiento->obtener_lotes_disponibles($producto->id);
+				var_dump($movimiento->objetos);
+			}
 			$mensaje = 'success';
 		} else {
 			$mensaje = 'error_cantidad_falsa';

@@ -171,4 +171,23 @@ class Movimiento
 		$this->objetos = $query->fetchall();
 		return $this->objetos;
 	}
+
+	function obtener_lotes_disponibles($id)
+	{
+		$sql = "
+			SELECT * FROM movimiento
+			WHERE producto_id=:producto_id
+			AND estado='A'
+			AND tipo_movimiento_id=1
+			AND fecha_vencimiento>CURDATE()
+			AND cantidad_res>0
+			ORDER BY fecha_vencimiento ASC,id ASC;
+		";
+		$query = $this->acceso->prepare($sql);
+		$query->execute(
+			array(':producto_id' => $id)
+		);
+		$this->objetos = $query->fetchall();
+		return $this->objetos;
+	}
 }
