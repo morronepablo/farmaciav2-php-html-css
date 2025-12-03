@@ -51,7 +51,21 @@ if ($_POST['funcion'] == 'registrar_venta') {
 			foreach ($productos as $producto) {
 				$cantidad = $producto->cantidad;
 				$movimiento->obtener_lotes_disponibles($producto->id);
-				var_dump($movimiento->objetos);
+				foreach ($movimiento->objetos as $lote) {
+					var_dump('cantidad: ' . $cantidad);
+					if ($cantidad < $lote->cantidad_res && $cantidad != 0) {
+						var_dump('if 1- ' . $lote->cantidad_res);
+						$cantidad = 0;
+						break;
+					} elseif ($cantidad == $lote->cantidad_res) {
+						var_dump('if 2- ' . $lote->cantidad_res);
+						$cantidad = 0;
+						break;
+					} elseif ($cantidad > $lote->cantidad_res) {
+						var_dump('if 3- ' . $lote->cantidad_res);
+						$cantidad = $cantidad - $lote->cantidad_res;
+					}
+				}
 			}
 			$mensaje = 'success';
 		} else {
